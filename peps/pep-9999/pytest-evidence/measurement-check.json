@@ -1,0 +1,127 @@
+{
+  "files": 612,
+  "assertions": 71205,
+  "collected_tests": 205,
+  "outcomes": {
+    "setup:passed": 205,
+    "call:passed": 194,
+    "teardown:passed": 205,
+    "call:skipped": 11
+  },
+  "terminal_outcomes": {
+    "passed": 194,
+    "skipped": 7,
+    "xfailed": 4,
+    "warnings": 4
+  },
+  "terminal_outcomes_note": "The recorder stores xfail reasons as strings. An empty xfail reason is indistinguishable from a skip there. Every terminal log independently confirms seven skips and four expected failures.",
+  "compile": {
+    "plain": {
+      "median_seconds": 1.2381107127293944,
+      "min_seconds": 1.2160169873386621,
+      "max_seconds": 1.7101376866921782,
+      "bytecode_bytes": 12664866,
+      "marshal_bytes": 21566850
+    },
+    "pytest": {
+      "median_seconds": 48.574821564834565,
+      "min_seconds": 47.45355252828449,
+      "max_seconds": 53.19101264420897,
+      "bytecode_bytes": 93672468,
+      "marshal_bytes": 138302774
+    },
+    "capture": {
+      "median_seconds": 14.09814622392878,
+      "min_seconds": 12.777978567406535,
+      "max_seconds": 17.37132071517408,
+      "bytecode_bytes": 21719464,
+      "marshal_bytes": 121870093
+    }
+  },
+  "runtime": {
+    "plain": {
+      "command_seconds": {
+        "median": 7.8782106805592775,
+        "min": 7.172714207321405,
+        "max": 9.995817067101598
+      },
+      "test_loop_seconds": {
+        "median": 5.641048881690949,
+        "min": 5.053332358598709,
+        "max": 7.222893985919654
+      }
+    },
+    "pytest": {
+      "command_seconds": {
+        "median": 8.195974287111312,
+        "min": 7.851803068071604,
+        "max": 11.360261517576873
+      },
+      "test_loop_seconds": {
+        "median": 5.191546979360282,
+        "min": 5.076309826225042,
+        "max": 7.230165270157158
+      }
+    },
+    "capture": {
+      "command_seconds": {
+        "median": 7.472947076428682,
+        "min": 7.306659302674234,
+        "max": 10.143702844157815
+      },
+      "test_loop_seconds": {
+        "median": 5.071876028552651,
+        "min": 5.048896547406912,
+        "max": 7.072640519589186
+      }
+    }
+  },
+  "capture_vs_pytest": {
+    "compile_ratio": 0.29023567703921416,
+    "bytecode_bytes_ratio": 0.23186603773480166,
+    "marshal_bytes_ratio": 0.8811832870394921,
+    "command_seconds_ratio": 0.9117826404336533,
+    "test_loop_seconds_ratio": 0.9769488841604632
+  },
+  "compile_reduction_within_blocks": {
+    "fractions": [
+      0.7174847278735046,
+      0.7317985923575067,
+      0.7270582413098591,
+      0.7307266182065026,
+      0.6405162524515504,
+      0.6504298114466835
+    ],
+    "min": 0.6405162524515504,
+    "max": 0.7317985923575067
+  },
+  "test_loop_minima_spread_seconds": 0.027413278818130493,
+  "paired_differences_seconds": {
+    "command_seconds": {
+      "capture_minus_pytest": [
+        -1.0256172139197588,
+        -3.81991083920002,
+        0.669342196546495,
+        -0.5622269194573164,
+        -0.5451437653973699,
+        -0.5877686450257897
+      ],
+      "median": -0.5749977822415531,
+      "min": -3.81991083920002,
+      "max": 0.669342196546495
+    },
+    "test_loop_seconds": {
+      "capture_minus_pytest": [
+        -0.08704598993062973,
+        -2.1695960415527225,
+        -0.029526728205382824,
+        -0.07617896981537342,
+        -0.027413278818130493,
+        -0.02748072799295187
+      ],
+      "median": -0.05285284901037812,
+      "min": -2.1695960415527225,
+      "max": -0.027413278818130493
+    }
+  }
+}

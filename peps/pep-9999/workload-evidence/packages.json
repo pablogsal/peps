@@ -1,0 +1,728 @@
+{
+  "version": "1",
+  "pip_version": "25.1.1",
+  "install": [
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/5e/3d/a035a4ee9b1d4d4beee2ae6e8e12fe6dee5514b21f62504e22efcbd9fb46/django-5.2.8-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=37e687f7bd73ddf043e2b6b97cfe02fcbb11f2dbb3adccc6a2b18c6daa054d7f",
+          "hashes": {
+            "sha256": "37e687f7bd73ddf043e2b6b97cfe02fcbb11f2dbb3adccc6a2b18c6daa054d7f"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "Django",
+        "version": "5.2.8",
+        "dynamic": [
+          "license-file"
+        ],
+        "summary": "A high-level Python web framework that encourages rapid development and clean, pragmatic design.",
+        "description": "======\nDjango\n======\n\nDjango is a high-level Python web framework that encourages rapid development\nand clean, pragmatic design. Thanks for checking it out.\n\nAll documentation is in the \"``docs``\" directory and online at\nhttps://docs.djangoproject.com/en/stable/. If you're just getting started,\nhere's how we recommend you read the docs:\n\n* First, read ``docs/intro/install.txt`` for instructions on installing Django.\n\n* Next, work through the tutorials in order (``docs/intro/tutorial01.txt``,\n  ``docs/intro/tutorial02.txt``, etc.).\n\n* If you want to set up an actual deployment server, read\n  ``docs/howto/deployment/index.txt`` for instructions.\n\n* You'll probably want to read through the topical guides (in ``docs/topics``)\n  next; from there you can jump to the HOWTOs (in ``docs/howto``) for specific\n  problems, and check out the reference (``docs/ref``) for gory details.\n\n* See ``docs/README`` for instructions on building an HTML version of the docs.\n\nDocs are updated rigorously. If you find any problems in the docs, or think\nthey should be clarified in any way, please take 30 seconds to fill out a\nticket here: https://code.djangoproject.com/newticket\n\nTo get more help:\n\n* Join the ``#django`` channel on ``irc.libera.chat``. Lots of helpful people\n  hang out there. `Webchat is available <https://web.libera.chat/#django>`_.\n\n* Join the `Django Discord community <https://chat.djangoproject.com>`_.\n\n* Join the community on the `Django Forum <https://forum.djangoproject.com/>`_.\n\nTo contribute to Django:\n\n* Check out https://docs.djangoproject.com/en/dev/internals/contributing/ for\n  information about getting involved.\n\nTo run Django's test suite:\n\n* Follow the instructions in the \"Unit tests\" section of\n  ``docs/internals/contributing/writing-code/unit-tests.txt``, published online at\n  https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/unit-tests/#running-the-unit-tests\n\nSupporting the Development of Django\n====================================\n\nDjango's development depends on your contributions.\n\nIf you depend on Django, remember to support the Django Software Foundation: https://www.djangoproject.com/fundraising/\n",
+        "description_content_type": "text/x-rst",
+        "author_email": "Django Software Foundation <foundation@djangoproject.com>",
+        "license_expression": "BSD-3-Clause",
+        "license_file": [
+          "LICENSE",
+          "LICENSE.python"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Environment :: Web Environment",
+          "Framework :: Django",
+          "Intended Audience :: Developers",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Topic :: Internet :: WWW/HTTP",
+          "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+          "Topic :: Internet :: WWW/HTTP :: WSGI",
+          "Topic :: Software Development :: Libraries :: Application Frameworks",
+          "Topic :: Software Development :: Libraries :: Python Modules"
+        ],
+        "requires_dist": [
+          "asgiref>=3.8.1",
+          "sqlparse>=0.3.1",
+          "tzdata; sys_platform == \"win32\"",
+          "argon2-cffi>=19.1.0; extra == \"argon2\"",
+          "bcrypt; extra == \"bcrypt\""
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Homepage, https://www.djangoproject.com/",
+          "Documentation, https://docs.djangoproject.com/",
+          "Release notes, https://docs.djangoproject.com/en/stable/releases/",
+          "Funding, https://www.djangoproject.com/fundraising/",
+          "Source, https://github.com/django/django",
+          "Tracker, https://code.djangoproject.com/"
+        ],
+        "provides_extra": [
+          "argon2",
+          "bcrypt"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/6c/dd/a834df6482147d48e225a49515aabc28974ad5a4ca3215c18a882565b028/html5lib-1.1-py2.py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d",
+          "hashes": {
+            "sha256": "0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.1",
+        "name": "html5lib",
+        "version": "1.1",
+        "platform": [
+          "UNKNOWN"
+        ],
+        "summary": "HTML parser based on the WHATWG HTML specification",
+        "description": "html5lib\n========\n\n.. image:: https://travis-ci.org/html5lib/html5lib-python.svg?branch=master\n    :target: https://travis-ci.org/html5lib/html5lib-python\n\n\nhtml5lib is a pure-python library for parsing HTML. It is designed to\nconform to the WHATWG HTML specification, as is implemented by all major\nweb browsers.\n\n\nUsage\n-----\n\nSimple usage follows this pattern:\n\n.. code-block:: python\n\n  import html5lib\n  with open(\"mydocument.html\", \"rb\") as f:\n      document = html5lib.parse(f)\n\nor:\n\n.. code-block:: python\n\n  import html5lib\n  document = html5lib.parse(\"<p>Hello World!\")\n\nBy default, the ``document`` will be an ``xml.etree`` element instance.\nWhenever possible, html5lib chooses the accelerated ``ElementTree``\nimplementation (i.e. ``xml.etree.cElementTree`` on Python 2.x).\n\nTwo other tree types are supported: ``xml.dom.minidom`` and\n``lxml.etree``. To use an alternative format, specify the name of\na treebuilder:\n\n.. code-block:: python\n\n  import html5lib\n  with open(\"mydocument.html\", \"rb\") as f:\n      lxml_etree_document = html5lib.parse(f, treebuilder=\"lxml\")\n\nWhen using with ``urllib2`` (Python 2), the charset from HTTP should be\npass into html5lib as follows:\n\n.. code-block:: python\n\n  from contextlib import closing\n  from urllib2 import urlopen\n  import html5lib\n\n  with closing(urlopen(\"http://example.com/\")) as f:\n      document = html5lib.parse(f, transport_encoding=f.info().getparam(\"charset\"))\n\nWhen using with ``urllib.request`` (Python 3), the charset from HTTP\nshould be pass into html5lib as follows:\n\n.. code-block:: python\n\n  from urllib.request import urlopen\n  import html5lib\n\n  with urlopen(\"http://example.com/\") as f:\n      document = html5lib.parse(f, transport_encoding=f.info().get_content_charset())\n\nTo have more control over the parser, create a parser object explicitly.\nFor instance, to make the parser raise exceptions on parse errors, use:\n\n.. code-block:: python\n\n  import html5lib\n  with open(\"mydocument.html\", \"rb\") as f:\n      parser = html5lib.HTMLParser(strict=True)\n      document = parser.parse(f)\n\nWhen you're instantiating parser objects explicitly, pass a treebuilder\nclass as the ``tree`` keyword argument to use an alternative document\nformat:\n\n.. code-block:: python\n\n  import html5lib\n  parser = html5lib.HTMLParser(tree=html5lib.getTreeBuilder(\"dom\"))\n  minidom_document = parser.parse(\"<p>Hello World!\")\n\nMore documentation is available at https://html5lib.readthedocs.io/.\n\n\nInstallation\n------------\n\nhtml5lib works on CPython 2.7+, CPython 3.5+ and PyPy. To install:\n\n.. code-block:: bash\n\n    $ pip install html5lib\n\nThe goal is to support a (non-strict) superset of the versions that `pip\nsupports\n<https://pip.pypa.io/en/stable/installing/#python-and-os-compatibility>`_.\n\nOptional Dependencies\n---------------------\n\nThe following third-party libraries may be used for additional\nfunctionality:\n\n- ``lxml`` is supported as a tree format (for both building and\n  walking) under CPython (but *not* PyPy where it is known to cause\n  segfaults);\n\n- ``genshi`` has a treewalker (but not builder); and\n\n- ``chardet`` can be used as a fallback when character encoding cannot\n  be determined.\n\n\nBugs\n----\n\nPlease report any bugs on the `issue tracker\n<https://github.com/html5lib/html5lib-python/issues>`_.\n\n\nTests\n-----\n\nUnit tests require the ``pytest`` and ``mock`` libraries and can be\nrun using the ``py.test`` command in the root directory.\n\nTest data are contained in a separate `html5lib-tests\n<https://github.com/html5lib/html5lib-tests>`_ repository and included\nas a submodule, thus for git checkouts they must be initialized::\n\n  $ git submodule init\n  $ git submodule update\n\nIf you have all compatible Python implementations available on your\nsystem, you can run tests on all of them using the ``tox`` utility,\nwhich can be found on PyPI.\n\n\nQuestions?\n----------\n\nThere's a mailing list available for support on Google Groups,\n`html5lib-discuss <http://groups.google.com/group/html5lib-discuss>`_,\nthough you may get a quicker response asking on IRC in `#whatwg on\nirc.freenode.net <http://wiki.whatwg.org/wiki/IRC>`_.\n\nChange Log\n----------\n\n1.1\n~~~\n\nUNRELEASED\n\nBreaking changes:\n\n* Drop support for Python 3.3. (#358)\n* Drop support for Python 3.4. (#421)\n\nDeprecations:\n\n* Deprecate the ``html5lib`` sanitizer (``html5lib.serialize(sanitize=True)`` and\n  ``html5lib.filters.sanitizer``). We recommend users migrate to `Bleach\n  <https://github.com/mozilla/bleach>`. Please let us know if Bleach doesn't suffice for your\n  use. (#443)\n\nOther changes:\n\n* Try to import from ``collections.abc`` to remove DeprecationWarning and ensure\n  ``html5lib`` keeps working in future Python versions. (#403)\n* Drop optional ``datrie`` dependency. (#442)\n\n\n1.0.1\n~~~~~\n\nReleased on December 7, 2017\n\nBreaking changes:\n\n* Drop support for Python 2.6. (#330) (Thank you, Hugo, Will Kahn-Greene!)\n* Remove ``utils/spider.py`` (#353) (Thank you, Jon Dufresne!)\n\nFeatures:\n\n* Improve documentation. (#300, #307) (Thank you, Jon Dufresne, Tom Most,\n  Will Kahn-Greene!)\n* Add iframe seamless boolean attribute. (Thank you, Ritwik Gupta!)\n* Add itemscope as a boolean attribute. (#194) (Thank you, Jonathan Vanasco!)\n* Support Python 3.6. (#333) (Thank you, Jon Dufresne!)\n* Add CI support for Windows using AppVeyor. (Thank you, John Vandenberg!)\n* Improve testing and CI and add code coverage (#323, #334), (Thank you, Jon\n  Dufresne, John Vandenberg, Sam Sneddon, Will Kahn-Greene!)\n* Semver-compliant version number.\n\nBug fixes:\n\n* Add support for setuptools < 18.5 to support environment markers. (Thank you,\n  John Vandenberg!)\n* Add explicit dependency for six >= 1.9. (Thank you, Eric Amorde!)\n* Fix regexes to work with Python 3.7 regex adjustments. (#318, #379) (Thank\n  you, Benedikt Morbach, Ville Skyttä, Mark Vasilkov!)\n* Fix alphabeticalattributes filter namespace bug. (#324) (Thank you, Will\n  Kahn-Greene!)\n* Include license file in generated wheel package. (#350) (Thank you, Jon\n  Dufresne!)\n* Fix annotation-xml typo. (#339) (Thank you, Will Kahn-Greene!)\n* Allow uppercase hex chararcters in CSS colour check. (#377) (Thank you,\n  Komal Dembla, Hugo!)\n\n\n1.0\n~~~\n\nReleased and unreleased on December 7, 2017. Badly packaged release.\n\n\n0.999999999/1.0b10\n~~~~~~~~~~~~~~~~~~\n\nReleased on July 15, 2016\n\n* Fix attribute order going to the tree builder to be document order\n  instead of reverse document order(!).\n\n\n0.99999999/1.0b9\n~~~~~~~~~~~~~~~~\n\nReleased on July 14, 2016\n\n* **Added ordereddict as a mandatory dependency on Python 2.6.**\n\n* Added ``lxml``, ``genshi``, ``datrie``, ``charade``, and ``all``\n  extras that will do the right thing based on the specific\n  interpreter implementation.\n\n* Now requires the ``mock`` package for the testsuite.\n\n* Cease supporting DATrie under PyPy.\n\n* **Remove PullDOM support, as this hasn't ever been properly\n  tested, doesn't entirely work, and as far as I can tell is\n  completely unused by anyone.**\n\n* Move testsuite to ``py.test``.\n\n* **Fix #124: move to webencodings for decoding the input byte stream;\n  this makes html5lib compliant with the Encoding Standard, and\n  introduces a required dependency on webencodings.**\n\n* **Cease supporting Python 3.2 (in both CPython and PyPy forms).**\n\n* **Fix comments containing double-dash with lxml 3.5 and above.**\n\n* **Use scripting disabled by default (as we don't implement\n  scripting).**\n\n* **Fix #11, avoiding the XSS bug potentially caused by serializer\n  allowing attribute values to be escaped out of in old browser versions,\n  changing the quote_attr_values option on serializer to take one of\n  three values, \"always\" (the old True value), \"legacy\" (the new option,\n  and the new default), and \"spec\" (the old False value, and the old\n  default).**\n\n* **Fix #72 by rewriting the sanitizer to apply only to treewalkers\n  (instead of the tokenizer); as such, this will require amending all\n  callers of it to use it via the treewalker API.**\n\n* **Drop support of charade, now that chardet is supported once more.**\n\n* **Replace the charset keyword argument on parse and related methods\n  with a set of keyword arguments: override_encoding, transport_encoding,\n  same_origin_parent_encoding, likely_encoding, and default_encoding.**\n\n* **Move filters._base, treebuilder._base, and treewalkers._base to .base\n  to clarify their status as public.**\n\n* **Get rid of the sanitizer package. Merge sanitizer.sanitize into the\n  sanitizer.htmlsanitizer module and move that to sanitizer. This means\n  anyone who used sanitizer.sanitize or sanitizer.HTMLSanitizer needs no\n  code changes.**\n\n* **Rename treewalkers.lxmletree to .etree_lxml and\n  treewalkers.genshistream to .genshi to have a consistent API.**\n\n* Move a whole load of stuff (inputstream, ihatexml, trie, tokenizer,\n  utils) to be underscore prefixed to clarify their status as private.\n\n\n0.9999999/1.0b8\n~~~~~~~~~~~~~~~\n\nReleased on September 10, 2015\n\n* Fix #195: fix the sanitizer to drop broken URLs (it threw an\n  exception between 0.9999 and 0.999999).\n\n\n0.999999/1.0b7\n~~~~~~~~~~~~~~\n\nReleased on July 7, 2015\n\n* Fix #189: fix the sanitizer to allow relative URLs again (as it did\n  prior to 0.9999/1.0b5).\n\n\n0.99999/1.0b6\n~~~~~~~~~~~~~\n\nReleased on April 30, 2015\n\n* Fix #188: fix the sanitizer to not throw an exception when sanitizing\n  bogus data URLs.\n\n\n0.9999/1.0b5\n~~~~~~~~~~~~\n\nReleased on April 29, 2015\n\n* Fix #153: Sanitizer fails to treat some attributes as URLs. Despite how\n  this sounds, this has no known security implications.  No known version\n  of IE (5.5 to current), Firefox (3 to current), Safari (6 to current),\n  Chrome (1 to current), or Opera (12 to current) will run any script\n  provided in these attributes.\n\n* Pass error message to the ParseError exception in strict parsing mode.\n\n* Allow data URIs in the sanitizer, with a whitelist of content-types.\n\n* Add support for Python implementations that don't support lone\n  surrogates (read: Jython). Fixes #2.\n\n* Remove localization of error messages. This functionality was totally\n  unused (and untested that everything was localizable), so we may as\n  well follow numerous browsers in not supporting translating technical\n  strings.\n\n* Expose treewalkers.pprint as a public API.\n\n* Add a documentEncoding property to HTML5Parser, fix #121.\n\n\n0.999\n~~~~~\n\nReleased on December 23, 2013\n\n* Fix #127: add work-around for CPython issue #20007: .read(0) on\n  http.client.HTTPResponse drops the rest of the content.\n\n* Fix #115: lxml treewalker can now deal with fragments containing, at\n  their root level, text nodes with non-ASCII characters on Python 2.\n\n\n0.99\n~~~~\n\nReleased on September 10, 2013\n\n* No library changes from 1.0b3; released as 0.99 as pip has changed\n  behaviour from 1.4 to avoid installing pre-release versions per\n  PEP 440.\n\n\n1.0b3\n~~~~~\n\nReleased on July 24, 2013\n\n* Removed ``RecursiveTreeWalker`` from ``treewalkers._base``. Any\n  implementation using it should be moved to\n  ``NonRecursiveTreeWalker``, as everything bundled with html5lib has\n  for years.\n\n* Fix #67 so that ``BufferedStream`` to correctly returns a bytes\n  object, thereby fixing any case where html5lib is passed a\n  non-seekable RawIOBase-like object.\n\n\n1.0b2\n~~~~~\n\nReleased on June 27, 2013\n\n* Removed reordering of attributes within the serializer. There is now\n  an ``alphabetical_attributes`` option which preserves the previous\n  behaviour through a new filter. This allows attribute order to be\n  preserved through html5lib if the tree builder preserves order.\n\n* Removed ``dom2sax`` from DOM treebuilders. It has been replaced by\n  ``treeadapters.sax.to_sax`` which is generic and supports any\n  treewalker; it also resolves all known bugs with ``dom2sax``.\n\n* Fix treewalker assertions on hitting bytes strings on\n  Python 2. Previous to 1.0b1, treewalkers coped with mixed\n  bytes/unicode data on Python 2; this reintroduces this prior\n  behaviour on Python 2. Behaviour is unchanged on Python 3.\n\n\n1.0b1\n~~~~~\n\nReleased on May 17, 2013\n\n* Implementation updated to implement the `HTML specification\n  <http://www.whatwg.org/specs/web-apps/current-work/>`_ as of 5th May\n  2013 (`SVN <http://svn.whatwg.org/webapps/>`_ revision r7867).\n\n* Python 3.2+ supported in a single codebase using the ``six`` library.\n\n* Removed support for Python 2.5 and older.\n\n* Removed the deprecated Beautiful Soup 3 treebuilder.\n  ``beautifulsoup4`` can use ``html5lib`` as a parser instead. Note that\n  since it doesn't support namespaces, foreign content like SVG and\n  MathML is parsed incorrectly.\n\n* Removed ``simpletree`` from the package. The default tree builder is\n  now ``etree`` (using the ``xml.etree.cElementTree`` implementation if\n  available, and ``xml.etree.ElementTree`` otherwise).\n\n* Removed the ``XHTMLSerializer`` as it never actually guaranteed its\n  output was well-formed XML, and hence provided little of use.\n\n* Removed default DOM treebuilder, so ``html5lib.treebuilders.dom`` is no\n  longer supported. ``html5lib.treebuilders.getTreeBuilder(\"dom\")`` will\n  return the default DOM treebuilder, which uses ``xml.dom.minidom``.\n\n* Optional heuristic character encoding detection now based on\n  ``charade`` for Python 2.6 - 3.3 compatibility.\n\n* Optional ``Genshi`` treewalker support fixed.\n\n* Many bugfixes, including:\n\n  * #33: null in attribute value breaks XML AttValue;\n\n  * #4: nested, indirect descendant, <button> causes infinite loop;\n\n  * `Google Code 215\n    <http://code.google.com/p/html5lib/issues/detail?id=215>`_: Properly\n    detect seekable streams;\n\n  * `Google Code 206\n    <http://code.google.com/p/html5lib/issues/detail?id=206>`_: add\n    support for <video preload=...>, <audio preload=...>;\n\n  * `Google Code 205\n    <http://code.google.com/p/html5lib/issues/detail?id=205>`_: add\n    support for <video poster=...>;\n\n  * `Google Code 202\n    <http://code.google.com/p/html5lib/issues/detail?id=202>`_: Unicode\n    file breaks InputStream.\n\n* Source code is now mostly PEP 8 compliant.\n\n* Test harness has been improved and now depends on ``nose``.\n\n* Documentation updated and moved to https://html5lib.readthedocs.io/.\n\n\n0.95\n~~~~\n\nReleased on February 11, 2012\n\n\n0.90\n~~~~\n\nReleased on January 17, 2010\n\n\n0.11.1\n~~~~~~\n\nReleased on June 12, 2008\n\n\n0.11\n~~~~\n\nReleased on June 10, 2008\n\n\n0.10\n~~~~\n\nReleased on October 7, 2007\n\n\n0.9\n~~~\n\nReleased on March 11, 2007\n\n\n0.2\n~~~\n\nReleased on January 8, 2007\n\n\n",
+        "home_page": "https://github.com/html5lib/html5lib-python",
+        "maintainer": "James Graham",
+        "maintainer_email": "james@hoppipolla.co.uk",
+        "license": "MIT License",
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: MIT License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 2",
+          "Programming Language :: Python :: 2.7",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.5",
+          "Programming Language :: Python :: 3.6",
+          "Programming Language :: Python :: 3.7",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Topic :: Text Processing :: Markup :: HTML"
+        ],
+        "requires_dist": [
+          "six (>=1.9)",
+          "webencodings",
+          "genshi ; extra == 'all'",
+          "chardet (>=2.2) ; extra == 'all'",
+          "lxml ; (platform_python_implementation == 'CPython') and extra == 'all'",
+          "chardet (>=2.2) ; extra == 'chardet'",
+          "genshi ; extra == 'genshi'",
+          "lxml ; (platform_python_implementation == 'CPython') and extra == 'lxml'"
+        ],
+        "requires_python": ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
+        "provides_extra": [
+          "all",
+          "chardet",
+          "genshi",
+          "lxml"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/a2/09/77d55d46fd61b4a135c444fc97158ef34a095e5681d0a6c10b75bf356191/sympy-1.14.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
+          "hashes": {
+            "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "sympy",
+        "version": "1.14.0",
+        "dynamic": [
+          "author",
+          "author-email",
+          "classifier",
+          "description",
+          "description-content-type",
+          "home-page",
+          "keywords",
+          "license",
+          "license-file",
+          "project-url",
+          "provides-extra",
+          "requires-dist",
+          "requires-python",
+          "summary"
+        ],
+        "summary": "Computer algebra system (CAS) in Python",
+        "description": "# SymPy\n\n[![pypi version](https://img.shields.io/pypi/v/sympy.svg)](https://pypi.python.org/pypi/sympy)\n[![Join the chat at https://gitter.im/sympy/sympy](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sympy/sympy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)\n[![Zenodo Badge](https://zenodo.org/badge/18918/sympy/sympy.svg)](https://zenodo.org/badge/latestdoi/18918/sympy/sympy)\n[![Downloads](https://pepy.tech/badge/sympy/month)](https://pepy.tech/project/sympy)\n[![GitHub Issues](https://img.shields.io/badge/issue_tracking-github-blue.svg)](https://github.com/sympy/sympy/issues)\n[![Git Tutorial](https://img.shields.io/badge/PR-Welcome-%23FF8300.svg?)](https://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project)\n[![Powered by NumFocus](https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](https://numfocus.org)\n[![Commits since last release](https://img.shields.io/github/commits-since/sympy/sympy/latest.svg?longCache=true&style=flat-square&logo=git&logoColor=fff)](https://github.com/sympy/sympy/releases)\n\n[![SymPy Banner](https://github.com/sympy/sympy/raw/master/banner.svg)](https://sympy.org/)\n\n\nSee the [AUTHORS](AUTHORS) file for the list of authors.\n\nAnd many more people helped on the SymPy mailing list, reported bugs,\nhelped organize SymPy's participation in the Google Summer of Code, the\nGoogle Highly Open Participation Contest, Google Code-In, wrote and\nblogged about SymPy...\n\nLicense: New BSD License (see the [LICENSE](LICENSE) file for details) covers all\nfiles in the sympy repository unless stated otherwise.\n\nOur mailing list is at\n<https://groups.google.com/forum/?fromgroups#!forum/sympy>.\n\nWe have a community chat at [Gitter](https://gitter.im/sympy/sympy). Feel\nfree to ask us anything there. We have a very welcoming and helpful\ncommunity.\n\n## Download\n\nThe recommended installation method is through Anaconda,\n<https://www.anaconda.com/products/distribution>\n\nYou can also get the latest version of SymPy from\n<https://pypi.python.org/pypi/sympy/>\n\nTo get the git version do\n\n    $ git clone https://github.com/sympy/sympy.git\n\nFor other options (tarballs, debs, etc.), see\n<https://docs.sympy.org/dev/install.html>.\n\n## Documentation and Usage\n\nFor in-depth instructions on installation and building the\ndocumentation, see the [SymPy Documentation Style Guide](https://docs.sympy.org/dev/documentation-style-guide.html).\n\nEverything is at:\n\n<https://docs.sympy.org/>\n\nYou can generate everything at the above site in your local copy of\nSymPy by:\n\n    $ cd doc\n    $ make html\n\nThen the docs will be in <span class=\"title-ref\">\\_build/html</span>. If\nyou don't want to read that, here is a short usage:\n\nFrom this directory, start Python and:\n\n``` python\n>>> from sympy import Symbol, cos\n>>> x = Symbol('x')\n>>> e = 1/cos(x)\n>>> print(e.series(x, 0, 10))\n1 + x**2/2 + 5*x**4/24 + 61*x**6/720 + 277*x**8/8064 + O(x**10)\n```\n\nSymPy also comes with a console that is a simple wrapper around the\nclassic python console (or IPython when available) that loads the SymPy\nnamespace and executes some common commands for you.\n\nTo start it, issue:\n\n    $ bin/isympy\n\nfrom this directory, if SymPy is not installed or simply:\n\n    $ isympy\n\nif SymPy is installed.\n\n## Installation\n\nTo install SymPy using PyPI, run the following command:\n\n    $ pip install sympy\n\nTo install SymPy using Anaconda, run the following command:\n\n    $ conda install -c anaconda sympy\n\nTo install SymPy from GitHub source, first clone SymPy using `git`:\n\n    $ git clone https://github.com/sympy/sympy.git\n\nThen, in the `sympy` repository that you cloned, simply run:\n\n    $ pip install .\n\nSee <https://docs.sympy.org/dev/install.html> for more information.\n\n## Contributing\n\nWe welcome contributions from anyone, even if you are new to open\nsource. Please read our [Introduction to Contributing](https://docs.sympy.org/dev/contributing/introduction-to-contributing.html)\npage and the [SymPy Documentation Style Guide](https://docs.sympy.org/dev/documentation-style-guide.html). If you\nare new and looking for some way to contribute, a good place to start is\nto look at the issues tagged [Easy to Fix](https://github.com/sympy/sympy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Easy+to+Fix%22).\n\nPlease note that all participants in this project are expected to follow\nour Code of Conduct. By participating in this project you agree to abide\nby its terms. See [CODE\\_OF\\_CONDUCT.md](CODE_OF_CONDUCT.md).\n\n## Tests\n\nTo execute all tests, run:\n\n    $./setup.py test\n\nin the current directory.\n\nFor the more fine-grained running of tests or doctests, use `bin/test`\nor respectively `bin/doctest`. The master branch is automatically tested\nby GitHub Actions.\n\nTo test pull requests, use\n[sympy-bot](https://github.com/sympy/sympy-bot).\n\n## Regenerate Experimental <span class=\"title-ref\">LaTeX</span> Parser/Lexer\n\nThe parser and lexer were generated with the [ANTLR4](http://antlr4.org)\ntoolchain in `sympy/parsing/latex/_antlr` and checked into the repo.\nPresently, most users should not need to regenerate these files, but\nif you plan to work on this feature, you will need the `antlr4`\ncommand-line tool (and you must ensure that it is in your `PATH`).\nOne way to get it is:\n\n    $ conda install -c conda-forge antlr=4.11.1\n\nAlternatively, follow the instructions on the ANTLR website and download\nthe `antlr-4.11.1-complete.jar`. Then export the `CLASSPATH` as instructed\nand instead of creating `antlr4` as an alias, make it an executable file\nwith the following contents:\n``` bash\n#!/bin/bash\njava -jar /usr/local/lib/antlr-4.11.1-complete.jar \"$@\"\n```\n\nAfter making changes to `sympy/parsing/latex/LaTeX.g4`, run:\n\n    $ ./setup.py antlr\n\n## Clean\n\nTo clean everything (thus getting the same tree as in the repository):\n\n    $ git clean -Xdf\n\nwhich will clear everything ignored by `.gitignore`, and:\n\n    $ git clean -df\n\nto clear all untracked files. You can revert the most recent changes in\ngit with:\n\n    $ git reset --hard\n\nWARNING: The above commands will all clear changes you may have made,\nand you will lose them forever. Be sure to check things with `git\nstatus`, `git diff`, `git clean -Xn`, and `git clean -n` before doing any\nof those.\n\n## Bugs\n\nOur issue tracker is at <https://github.com/sympy/sympy/issues>. Please\nreport any bugs that you find. Or, even better, fork the repository on\nGitHub and create a pull request. We welcome all changes, big or small,\nand we will help you make the pull request if you are new to git (just\nask on our mailing list or Gitter Channel). If you further have any queries, you can find answers\non Stack Overflow using the [sympy](https://stackoverflow.com/questions/tagged/sympy) tag.\n\n## Brief History\n\nSymPy was started by Ondřej Čertík in 2005, he wrote some code during\nthe summer, then he wrote some more code during summer 2006. In February\n2007, Fabian Pedregosa joined the project and helped fix many things,\ncontributed documentation, and made it alive again. 5 students (Mateusz\nPaprocki, Brian Jorgensen, Jason Gedge, Robert Schwarz, and Chris Wu)\nimproved SymPy incredibly during summer 2007 as part of the Google\nSummer of Code. Pearu Peterson joined the development during the summer\n2007 and he has made SymPy much more competitive by rewriting the core\nfrom scratch, which has made it from 10x to 100x faster. Jurjen N.E. Bos\nhas contributed pretty-printing and other patches. Fredrik Johansson has\nwritten mpmath and contributed a lot of patches.\n\nSymPy has participated in every Google Summer of Code since 2007. You\ncan see <https://github.com/sympy/sympy/wiki#google-summer-of-code> for\nfull details. Each year has improved SymPy by bounds. Most of SymPy's\ndevelopment has come from Google Summer of Code students.\n\nIn 2011, Ondřej Čertík stepped down as lead developer, with Aaron\nMeurer, who also started as a Google Summer of Code student, taking his\nplace. Ondřej Čertík is still active in the community but is too busy\nwith work and family to play a lead development role.\n\nSince then, a lot more people have joined the development and some\npeople have also left. You can see the full list in doc/src/aboutus.rst,\nor online at:\n\n<https://docs.sympy.org/dev/aboutus.html#sympy-development-team>\n\nThe git history goes back to 2007 when development moved from svn to hg.\nTo see the history before that point, look at\n<https://github.com/sympy/sympy-old>.\n\nYou can use git to see the biggest developers. The command:\n\n    $ git shortlog -ns\n\nwill show each developer, sorted by commits to the project. The command:\n\n    $ git shortlog -ns --since=\"1 year\"\n\nwill show the top developers from the last year.\n\n## Citation\n\nTo cite SymPy in publications use\n\n> Meurer A, Smith CP, Paprocki M, Čertík O, Kirpichev SB, Rocklin M,\n> Kumar A, Ivanov S, Moore JK, Singh S, Rathnayake T, Vig S, Granger BE,\n> Muller RP, Bonazzi F, Gupta H, Vats S, Johansson F, Pedregosa F, Curry\n> MJ, Terrel AR, Roučka Š, Saboo A, Fernando I, Kulal S, Cimrman R,\n> Scopatz A. (2017) SymPy: symbolic computing in Python. *PeerJ Computer\n> Science* 3:e103 <https://doi.org/10.7717/peerj-cs.103>\n\nA BibTeX entry for LaTeX users is\n\n``` bibtex\n@article{10.7717/peerj-cs.103,\n title = {SymPy: symbolic computing in Python},\n author = {Meurer, Aaron and Smith, Christopher P. and Paprocki, Mateusz and \\v{C}ert\\'{i}k, Ond\\v{r}ej and Kirpichev, Sergey B. and Rocklin, Matthew and Kumar, Amit and Ivanov, Sergiu and Moore, Jason K. and Singh, Sartaj and Rathnayake, Thilina and Vig, Sean and Granger, Brian E. and Muller, Richard P. and Bonazzi, Francesco and Gupta, Harsh and Vats, Shivam and Johansson, Fredrik and Pedregosa, Fabian and Curry, Matthew J. and Terrel, Andy R. and Rou\\v{c}ka, \\v{S}t\\v{e}p\\'{a}n and Saboo, Ashutosh and Fernando, Isuru and Kulal, Sumith and Cimrman, Robert and Scopatz, Anthony},\n year = 2017,\n month = Jan,\n keywords = {Python, Computer algebra system, Symbolics},\n abstract = {\n            SymPy is an open-source computer algebra system written in pure Python. It is built with a focus on extensibility and ease of use, through both interactive and programmatic applications. These characteristics have led SymPy to become a popular symbolic library for the scientific Python ecosystem. This paper presents the architecture of SymPy, a description of its features, and a discussion of select submodules. The supplementary material provides additional examples and further outlines details of the architecture and features of SymPy.\n         },\n volume = 3,\n pages = {e103},\n journal = {PeerJ Computer Science},\n issn = {2376-5992},\n url = {https://doi.org/10.7717/peerj-cs.103},\n doi = {10.7717/peerj-cs.103}\n}\n```\n\nSymPy is BSD licensed, so you are free to use it whatever you like, be\nit academic, commercial, creating forks or derivatives, as long as you\ncopy the BSD statement if you redistribute it (see the LICENSE file for\ndetails). That said, although not required by the SymPy license, if it\nis convenient for you, please cite SymPy when using it in your work and\nalso consider contributing all your changes back, so that we can\nincorporate it and all of us will benefit in the end.\n",
+        "description_content_type": "text/markdown",
+        "keywords": [
+          "Math",
+          "CAS"
+        ],
+        "home_page": "https://sympy.org",
+        "author": "SymPy development team",
+        "author_email": "sympy@googlegroups.com",
+        "license": "BSD",
+        "license_file": [
+          "LICENSE",
+          "AUTHORS"
+        ],
+        "classifier": [
+          "License :: OSI Approved :: BSD License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Topic :: Scientific/Engineering",
+          "Topic :: Scientific/Engineering :: Mathematics",
+          "Topic :: Scientific/Engineering :: Physics",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy"
+        ],
+        "requires_dist": [
+          "mpmath<1.4,>=1.1.0",
+          "pytest>=7.1.0; extra == \"dev\"",
+          "hypothesis>=6.70.0; extra == \"dev\""
+        ],
+        "requires_python": ">=3.9",
+        "project_url": [
+          "Source, https://github.com/sympy/sympy"
+        ],
+        "provides_extra": [
+          "dev"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/19/29/ce5d2dcb095debb3bed0654950c45207a7d138e194abef0ded4b86de1dc1/pyperf-2.9.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=215673fb60f3fbbc6c7a90b609b0806d8466fded8dd502bf5731e2b92506076e",
+          "hashes": {
+            "sha256": "215673fb60f3fbbc6c7a90b609b0806d8466fded8dd502bf5731e2b92506076e"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.2",
+        "name": "pyperf",
+        "version": "2.9.0",
+        "summary": "Python module to run and analyze benchmarks",
+        "description": "******\npyperf\n******\n\n.. image:: https://img.shields.io/pypi/v/pyperf.svg\n   :alt: Latest release on the Python Cheeseshop (PyPI)\n   :target: https://pypi.python.org/pypi/pyperf\n\n.. image:: https://github.com/psf/pyperf/actions/workflows/build.yml/badge.svg\n   :alt: Build status of pyperf on GitHub Actions\n   :target: https://github.com/psf/pyperf/actions\n\nThe Python ``pyperf`` module is a toolkit to write, run and analyze benchmarks.\n\nFeatures\n========\n\n* Simple API to run reliable benchmarks\n* Automatically calibrate a benchmark for a time budget.\n* Spawn multiple worker processes.\n* Compute the mean and standard deviation.\n* Detect if a benchmark result seems unstable.\n* JSON format to store benchmark results.\n* Support multiple units: seconds, bytes and integer.\n\n\nUsage\n=====\n\nTo `run a benchmark`_ use the ``pyperf timeit`` command (result written into\n``bench.json``)::\n\n    $ python3 -m pyperf timeit '[1,2]*1000' -o bench.json\n    .....................\n    Mean +- std dev: 4.22 us +- 0.08 us\n\nOr write a benchmark script ``bench.py``:\n\n.. code:: python\n\n    #!/usr/bin/env python3\n    import pyperf\n\n    runner = pyperf.Runner()\n    runner.timeit(name=\"sort a sorted list\",\n                  stmt=\"sorted(s, key=f)\",\n                  setup=\"f = lambda x: x; s = list(range(1000))\")\n\nSee `the API docs`_ for full details on the ``timeit`` function and the\n``Runner`` class. To run the script and dump the results into a file named\n``bench.json``::\n\n    $ python3 bench.py -o bench.json\n\nTo `analyze benchmark results`_ use the ``pyperf stats`` command::\n\n    $ python3 -m pyperf stats telco.json\n    Total duration: 29.2 sec\n    Start date: 2016-10-21 03:14:19\n    End date: 2016-10-21 03:14:53\n    Raw value minimum: 177 ms\n    Raw value maximum: 183 ms\n\n    Number of calibration run: 1\n    Number of run with values: 40\n    Total number of run: 41\n\n    Number of warmup per run: 1\n    Number of value per run: 3\n    Loop iterations per value: 8\n    Total number of values: 120\n\n    Minimum:         22.1 ms\n    Median +- MAD:   22.5 ms +- 0.1 ms\n    Mean +- std dev: 22.5 ms +- 0.2 ms\n    Maximum:         22.9 ms\n\n      0th percentile: 22.1 ms (-2% of the mean) -- minimum\n      5th percentile: 22.3 ms (-1% of the mean)\n     25th percentile: 22.4 ms (-1% of the mean) -- Q1\n     50th percentile: 22.5 ms (-0% of the mean) -- median\n     75th percentile: 22.7 ms (+1% of the mean) -- Q3\n     95th percentile: 22.9 ms (+2% of the mean)\n    100th percentile: 22.9 ms (+2% of the mean) -- maximum\n\n    Number of outlier (out of 22.0 ms..23.0 ms): 0\n\n\nThere's also:\n\n* ``pyperf compare_to`` command tests if a difference is\n  significant. It supports comparison between multiple benchmark suites (made\n  of multiple benchmarks)\n  ::\n\n    $ python3 -m pyperf compare_to --table mult_list_py36.json mult_list_py37.json mult_list_py38.json\n    +----------------+----------------+-----------------------+-----------------------+\n    | Benchmark      | mult_list_py36 | mult_list_py37        | mult_list_py38        |\n    +================+================+=======================+=======================+\n    | [1]*1000       | 2.13 us        | 2.09 us: 1.02x faster | not significant       |\n    +----------------+----------------+-----------------------+-----------------------+\n    | [1,2]*1000     | 3.70 us        | 5.28 us: 1.42x slower | 3.18 us: 1.16x faster |\n    +----------------+----------------+-----------------------+-----------------------+\n    | [1,2,3]*1000   | 4.61 us        | 6.05 us: 1.31x slower | 4.17 us: 1.11x faster |\n    +----------------+----------------+-----------------------+-----------------------+\n    | Geometric mean | (ref)          | 1.22x slower          | 1.09x faster          |\n    +----------------+----------------+-----------------------+-----------------------+\n\n* ``pyperf system tune`` command to tune your system to run stable benchmarks.\n* Automatically collect metadata on the computer and the benchmark:\n  use the ``pyperf metadata`` command to display them, or the\n  ``pyperf collect_metadata`` command to manually collect them.\n* ``--track-memory`` and ``--tracemalloc`` options to track\n  the memory usage of a benchmark.\n\n\nQuick Links\n===========\n\n* `pyperf documentation\n  <https://pyperf.readthedocs.io/>`_\n* `pyperf project homepage at GitHub\n  <https://github.com/psf/pyperf>`_ (code, bugs)\n* `Download latest pyperf release at the Python Cheeseshop (PyPI)\n  <https://pypi.python.org/pypi/pyperf>`_\n\nCommand to install pyperf on Python 3::\n\n    python3 -m pip install pyperf\n\npyperf requires Python 3.7 or newer.\n\nPython 2.7 users can use pyperf 1.7.1 which is the last version compatible with\nPython 2.7.\n\npyperf is distributed under the MIT license.\n\nThe pyperf project is covered by the `PSF Code of Conduct\n<https://www.python.org/psf/codeofconduct/>`_.\n\n.. _run a benchmark: https://pyperf.readthedocs.io/en/latest/run_benchmark.html\n.. _the API docs: http://pyperf.readthedocs.io/en/latest/api.html#Runner.timeit\n.. _analyze benchmark results: https://pyperf.readthedocs.io/en/latest/analyze.html\n",
+        "description_content_type": "text/x-rst",
+        "author_email": "Victor Stinner <vstinner@redhat.com>",
+        "maintainer_email": "Dong-hee Na <donghee.na@python.org>",
+        "license": "MIT",
+        "license_file": [
+          "COPYING"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: MIT License",
+          "Natural Language :: English",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Topic :: Software Development :: Libraries :: Python Modules"
+        ],
+        "requires_dist": [
+          "psutil>=5.9.0",
+          "tox; extra == \"dev\""
+        ],
+        "requires_python": ">=3.9",
+        "project_url": [
+          "Homepage, https://github.com/psf/pyperf"
+        ],
+        "provides_extra": [
+          "dev"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
+          "hashes": {
+            "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.1",
+        "name": "mpmath",
+        "version": "1.3.0",
+        "summary": "Python library for arbitrary-precision floating-point arithmetic",
+        "description": "mpmath\n======\n\n|pypi version| |Build status| |Code coverage status| |Zenodo Badge|\n\n.. |pypi version| image:: https://img.shields.io/pypi/v/mpmath.svg\n   :target: https://pypi.python.org/pypi/mpmath\n.. |Build status| image:: https://github.com/fredrik-johansson/mpmath/workflows/test/badge.svg\n   :target: https://github.com/fredrik-johansson/mpmath/actions?workflow=test\n.. |Code coverage status| image:: https://codecov.io/gh/fredrik-johansson/mpmath/branch/master/graph/badge.svg\n   :target: https://codecov.io/gh/fredrik-johansson/mpmath\n.. |Zenodo Badge| image:: https://zenodo.org/badge/2934512.svg\n   :target: https://zenodo.org/badge/latestdoi/2934512\n\nA Python library for arbitrary-precision floating-point arithmetic.\n\nWebsite: http://mpmath.org/\nMain author: Fredrik Johansson <fredrik.johansson@gmail.com>\n\nMpmath is free software released under the New BSD License (see the\nLICENSE file for details)\n\n0. History and credits\n----------------------\n\nThe following people (among others) have contributed major patches\nor new features to mpmath:\n\n* Pearu Peterson <pearu.peterson@gmail.com>\n* Mario Pernici <mario.pernici@mi.infn.it>\n* Ondrej Certik <ondrej@certik.cz>\n* Vinzent Steinberg <vinzent.steinberg@gmail.cm>\n* Nimish Telang <ntelang@gmail.com>\n* Mike Taschuk <mtaschuk@ece.ualberta.ca>\n* Case Van Horsen <casevh@gmail.com>\n* Jorn Baayen <jorn.baayen@gmail.com>\n* Chris Smith <smichr@gmail.com>\n* Juan Arias de Reyna <arias@us.es>\n* Ioannis Tziakos <itziakos@gmail.com>\n* Aaron Meurer <asmeurer@gmail.com>\n* Stefan Krastanov <krastanov.stefan@gmail.com>\n* Ken Allen <ken.allen@sbcglobal.net>\n* Timo Hartmann <thartmann15@gmail.com>\n* Sergey B Kirpichev <skirpichev@gmail.com>\n* Kris Kuhlman <kristopher.kuhlman@gmail.com>\n* Paul Masson <paulmasson@analyticphysics.com>\n* Michael Kagalenko <michael.kagalenko@gmail.com>\n* Jonathan Warner <warnerjon12@gmail.com>\n* Max Gaukler <max.gaukler@fau.de>\n* Guillermo Navas-Palencia <g.navas.palencia@gmail.com>\n* Nike Dattani <nike@hpqc.org>\n\nNumerous other people have contributed by reporting bugs,\nrequesting new features, or suggesting improvements to the\ndocumentation.\n\nFor a detailed changelog, including individual contributions,\nsee the CHANGES file.\n\nFredrik's work on mpmath during summer 2008 was sponsored by Google\nas part of the Google Summer of Code program.\n\nFredrik's work on mpmath during summer 2009 was sponsored by the\nAmerican Institute of Mathematics under the support of the National Science\nFoundation Grant No. 0757627 (FRG: L-functions and Modular Forms).\n\nAny opinions, findings, and conclusions or recommendations expressed in this\nmaterial are those of the author(s) and do not necessarily reflect the\nviews of the sponsors.\n\nCredit also goes to:\n\n* The authors of the GMP library and the Python wrapper\n  gmpy, enabling mpmath to become much faster at\n  high precision\n* The authors of MPFR, pari/gp, MPFUN, and other arbitrary-\n  precision libraries, whose documentation has been helpful\n  for implementing many of the algorithms in mpmath\n* Wikipedia contributors; Abramowitz & Stegun; Gradshteyn & Ryzhik;\n  Wolfram Research for MathWorld and the Wolfram Functions site.\n  These are the main references used for special functions\n  implementations.\n* George Brandl for developing the Sphinx documentation tool\n  used to build mpmath's documentation\n\nRelease history:\n\n* Version 1.3.0 released on March 7, 2023\n* Version 1.2.0 released on February 1, 2021\n* Version 1.1.0 released on December 11, 2018\n* Version 1.0.0 released on September 27, 2017\n* Version 0.19 released on June 10, 2014\n* Version 0.18 released on December 31, 2013\n* Version 0.17 released on February 1, 2011\n* Version 0.16 released on September 24, 2010\n* Version 0.15 released on June 6, 2010\n* Version 0.14 released on February 5, 2010\n* Version 0.13 released on August 13, 2009\n* Version 0.12 released on June 9, 2009\n* Version 0.11 released on January 26, 2009\n* Version 0.10 released on October 15, 2008\n* Version 0.9 released on August 23, 2008\n* Version 0.8 released on April 20, 2008\n* Version 0.7 released on March 12, 2008\n* Version 0.6 released on January 13, 2008\n* Version 0.5 released on November 24, 2007\n* Version 0.4 released on November 3, 2007\n* Version 0.3 released on October 5, 2007\n* Version 0.2 released on October 2, 2007\n* Version 0.1 released on September 27, 2007\n\n1. Download & installation\n--------------------------\n\nMpmath requires Python 2.7 or 3.5 (or later versions). It has been tested\nwith CPython 2.7, 3.5 through 3.7 and for PyPy.\n\nThe latest release of mpmath can be downloaded from the mpmath\nwebsite and from https://github.com/fredrik-johansson/mpmath/releases\n\nIt should also be available in the Python Package Index at\nhttps://pypi.python.org/pypi/mpmath\n\nTo install latest release of Mpmath with pip, simply run\n\n``pip install mpmath``\n\nOr unpack the mpmath archive and run\n\n``python setup.py install``\n\nMpmath can also be installed using\n\n``python -m easy_install mpmath``\n\nThe latest development code is available from\nhttps://github.com/fredrik-johansson/mpmath\n\nSee the main documentation for more detailed instructions.\n\n2. Running tests\n----------------\n\nThe unit tests in mpmath/tests/ can be run via the script\nruntests.py, but it is recommended to run them with py.test\n(https://pytest.org/), especially\nto generate more useful reports in case there are failures.\n\nYou may also want to check out the demo scripts in the demo\ndirectory.\n\nThe master branch is automatically tested by Travis CI.\n\n3. Documentation\n----------------\n\nDocumentation in reStructuredText format is available in the\ndoc directory included with the source package. These files\nare human-readable, but can be compiled to prettier HTML using\nthe build.py script (requires Sphinx, http://sphinx.pocoo.org/).\n\nSee setup.txt in the documentation for more information.\n\nThe most recent documentation is also available in HTML format:\n\nhttp://mpmath.org/doc/current/\n\n4. Known problems\n-----------------\n\nMpmath is a work in progress. Major issues include:\n\n* Some functions may return incorrect values when given extremely\n  large arguments or arguments very close to singularities.\n\n* Directed rounding works for arithmetic operations. It is implemented\n  heuristically for other operations, and their results may be off by one\n  or two units in the last place (even if otherwise accurate).\n\n* Some IEEE 754 features are not available. Inifinities and NaN are\n  partially supported; denormal rounding is currently not available\n  at all.\n\n* The interface for switching precision and rounding is not finalized.\n  The current method is not threadsafe.\n\n5. Help and bug reports\n-----------------------\n\nGeneral questions and comments can be sent to the mpmath mailinglist,\nmpmath@googlegroups.com\n\nYou can also report bugs and send patches to the mpmath issue tracker,\nhttps://github.com/fredrik-johansson/mpmath/issues\n",
+        "home_page": "http://mpmath.org/",
+        "author": "Fredrik Johansson",
+        "author_email": "fredrik.johansson@gmail.com",
+        "license": "BSD",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "License :: OSI Approved :: BSD License",
+          "Topic :: Scientific/Engineering :: Mathematics",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 2",
+          "Programming Language :: Python :: 2.7",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.5",
+          "Programming Language :: Python :: 3.6",
+          "Programming Language :: Python :: 3.7",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy"
+        ],
+        "requires_dist": [
+          "pytest (>=4.6) ; extra == 'develop'",
+          "pycodestyle ; extra == 'develop'",
+          "pytest-cov ; extra == 'develop'",
+          "codecov ; extra == 'develop'",
+          "wheel ; extra == 'develop'",
+          "sphinx ; extra == 'docs'",
+          "gmpy2 (>=2.1.0a4) ; (platform_python_implementation != \"PyPy\") and extra == 'gmpy'",
+          "pytest (>=4.6) ; extra == 'tests'"
+        ],
+        "project_url": [
+          "Source, https://github.com/fredrik-johansson/mpmath",
+          "Tracker, https://github.com/fredrik-johansson/mpmath/issues",
+          "Documentation, http://mpmath.org/doc/current/"
+        ],
+        "provides_extra": [
+          "develop",
+          "docs",
+          "gmpy",
+          "tests"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/c0/1b/54f4ad77cd8a584fa70746c47df988e002cf1ee1eba43364d46f87803647/asgiref-3.12.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=fe386d1c2bff7259ea95929266d12a8cf9a8b5a1c2598402967d8792e7a7c094",
+          "hashes": {
+            "sha256": "fe386d1c2bff7259ea95929266d12a8cf9a8b5a1c2598402967d8792e7a7c094"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "asgiref",
+        "version": "3.12.1",
+        "dynamic": [
+          "license-file"
+        ],
+        "summary": "ASGI specs, helper code, and adapters",
+        "description": "asgiref\n=======\n\n.. image:: https://github.com/django/asgiref/actions/workflows/tests.yml/badge.svg\n    :target: https://github.com/django/asgiref/actions/workflows/tests.yml\n\n.. image:: https://img.shields.io/pypi/v/asgiref.svg\n    :target: https://pypi.python.org/pypi/asgiref\n\nASGI is a standard for Python asynchronous web apps and servers to communicate\nwith each other, and positioned as an asynchronous successor to WSGI. You can\nread more at https://asgi.readthedocs.io/en/latest/\n\nThis package includes ASGI base libraries, such as:\n\n* Sync-to-async and async-to-sync function wrappers, ``asgiref.sync``\n* Server base classes, ``asgiref.server``\n* A WSGI-to-ASGI adapter, in ``asgiref.wsgi``\n\n\nFunction wrappers\n-----------------\n\nThese allow you to wrap or decorate async or sync functions to call them from\nthe other style (so you can call async functions from a synchronous thread,\nor vice-versa).\n\nIn particular:\n\n* AsyncToSync lets a synchronous subthread stop and wait while the async\n  function is called on the main thread's event loop, and then control is\n  returned to the thread when the async function is finished.\n\n* SyncToAsync lets async code call a synchronous function, which is run in\n  a threadpool and control returned to the async coroutine when the synchronous\n  function completes.\n\nThe idea is to make it easier to call synchronous APIs from async code and\nasynchronous APIs from synchronous code so it's easier to transition code from\none style to the other. In the case of Channels, we wrap the (synchronous)\nDjango view system with SyncToAsync to allow it to run inside the (asynchronous)\nASGI server.\n\nNote that exactly what threads things run in is very specific, and aimed to\nkeep maximum compatibility with old synchronous code. See\n\"Synchronous code & Threads\" below for a full explanation. By default,\n``sync_to_async`` will run all synchronous code in the program in the same\nthread for safety reasons; you can disable this for more performance with\n``@sync_to_async(thread_sensitive=False)``, but make sure that your code does\nnot rely on anything bound to threads (like database connections) when you do.\n\n\nThreadlocal replacement\n-----------------------\n\nThis is a drop-in replacement for ``threading.local`` that works with both\nthreads and asyncio Tasks. Even better, it will proxy values through from a\ntask-local context to a thread-local context when you use ``sync_to_async``\nto run things in a threadpool, and vice-versa for ``async_to_sync``.\n\nIf you instead want true thread- and task-safety, you can set\n``thread_critical`` on the Local object to ensure this instead.\n\n\nServer base classes\n-------------------\n\nIncludes a ``StatelessServer`` class which provides all the hard work of\nwriting a stateless server (as in, does not handle direct incoming sockets\nbut instead consumes external streams or sockets to work out what is happening).\n\nAn example of such a server would be a chatbot server that connects out to\na central chat server and provides a \"connection scope\" per user chatting to\nit. There's only one actual connection, but the server has to separate things\ninto several scopes for easier writing of the code.\n\nYou can see an example of this being used in `frequensgi <https://github.com/andrewgodwin/frequensgi>`_.\n\n\nWSGI-to-ASGI adapter\n--------------------\n\nAllows you to wrap a WSGI application so it appears as a valid ASGI application.\n\nSimply wrap it around your WSGI application like so::\n\n    asgi_application = WsgiToAsgi(wsgi_application)\n\nThe WSGI application will be run in a synchronous threadpool, and the wrapped\nASGI application will be one that accepts ``http`` class messages.\n\nPlease note that not all extended features of WSGI may be supported (such as\nfile handles for incoming POST bodies).\n\n\nDependencies\n------------\n\n``asgiref`` requires Python 3.10 or higher.\n\n\nContributing\n------------\n\nPlease refer to the\n`main Channels contributing docs <https://github.com/django/channels/blob/master/CONTRIBUTING.rst>`_.\n\n\nTesting\n'''''''\n\nTo run tests, make sure you have installed the ``tests`` extra with the package::\n\n    cd asgiref/\n    pip install -e .[tests]\n    pytest\n\n\nBuilding the documentation\n''''''''''''''''''''''''''\n\nThe documentation uses `Sphinx <http://www.sphinx-doc.org>`_::\n\n    cd asgiref/docs/\n    pip install sphinx\n\nTo build the docs, you can use the default tools::\n\n    sphinx-build -b html . _build/html  # or `make html`, if you've got make set up\n    cd _build/html\n    python -m http.server\n\n...or you can use ``sphinx-autobuild`` to run a server and rebuild/reload\nyour documentation changes automatically::\n\n    pip install sphinx-autobuild\n    sphinx-autobuild . _build/html\n\n\nReleasing\n'''''''''\n\nTo release, first add details to CHANGELOG.txt and update the version number in ``asgiref/__init__.py``.\n\nThen, build and push the packages::\n\n    python -m build\n    twine upload dist/*\n    rm -r asgiref.egg-info dist\n\n\nImplementation Details\n----------------------\n\nSynchronous code & threads\n''''''''''''''''''''''''''\n\nThe ``asgiref.sync`` module provides two wrappers that let you go between\nasynchronous and synchronous code at will, while taking care of the rough edges\nfor you.\n\nUnfortunately, the rough edges are numerous, and the code has to work especially\nhard to keep things in the same thread as much as possible. Notably, the\nrestrictions we are working with are:\n\n* All synchronous code called through ``SyncToAsync`` and marked with\n  ``thread_sensitive`` should run in the same thread as each other (and if the\n  outer layer of the program is synchronous, the main thread)\n\n* If a thread already has a running async loop, ``AsyncToSync`` can't run things\n  on that loop if it's blocked on synchronous code that is above you in the\n  call stack.\n\nThe first compromise you get to might be that ``thread_sensitive`` code should\njust run in the same thread and not spawn in a sub-thread, fulfilling the first\nrestriction, but that immediately runs you into the second restriction.\n\nThe only real solution is to essentially have a variant of ThreadPoolExecutor\nthat executes any ``thread_sensitive`` code on the outermost synchronous\nthread - either the main thread, or a single spawned subthread.\n\nThis means you now have two basic states:\n\n* If the outermost layer of your program is synchronous, then all async code\n  run through ``AsyncToSync`` will run in a per-call event loop in arbitrary\n  sub-threads, while all ``thread_sensitive`` code will run in the main thread.\n\n* If the outermost layer of your program is asynchronous, then all async code\n  runs on the main thread's event loop, and all ``thread_sensitive`` synchronous\n  code will run in a single shared sub-thread.\n\nCrucially, this means that in both cases there is a thread which is a shared\nresource that all ``thread_sensitive`` code must run on, and there is a chance\nthat this thread is currently blocked on its own ``AsyncToSync`` call. Thus,\n``AsyncToSync`` needs to act as an executor for thread code while it's blocking.\n\nThe ``CurrentThreadExecutor`` class provides this functionality; rather than\nsimply waiting on a Future, you can call its ``run_until_future`` method and\nit will run submitted code until that Future is done. This means that code\ninside the call can then run code on your thread.\n\n\nMaintenance and Security\n------------------------\n\nTo report security issues, please contact security@djangoproject.com. For GPG\nsignatures and more security process information, see\nhttps://docs.djangoproject.com/en/dev/internals/security/.\n\nTo report bugs or request new features, please open a new GitHub issue.\n\nThis repository is part of the Channels project. For the shepherd and maintenance team, please see the\n`main Channels readme <https://github.com/django/channels/blob/master/README.rst>`_.\n",
+        "home_page": "https://github.com/django/asgiref/",
+        "author": "Django Software Foundation",
+        "author_email": "foundation@djangoproject.com",
+        "license": "BSD-3-Clause",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Environment :: Web Environment",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: BSD License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: Free Threading :: 2 - Beta",
+          "Topic :: Internet :: WWW/HTTP"
+        ],
+        "requires_dist": [
+          "typing_extensions>=4; python_version < \"3.11\"",
+          "pytest; extra == \"tests\"",
+          "pytest-asyncio; extra == \"tests\"",
+          "mypy>=1.14.0; extra == \"mypy\""
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Documentation, https://asgi.readthedocs.io/",
+          "Further Documentation, https://docs.djangoproject.com/en/stable/topics/async/#async-adapter-functions",
+          "Changelog, https://github.com/django/asgiref/blob/master/CHANGELOG.txt"
+        ],
+        "provides_extra": [
+          "tests",
+          "mypy"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/b5/70/5d8df3b09e25bce090399cf48e452d25c935ab72dad19406c77f4e828045/psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=076a2d2f923fd4821644f5ba89f059523da90dc9014e85f8e45a5774ca5bc6f9",
+          "hashes": {
+            "sha256": "076a2d2f923fd4821644f5ba89f059523da90dc9014e85f8e45a5774ca5bc6f9"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.1",
+        "name": "psutil",
+        "version": "7.2.2",
+        "platform": [
+          "Platform Independent"
+        ],
+        "summary": "Cross-platform lib for process and system monitoring.",
+        "description": "|  |downloads| |stars| |forks| |contributors| |packages|\n|  |version| |license| |stackoverflow| |twitter| |tidelift|\n|  |github-actions-wheels| |github-actions-bsd|\n\n.. |downloads| image:: https://img.shields.io/pypi/dm/psutil.svg\n    :target: https://clickpy.clickhouse.com/dashboard/psutil\n    :alt: Downloads\n\n.. |stars| image:: https://img.shields.io/github/stars/giampaolo/psutil.svg\n    :target: https://github.com/giampaolo/psutil/stargazers\n    :alt: Github stars\n\n.. |forks| image:: https://img.shields.io/github/forks/giampaolo/psutil.svg\n    :target: https://github.com/giampaolo/psutil/network/members\n    :alt: Github forks\n\n.. |contributors| image:: https://img.shields.io/github/contributors/giampaolo/psutil.svg\n    :target: https://github.com/giampaolo/psutil/graphs/contributors\n    :alt: Contributors\n\n.. |stackoverflow| image:: https://img.shields.io/badge/stackoverflow-Ask%20questions-blue.svg\n    :target: https://stackoverflow.com/questions/tagged/psutil\n    :alt: Stackoverflow\n\n.. |github-actions-wheels| image:: https://img.shields.io/github/actions/workflow/status/giampaolo/psutil/.github/workflows/build.yml.svg?label=Linux%2C%20macOS%2C%20Windows\n    :target: https://github.com/giampaolo/psutil/actions?query=workflow%3Abuild\n    :alt: Linux, macOS, Windows\n\n.. |github-actions-bsd| image:: https://img.shields.io/github/actions/workflow/status/giampaolo/psutil/.github/workflows/bsd.yml.svg?label=FreeBSD,%20NetBSD,%20OpenBSD\n    :target: https://github.com/giampaolo/psutil/actions?query=workflow%3Absd-tests\n    :alt: FreeBSD, NetBSD, OpenBSD\n\n.. |version| image:: https://img.shields.io/pypi/v/psutil.svg?label=pypi\n    :target: https://pypi.org/project/psutil\n    :alt: Latest version\n\n.. |packages| image:: https://repology.org/badge/tiny-repos/python:psutil.svg\n    :target: https://repology.org/metapackage/python:psutil/versions\n    :alt: Binary packages\n\n.. |license| image:: https://img.shields.io/pypi/l/psutil.svg\n    :target: https://github.com/giampaolo/psutil/blob/master/LICENSE\n    :alt: License\n\n.. |twitter| image:: https://img.shields.io/twitter/follow/grodola?style=flat\n    :target: https://twitter.com/grodola\n    :alt: Twitter Follow\n\n.. |tidelift| image:: https://tidelift.com/badges/github/giampaolo/psutil?style=flat\n    :target: https://tidelift.com/subscription/pkg/pypi-psutil?utm_source=pypi-psutil&utm_medium=referral&utm_campaign=readme\n    :alt: Tidelift\n\n-----\n\nQuick links\n===========\n\n- `Home page <https://github.com/giampaolo/psutil>`_\n- `Install <https://github.com/giampaolo/psutil/blob/master/INSTALL.rst>`_\n- `Documentation <http://psutil.readthedocs.io>`_\n- `Download <https://pypi.org/project/psutil/#files>`_\n- `Forum <http://groups.google.com/group/psutil/topics>`_\n- `StackOverflow <https://stackoverflow.com/questions/tagged/psutil>`_\n- `Blog <https://gmpy.dev/tags/psutil>`_\n- `What's new <https://github.com/giampaolo/psutil/blob/master/HISTORY.rst>`_\n\n\nSummary\n=======\n\npsutil (process and system utilities) is a cross-platform library for\nretrieving information on **running processes** and **system utilization**\n(CPU, memory, disks, network, sensors) in Python.\nIt is useful mainly for **system monitoring**, **profiling and limiting process\nresources** and **management of running processes**.\nIt implements many functionalities offered by classic UNIX command line tools\nsuch as *ps, top, iotop, lsof, netstat, ifconfig, free* and others.\npsutil currently supports the following platforms:\n\n- **Linux**\n- **Windows**\n- **macOS**\n- **FreeBSD, OpenBSD**, **NetBSD**\n- **Sun Solaris**\n- **AIX**\n\nSupported Python versions are cPython 3.6+ and `PyPy <https://pypy.org/>`__.\nLatest psutil version supporting Python 2.7 is\n`psutil 6.1.1 <https://pypi.org/project/psutil/6.1.1/>`__.\n\nExample usages\n==============\n\nThis represents pretty much the whole psutil API.\n\nCPU\n---\n\n.. code-block:: python\n\n    >>> import psutil\n    >>>\n    >>> psutil.cpu_times()\n    scputimes(user=3961.46, nice=169.729, system=2150.659, idle=16900.540, iowait=629.59, irq=0.0, softirq=19.42, steal=0.0, guest=0, guest_nice=0.0)\n    >>>\n    >>> for x in range(3):\n    ...     psutil.cpu_percent(interval=1)\n    ...\n    4.0\n    5.9\n    3.8\n    >>>\n    >>> for x in range(3):\n    ...     psutil.cpu_percent(interval=1, percpu=True)\n    ...\n    [4.0, 6.9, 3.7, 9.2]\n    [7.0, 8.5, 2.4, 2.1]\n    [1.2, 9.0, 9.9, 7.2]\n    >>>\n    >>> for x in range(3):\n    ...     psutil.cpu_times_percent(interval=1, percpu=False)\n    ...\n    scputimes(user=1.5, nice=0.0, system=0.5, idle=96.5, iowait=1.5, irq=0.0, softirq=0.0, steal=0.0, guest=0.0, guest_nice=0.0)\n    scputimes(user=1.0, nice=0.0, system=0.0, idle=99.0, iowait=0.0, irq=0.0, softirq=0.0, steal=0.0, guest=0.0, guest_nice=0.0)\n    scputimes(user=2.0, nice=0.0, system=0.0, idle=98.0, iowait=0.0, irq=0.0, softirq=0.0, steal=0.0, guest=0.0, guest_nice=0.0)\n    >>>\n    >>> psutil.cpu_count()\n    4\n    >>> psutil.cpu_count(logical=False)\n    2\n    >>>\n    >>> psutil.cpu_stats()\n    scpustats(ctx_switches=20455687, interrupts=6598984, soft_interrupts=2134212, syscalls=0)\n    >>>\n    >>> psutil.cpu_freq()\n    scpufreq(current=931.42925, min=800.0, max=3500.0)\n    >>>\n    >>> psutil.getloadavg()  # also on Windows (emulated)\n    (3.14, 3.89, 4.67)\n\nMemory\n------\n\n.. code-block:: python\n\n    >>> psutil.virtual_memory()\n    svmem(total=10367352832, available=6472179712, percent=37.6, used=8186245120, free=2181107712, active=4748992512, inactive=2758115328, buffers=790724608, cached=3500347392, shared=787554304)\n    >>> psutil.swap_memory()\n    sswap(total=2097147904, used=296128512, free=1801019392, percent=14.1, sin=304193536, sout=677842944)\n    >>>\n\nDisks\n-----\n\n.. code-block:: python\n\n    >>> psutil.disk_partitions()\n    [sdiskpart(device='/dev/sda1', mountpoint='/', fstype='ext4', opts='rw,nosuid'),\n     sdiskpart(device='/dev/sda2', mountpoint='/home', fstype='ext', opts='rw')]\n    >>>\n    >>> psutil.disk_usage('/')\n    sdiskusage(total=21378641920, used=4809781248, free=15482871808, percent=22.5)\n    >>>\n    >>> psutil.disk_io_counters(perdisk=False)\n    sdiskio(read_count=719566, write_count=1082197, read_bytes=18626220032, write_bytes=24081764352, read_time=5023392, write_time=63199568, read_merged_count=619166, write_merged_count=812396, busy_time=4523412)\n    >>>\n\nNetwork\n-------\n\n.. code-block:: python\n\n    >>> psutil.net_io_counters(pernic=True)\n    {'eth0': netio(bytes_sent=485291293, bytes_recv=6004858642, packets_sent=3251564, packets_recv=4787798, errin=0, errout=0, dropin=0, dropout=0),\n     'lo': netio(bytes_sent=2838627, bytes_recv=2838627, packets_sent=30567, packets_recv=30567, errin=0, errout=0, dropin=0, dropout=0)}\n    >>>\n    >>> psutil.net_connections(kind='tcp')\n    [sconn(fd=115, family=<AddressFamily.AF_INET: 2>, type=<SocketType.SOCK_STREAM: 1>, laddr=addr(ip='10.0.0.1', port=48776), raddr=addr(ip='93.186.135.91', port=80), status='ESTABLISHED', pid=1254),\n     sconn(fd=117, family=<AddressFamily.AF_INET: 2>, type=<SocketType.SOCK_STREAM: 1>, laddr=addr(ip='10.0.0.1', port=43761), raddr=addr(ip='72.14.234.100', port=80), status='CLOSING', pid=2987),\n     ...]\n    >>>\n    >>> psutil.net_if_addrs()\n    {'lo': [snicaddr(family=<AddressFamily.AF_INET: 2>, address='127.0.0.1', netmask='255.0.0.0', broadcast='127.0.0.1', ptp=None),\n            snicaddr(family=<AddressFamily.AF_INET6: 10>, address='::1', netmask='ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', broadcast=None, ptp=None),\n            snicaddr(family=<AddressFamily.AF_LINK: 17>, address='00:00:00:00:00:00', netmask=None, broadcast='00:00:00:00:00:00', ptp=None)],\n     'wlan0': [snicaddr(family=<AddressFamily.AF_INET: 2>, address='192.168.1.3', netmask='255.255.255.0', broadcast='192.168.1.255', ptp=None),\n               snicaddr(family=<AddressFamily.AF_INET6: 10>, address='fe80::c685:8ff:fe45:641%wlan0', netmask='ffff:ffff:ffff:ffff::', broadcast=None, ptp=None),\n               snicaddr(family=<AddressFamily.AF_LINK: 17>, address='c4:85:08:45:06:41', netmask=None, broadcast='ff:ff:ff:ff:ff:ff', ptp=None)]}\n    >>>\n    >>> psutil.net_if_stats()\n    {'lo': snicstats(isup=True, duplex=<NicDuplex.NIC_DUPLEX_UNKNOWN: 0>, speed=0, mtu=65536, flags='up,loopback,running'),\n     'wlan0': snicstats(isup=True, duplex=<NicDuplex.NIC_DUPLEX_FULL: 2>, speed=100, mtu=1500, flags='up,broadcast,running,multicast')}\n    >>>\n\nSensors\n-------\n\n.. code-block:: python\n\n    >>> import psutil\n    >>> psutil.sensors_temperatures()\n    {'acpitz': [shwtemp(label='', current=47.0, high=103.0, critical=103.0)],\n     'asus': [shwtemp(label='', current=47.0, high=None, critical=None)],\n     'coretemp': [shwtemp(label='Physical id 0', current=52.0, high=100.0, critical=100.0),\n                  shwtemp(label='Core 0', current=45.0, high=100.0, critical=100.0)]}\n    >>>\n    >>> psutil.sensors_fans()\n    {'asus': [sfan(label='cpu_fan', current=3200)]}\n    >>>\n    >>> psutil.sensors_battery()\n    sbattery(percent=93, secsleft=16628, power_plugged=False)\n    >>>\n\nOther system info\n-----------------\n\n.. code-block:: python\n\n    >>> import psutil\n    >>> psutil.users()\n    [suser(name='giampaolo', terminal='pts/2', host='localhost', started=1340737536.0, pid=1352),\n     suser(name='giampaolo', terminal='pts/3', host='localhost', started=1340737792.0, pid=1788)]\n    >>>\n    >>> psutil.boot_time()\n    1365519115.0\n    >>>\n\nProcess management\n------------------\n\n.. code-block:: python\n\n    >>> import psutil\n    >>> psutil.pids()\n    [1, 2, 3, 4, 5, 6, 7, 46, 48, 50, 51, 178, 182, 222, 223, 224, 268, 1215,\n     1216, 1220, 1221, 1243, 1244, 1301, 1601, 2237, 2355, 2637, 2774, 3932,\n     4176, 4177, 4185, 4187, 4189, 4225, 4243, 4245, 4263, 4282, 4306, 4311,\n     4312, 4313, 4314, 4337, 4339, 4357, 4358, 4363, 4383, 4395, 4408, 4433,\n     4443, 4445, 4446, 5167, 5234, 5235, 5252, 5318, 5424, 5644, 6987, 7054,\n     7055, 7071]\n    >>>\n    >>> p = psutil.Process(7055)\n    >>> p\n    psutil.Process(pid=7055, name='python3', status='running', started='09:04:44')\n    >>> p.pid\n    7055\n    >>> p.name()\n    'python3'\n    >>> p.exe()\n    '/usr/bin/python3'\n    >>> p.cwd()\n    '/home/giampaolo'\n    >>> p.cmdline()\n    ['/usr/bin/python3', 'main.py']\n    >>>\n    >>> p.ppid()\n    7054\n    >>> p.parent()\n    psutil.Process(pid=4699, name='bash', status='sleeping', started='09:06:44')\n    >>> p.parents()\n    [psutil.Process(pid=4699, name='bash', started='09:06:44'),\n     psutil.Process(pid=4689, name='gnome-terminal-server', status='sleeping', started='0:06:44'),\n     psutil.Process(pid=1, name='systemd', status='sleeping', started='05:56:55')]\n    >>> p.children(recursive=True)\n    [psutil.Process(pid=29835, name='python3', status='sleeping', started='11:45:38'),\n     psutil.Process(pid=29836, name='python3', status='waking', started='11:43:39')]\n    >>>\n    >>> p.status()\n    'running'\n    >>> p.create_time()\n    1267551141.5019531\n    >>> p.terminal()\n    '/dev/pts/0'\n    >>>\n    >>> p.username()\n    'giampaolo'\n    >>> p.uids()\n    puids(real=1000, effective=1000, saved=1000)\n    >>> p.gids()\n    pgids(real=1000, effective=1000, saved=1000)\n    >>>\n    >>> p.cpu_times()\n    pcputimes(user=1.02, system=0.31, children_user=0.32, children_system=0.1, iowait=0.0)\n    >>> p.cpu_percent(interval=1.0)\n    12.1\n    >>> p.cpu_affinity()\n    [0, 1, 2, 3]\n    >>> p.cpu_affinity([0, 1])  # set\n    >>> p.cpu_num()\n    1\n    >>>\n    >>> p.memory_info()\n    pmem(rss=10915840, vms=67608576, shared=3313664, text=2310144, lib=0, data=7262208, dirty=0)\n    >>> p.memory_full_info()  # \"real\" USS memory usage (Linux, macOS, Win only)\n    pfullmem(rss=10199040, vms=52133888, shared=3887104, text=2867200, lib=0, data=5967872, dirty=0, uss=6545408, pss=6872064, swap=0)\n    >>> p.memory_percent()\n    0.7823\n    >>> p.memory_maps()\n    [pmmap_grouped(path='/lib/x8664-linux-gnu/libutil-2.15.so', rss=32768, size=2125824, pss=32768, shared_clean=0, shared_dirty=0, private_clean=20480, private_dirty=12288, referenced=32768, anonymous=12288, swap=0),\n     pmmap_grouped(path='/lib/x8664-linux-gnu/libc-2.15.so', rss=3821568, size=3842048, pss=3821568, shared_clean=0, shared_dirty=0, private_clean=0, private_dirty=3821568, referenced=3575808, anonymous=3821568, swap=0),\n     pmmap_grouped(path='[heap]',  rss=32768, size=139264, pss=32768, shared_clean=0, shared_dirty=0, private_clean=0, private_dirty=32768, referenced=32768, anonymous=32768, swap=0),\n     pmmap_grouped(path='[stack]', rss=2465792, size=2494464, pss=2465792, shared_clean=0, shared_dirty=0, private_clean=0, private_dirty=2465792, referenced=2277376, anonymous=2465792, swap=0),\n     ...]\n    >>>\n    >>> p.io_counters()\n    pio(read_count=478001, write_count=59371, read_bytes=700416, write_bytes=69632, read_chars=456232, write_chars=517543)\n    >>>\n    >>> p.open_files()\n    [popenfile(path='/home/giampaolo/monit.py', fd=3, position=0, mode='r', flags=32768),\n     popenfile(path='/var/log/monit.log', fd=4, position=235542, mode='a', flags=33793)]\n    >>>\n    >>> p.net_connections(kind='tcp')\n    [pconn(fd=115, family=<AddressFamily.AF_INET: 2>, type=<SocketType.SOCK_STREAM: 1>, laddr=addr(ip='10.0.0.1', port=48776), raddr=addr(ip='93.186.135.91', port=80), status='ESTABLISHED'),\n     pconn(fd=117, family=<AddressFamily.AF_INET: 2>, type=<SocketType.SOCK_STREAM: 1>, laddr=addr(ip='10.0.0.1', port=43761), raddr=addr(ip='72.14.234.100', port=80), status='CLOSING')]\n    >>>\n    >>> p.threads()\n    [pthread(id=5234, user_time=22.5, system_time=9.2891),\n     pthread(id=5237, user_time=0.0707, system_time=1.1)]\n    >>>\n    >>> p.num_threads()\n    4\n    >>> p.num_fds()\n    8\n    >>> p.num_ctx_switches()\n    pctxsw(voluntary=78, involuntary=19)\n    >>>\n    >>> p.nice()\n    0\n    >>> p.nice(10)  # set\n    >>>\n    >>> p.ionice(psutil.IOPRIO_CLASS_IDLE)  # IO priority (Win and Linux only)\n    >>> p.ionice()\n    pionice(ioclass=<IOPriority.IOPRIO_CLASS_IDLE: 3>, value=0)\n    >>>\n    >>> p.rlimit(psutil.RLIMIT_NOFILE, (5, 5))  # set resource limits (Linux only)\n    >>> p.rlimit(psutil.RLIMIT_NOFILE)\n    (5, 5)\n    >>>\n    >>> p.environ()\n    {'LC_PAPER': 'it_IT.UTF-8', 'SHELL': '/bin/bash', 'GREP_OPTIONS': '--color=auto',\n    'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg',\n     ...}\n    >>>\n    >>> p.as_dict()\n    {'status': 'running', 'num_ctx_switches': pctxsw(voluntary=63, involuntary=1), 'pid': 5457, ...}\n    >>> p.is_running()\n    True\n    >>> p.suspend()\n    >>> p.resume()\n    >>>\n    >>> p.terminate()\n    >>> p.kill()\n    >>> p.wait(timeout=3)\n    <Exitcode.EX_OK: 0>\n    >>>\n    >>> psutil.test()\n    USER         PID %CPU %MEM     VSZ     RSS TTY        START    TIME  COMMAND\n    root           1  0.0  0.0   24584    2240            Jun17   00:00  init\n    root           2  0.0  0.0       0       0            Jun17   00:00  kthreadd\n    ...\n    giampaolo  31475  0.0  0.0   20760    3024 /dev/pts/0 Jun19   00:00  python2.4\n    giampaolo  31721  0.0  2.2  773060  181896            00:04   10:30  chrome\n    root       31763  0.0  0.0       0       0            00:05   00:00  kworker/0:1\n    >>>\n\nFurther process APIs\n--------------------\n\n.. code-block:: python\n\n    >>> import psutil\n    >>> for proc in psutil.process_iter(['pid', 'name']):\n    ...     print(proc.info)\n    ...\n    {'pid': 1, 'name': 'systemd'}\n    {'pid': 2, 'name': 'kthreadd'}\n    {'pid': 3, 'name': 'ksoftirqd/0'}\n    ...\n    >>>\n    >>> psutil.pid_exists(3)\n    True\n    >>>\n    >>> def on_terminate(proc):\n    ...     print(\"process {} terminated\".format(proc))\n    ...\n    >>> # waits for multiple processes to terminate\n    >>> gone, alive = psutil.wait_procs(procs_list, timeout=3, callback=on_terminate)\n    >>>\n\nHeap info\n---------\n\n.. code-block:: python\n\n    >>> import psutil\n    >>> psutil.heap_info()\n    pheap(heap_used=5177792, mmap_used=819200)\n    >>> psutil.heap_trim()\n\nSee also `psleak <https://github.com/giampaolo/psleak>`__\n\nWindows services\n----------------\n\n.. code-block:: python\n\n    >>> list(psutil.win_service_iter())\n    [<WindowsService(name='AeLookupSvc', display_name='Application Experience') at 38850096>,\n     <WindowsService(name='ALG', display_name='Application Layer Gateway Service') at 38850128>,\n     <WindowsService(name='APNMCP', display_name='Ask Update Service') at 38850160>,\n     <WindowsService(name='AppIDSvc', display_name='Application Identity') at 38850192>,\n     ...]\n    >>> s = psutil.win_service_get('alg')\n    >>> s.as_dict()\n    {'binpath': 'C:\\\\Windows\\\\System32\\\\alg.exe',\n     'description': 'Provides support for 3rd party protocol plug-ins for Internet Connection Sharing',\n     'display_name': 'Application Layer Gateway Service',\n     'name': 'alg',\n     'pid': None,\n     'start_type': 'manual',\n     'status': 'stopped',\n     'username': 'NT AUTHORITY\\\\LocalService'}\n\nProjects using psutil\n=====================\n\nHere's some I find particularly interesting:\n\n- https://github.com/giampaolo/psleak\n- https://github.com/google/grr\n- https://github.com/facebook/osquery/\n- https://github.com/nicolargo/glances\n- https://github.com/aristocratos/bpytop\n- https://github.com/Jahaja/psdash\n- https://github.com/ajenti/ajenti\n- https://github.com/home-assistant/home-assistant/\n\nPortings\n========\n\n- Go: https://github.com/shirou/gopsutil\n- C: https://github.com/hamon-in/cpslib\n- Rust: https://github.com/rust-psutil/rust-psutil\n- Nim: https://github.com/johnscillieri/psutil-nim\n\n\n\n",
+        "description_content_type": "text/x-rst",
+        "keywords": [
+          "ps",
+          "top",
+          "kill",
+          "free",
+          "lsof",
+          "netstat",
+          "nice",
+          "tty",
+          "ionice",
+          "uptime",
+          "taskmgr",
+          "process",
+          "df",
+          "iotop",
+          "iostat",
+          "ifconfig",
+          "taskset",
+          "who",
+          "pidof",
+          "pmap",
+          "smem",
+          "pstree",
+          "monitoring",
+          "ulimit",
+          "prlimit",
+          "smem",
+          "performance",
+          "metrics",
+          "agent",
+          "observability"
+        ],
+        "home_page": "https://github.com/giampaolo/psutil",
+        "author": "Giampaolo Rodola",
+        "author_email": "g.rodola@gmail.com",
+        "license": "BSD-3-Clause",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Environment :: Console",
+          "Intended Audience :: Developers",
+          "Intended Audience :: Information Technology",
+          "Intended Audience :: System Administrators",
+          "Operating System :: MacOS :: MacOS X",
+          "Operating System :: Microsoft :: Windows :: Windows 10",
+          "Operating System :: Microsoft :: Windows :: Windows 11",
+          "Operating System :: Microsoft :: Windows :: Windows 7",
+          "Operating System :: Microsoft :: Windows :: Windows 8",
+          "Operating System :: Microsoft :: Windows :: Windows 8.1",
+          "Operating System :: Microsoft :: Windows :: Windows Server 2003",
+          "Operating System :: Microsoft :: Windows :: Windows Server 2008",
+          "Operating System :: Microsoft :: Windows :: Windows Vista",
+          "Operating System :: Microsoft :: Windows",
+          "Operating System :: Microsoft",
+          "Operating System :: OS Independent",
+          "Operating System :: POSIX :: AIX",
+          "Operating System :: POSIX :: BSD :: FreeBSD",
+          "Operating System :: POSIX :: BSD :: NetBSD",
+          "Operating System :: POSIX :: BSD :: OpenBSD",
+          "Operating System :: POSIX :: BSD",
+          "Operating System :: POSIX :: Linux",
+          "Operating System :: POSIX :: SunOS/Solaris",
+          "Operating System :: POSIX",
+          "Programming Language :: C",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Programming Language :: Python",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Topic :: Software Development :: Libraries",
+          "Topic :: System :: Benchmark",
+          "Topic :: System :: Hardware",
+          "Topic :: System :: Monitoring",
+          "Topic :: System :: Networking :: Monitoring :: Hardware Watchdog",
+          "Topic :: System :: Networking :: Monitoring",
+          "Topic :: System :: Networking",
+          "Topic :: System :: Operating System",
+          "Topic :: System :: Systems Administration",
+          "Topic :: Utilities"
+        ],
+        "requires_dist": [
+          "psleak ; extra == 'dev'",
+          "pytest ; extra == 'dev'",
+          "pytest-instafail ; extra == 'dev'",
+          "pytest-xdist ; extra == 'dev'",
+          "setuptools ; extra == 'dev'",
+          "abi3audit ; extra == 'dev'",
+          "black ; extra == 'dev'",
+          "check-manifest ; extra == 'dev'",
+          "coverage ; extra == 'dev'",
+          "packaging ; extra == 'dev'",
+          "pylint ; extra == 'dev'",
+          "pyperf ; extra == 'dev'",
+          "pypinfo ; extra == 'dev'",
+          "pytest-cov ; extra == 'dev'",
+          "requests ; extra == 'dev'",
+          "rstcheck ; extra == 'dev'",
+          "ruff ; extra == 'dev'",
+          "sphinx ; extra == 'dev'",
+          "sphinx-rtd-theme ; extra == 'dev'",
+          "toml-sort ; extra == 'dev'",
+          "twine ; extra == 'dev'",
+          "validate-pyproject[all] ; extra == 'dev'",
+          "virtualenv ; extra == 'dev'",
+          "vulture ; extra == 'dev'",
+          "wheel ; extra == 'dev'",
+          "colorama ; (os_name == \"nt\") and extra == 'dev'",
+          "pyreadline3 ; (os_name == \"nt\") and extra == 'dev'",
+          "pywin32 ; (os_name == \"nt\" and implementation_name != \"pypy\") and extra == 'dev'",
+          "wheel ; (os_name == \"nt\" and implementation_name != \"pypy\") and extra == 'dev'",
+          "wmi ; (os_name == \"nt\" and implementation_name != \"pypy\") and extra == 'dev'",
+          "psleak ; extra == 'test'",
+          "pytest ; extra == 'test'",
+          "pytest-instafail ; extra == 'test'",
+          "pytest-xdist ; extra == 'test'",
+          "setuptools ; extra == 'test'",
+          "pywin32 ; (os_name == \"nt\" and implementation_name != \"pypy\") and extra == 'test'",
+          "wheel ; (os_name == \"nt\" and implementation_name != \"pypy\") and extra == 'test'",
+          "wmi ; (os_name == \"nt\" and implementation_name != \"pypy\") and extra == 'test'"
+        ],
+        "requires_python": ">=3.6",
+        "provides_extra": [
+          "dev",
+          "test"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274",
+          "hashes": {
+            "sha256": "4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.1",
+        "name": "six",
+        "version": "1.17.0",
+        "summary": "Python 2 and 3 compatibility utilities",
+        "description": ".. image:: https://img.shields.io/pypi/v/six.svg\n   :target: https://pypi.org/project/six/\n   :alt: six on PyPI\n\n.. image:: https://readthedocs.org/projects/six/badge/?version=latest\n   :target: https://six.readthedocs.io/\n   :alt: six's documentation on Read the Docs\n\n.. image:: https://img.shields.io/badge/license-MIT-green.svg\n   :target: https://github.com/benjaminp/six/blob/master/LICENSE\n   :alt: MIT License badge\n\nSix is a Python 2 and 3 compatibility library.  It provides utility functions\nfor smoothing over the differences between the Python versions with the goal of\nwriting Python code that is compatible on both Python versions.  See the\ndocumentation for more information on what is provided.\n\nSix supports Python 2.7 and 3.3+.  It is contained in only one Python\nfile, so it can be easily copied into your project. (The copyright and license\nnotice must be retained.)\n\nOnline documentation is at https://six.readthedocs.io/.\n\nBugs can be reported to https://github.com/benjaminp/six.  The code can also\nbe found there.\n",
+        "home_page": "https://github.com/benjaminp/six",
+        "author": "Benjamin Peterson",
+        "author_email": "benjamin@python.org",
+        "license": "MIT",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Programming Language :: Python :: 2",
+          "Programming Language :: Python :: 3",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: MIT License",
+          "Topic :: Software Development :: Libraries",
+          "Topic :: Utilities"
+        ],
+        "requires_python": ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/d9/50/f00935da0ec7cbf325f8dc4f772ae46fbc7b672dd62876e73f0a94adda57/sqlparse-0.6.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=b861c0288ce2fa56209a9a6412d2e066ac664b3873b89c26c9d8415e8e32996f",
+          "hashes": {
+            "sha256": "b861c0288ce2fa56209a9a6412d2e066ac664b3873b89c26c9d8415e8e32996f"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.5",
+        "name": "sqlparse",
+        "version": "0.6.0",
+        "summary": "A non-validating SQL parser.",
+        "description": "# sqlparse\n\n[![Build Status](https://github.com/andialbrecht/sqlparse/actions/workflows/python-app.yml/badge.svg)](https://github.com/andialbrecht/sqlparse/actions/workflows/python-app.yml)\n[![Coverage](https://codecov.io/gh/andialbrecht/sqlparse/branch/master/graph/badge.svg)](https://codecov.io/gh/andialbrecht/sqlparse)\n[![Documentation](https://readthedocs.org/projects/sqlparse/badge/?version=latest)](https://sqlparse.readthedocs.io/en/latest/)\n[![PyPI](https://img.shields.io/pypi/v/sqlparse?color=%2334D058&label=pypi%20package)](https://pypi.org/project/sqlparse)\n[![Python versions](https://img.shields.io/pypi/pyversions/sqlparse)](https://pypi.org/project/sqlparse)\n[![License](https://img.shields.io/badge/license-BSD--3--Clause-blue)](https://opensource.org/licenses/BSD-3-Clause)\n\nA non-validating SQL parser for Python. Split scripts into statements, format\nthem, and walk their token tree.\n\nsqlparse tokenizes SQL text and groups the parts it recognizes into a tree of\nstatements, clauses, identifiers and expressions. It accepts any input without\nvalidating it, and makes no assumptions about a particular SQL dialect, so\nvendor extensions and templated SQL parse too. It is a building block for\nformatters, linters, editors and query analysis tools.\n\nLicensed under the\n[New BSD license](https://opensource.org/licenses/BSD-3-Clause).\n\n## Install\n\n```bash\npip install sqlparse\n```\n\n## Usage\n\nThree module-level functions cover most needs: `split()`, `format()` and\n`parse()`.\n\n### Split a script into statements\n\n```python\nimport sqlparse\n\nsqlparse.split(\"select * from foo; select * from bar;\")\n# ['select * from foo;', 'select * from bar;']\n```\n\n### Format a statement\n\n```python\nprint(sqlparse.format(\"select id,name from users where active=1\",\n                      reindent=True, keyword_case=\"upper\"))\n```\n\n```sql\nSELECT id,\n       name\nFROM users\nWHERE active=1\n```\n\n`format()` accepts the same options as the command line, among them\n`reindent`, `keyword_case`, `strip_comments` and `indent_width`.\n\n### Parse and inspect a statement\n\n```python\nstatement = sqlparse.parse(\"select id, name from users where active = 1\")[0]\n\nprint(statement.get_type())\nfor token in statement.tokens:\n    if not token.is_whitespace:\n        print(f\"{token.ttype or type(token).__name__!s:20} {token!s}\")\n```\n\n```\nSELECT\nToken.Keyword.DML    select\nIdentifierList       id, name\nToken.Keyword        from\nIdentifier           users\nWhere                where active = 1\n```\n\nTokens with a `ttype` are leaves. The others are groups you can descend into,\nwhich is how nested constructs like subqueries and `CASE` expressions are\nrepresented. See\n[Analyzing SQL statements](https://sqlparse.readthedocs.io/en/latest/analyzing.html)\nfor the traversal API.\n\n## Command line\n\nInstalling sqlparse also provides the `sqlformat` command. It reads from stdin\nwhen the filename is `-`, writes to stdout by default, and rewrites files in\nplace with `--in-place`:\n\n```bash\nsqlformat --reindent --keywords upper query.sql\n```\n\nRun `sqlformat --help` for all formatting options.\n\n## Pre-commit hook\n\nFormat SQL files on commit with [pre-commit](https://pre-commit.com/):\n\n```yaml\nrepos:\n  - repo: https://github.com/andialbrecht/sqlparse\n    rev: 0.5.5  # use the latest release\n    hooks:\n      - id: sqlformat\n        args: [--in-place, --reindent, --keywords, upper]\n```\n\nThe hook defaults to `--in-place --reindent`. When overriding `args`, keep\n`--in-place`, or the hook writes to stdout and leaves your files unchanged.\n\n## Links\n\n| | |\n|---|---|\n| Documentation | <https://sqlparse.readthedocs.io/> |\n| Release notes | <https://sqlparse.readthedocs.io/en/latest/changes.html> |\n| Issues | <https://github.com/andialbrecht/sqlparse/issues> |\n| Discussions | <https://github.com/andialbrecht/sqlparse/discussions> |\n| Online demo | <https://sqlformat.org/> |\n\n## Contributing\n\nContributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) to get\nstarted.\n\nsqlparse is maintained in spare time, so it can take a while before an issue or\npull request gets a reply. Thanks for your patience. A pull request that comes\nwith tests for the behavior it changes is usually the quickest to review.\n\nFor security issues, please follow [SECURITY.md](SECURITY.md) rather than\nopening a public issue.\n\n## License\n\nsqlparse is licensed under the New BSD license; see [LICENSE](LICENSE) for the\nfull text. Parts of the code are based on [Pygments](https://pygments.org/),\nwritten by Georg Brandl and others.\n",
+        "description_content_type": "text/markdown",
+        "author_email": "Andi Albrecht <albrecht.andi@gmail.com>",
+        "license_file": [
+          "AUTHORS",
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: BSD License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Topic :: Database",
+          "Topic :: Software Development"
+        ],
+        "requires_dist": [
+          "build; extra == 'dev'",
+          "furo; extra == 'doc'",
+          "sphinx; extra == 'doc'"
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Home, https://github.com/andialbrecht/sqlparse",
+          "Documentation, https://sqlparse.readthedocs.io/",
+          "Release Notes, https://sqlparse.readthedocs.io/en/latest/changes.html",
+          "Source, https://github.com/andialbrecht/sqlparse",
+          "Tracker, https://github.com/andialbrecht/sqlparse/issues"
+        ],
+        "provides_extra": [
+          "dev",
+          "doc"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/77/c6/040cbc72480d789a5f40d63fb484d3106554c4dfa2d2b70ad5022057750f/webencodings-0.6.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=7fab6269c8bf237c657876b52058ccb182e861518d1c695c1a9aaa8c1c105d5b",
+          "hashes": {
+            "sha256": "7fab6269c8bf237c657876b52058ccb182e861518d1c695c1a9aaa8c1c105d5b"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.5",
+        "name": "webencodings",
+        "version": "0.6.1",
+        "summary": "Character encoding aliases for legacy web content",
+        "description": "webencodings is a Python implementation of the `WHATWG Encoding standard\n<http://encoding.spec.whatwg.org/>`_.\n\nIn order to be compatible with legacy web content when interpreting something like\n``Content-Type: text/html; charset=latin1``, tools need to use a particular set of\naliases for encoding labels as well as some overriding rules. For example, ``US-ASCII``\nand ``iso-8859-1`` on the web are actually aliases for ``windows-1252``, and an UTF-8 or\nUTF-16 BOM takes precedence over any other encoding declaration. The Encoding standard\ndefines all such details so that implementations do not have to reverse-engineer each\nother.\n\nThis module has encoding labels and BOM detection, but the actual implementation for\nencoders and decoders is Python’s.\n\n* Free software: BSD license\n* For Python 3.10+, tested on CPython and PyPy\n* Documentation: https://doc.courtbouillon.org/webencodings\n* Changelog: https://github.com/CourtBouillon/webencodings/releases\n* Code, issues, tests: https://github.com/CourtBouillon/webencodings\n* Code of conduct: https://www.courtbouillon.org/code-of-conduct\n* Professional support: https://www.courtbouillon.org\n* Donation: https://opencollective.com/courtbouillon\n\nThis module is a friendly fork of webencodings, written and maintained by Simon Sapin\nand Sam Sneddon.\n\nCopyrights are retained by their contributors, no copyright assignment is required to\ncontribute to webencodings. Unless explicitly stated otherwise, any contribution\nintentionally submitted for inclusion is licensed under the BSD 3-clause license,\nwithout any additional terms or conditions. For full authorship information, see the\nversion control history.\n\n",
+        "description_content_type": "text/x-rst",
+        "keywords": [
+          "web",
+          "encoding"
+        ],
+        "author_email": "Simon Sapin <simon.sapin@exyr.org>",
+        "maintainer_email": "CourtBouillon <contact@courtbouillon.org>",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: BSD License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Topic :: Internet :: WWW/HTTP"
+        ],
+        "requires_dist": [
+          "sphinx ; extra == \"doc\"",
+          "furo ; extra == \"doc\"",
+          "pytest ; extra == \"test\"",
+          "ruff ; extra == \"test\""
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Changelog, https://github.com/CourtBouillon/webencodings/releases",
+          "Code, https://github.com/CourtBouillon/webencodings",
+          "Documentation, https://doc.courtbouillon.org/webencodings",
+          "Donation, https://opencollective.com/courtbouillon",
+          "Homepage, https://github.com/CourtBouillon/webencodings",
+          "Issues, https://github.com/CourtBouillon/webencodings/issues"
+        ],
+        "provides_extra": [
+          "doc",
+          "test"
+        ]
+      }
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.14.4",
+    "os_name": "posix",
+    "platform_machine": "x86_64",
+    "platform_release": "7.0.0-30-generic",
+    "platform_system": "Linux",
+    "platform_version": "#30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026",
+    "python_full_version": "3.14.4",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.14",
+    "sys_platform": "linux"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "before": {
+    "expression": "price * quantity == expected",
+    "formatted": "  assert (18 * 3) == 60\n",
+    "comparisons": [
+      [
+        "==",
+        54,
+        60
+      ]
+    ]
+  },
+  "after": {
+    "expression": "price * quantity == expected",
+    "formatted": "  assert (18 * 3) == 60\n",
+    "comparisons": [
+      [
+        "==",
+        54,
+        60
+      ]
+    ]
+  },
+  "marshal_bytes": 975,
+  "executable": "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+  "executable_sha256": "b131b0d9e0851b897f6b8d77cb786be4d4cfbd7cdd0dc7f197dd1f3e0b52282f",
+  "harness_sha256": "b1abef9f0b6462e83b9915ff7953a6e352b29b376ef7c127cd010a6073a8fdb6",
+  "optimize": 0,
+  "Py_ENABLE_SHARED": 0
+}

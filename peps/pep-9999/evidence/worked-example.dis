@@ -1,0 +1,41 @@
+   1           RESUME                   0
+
+   2   L1:     LOAD_FAST_BORROW         0 (price)
+               STORE_FAST_BORROW        3 (.assertion.0)
+               LOAD_FAST_BORROW         1 (quantity)
+               STORE_FAST_BORROW        4 (.assertion.1)
+               BINARY_OP                5 (*)
+               STORE_FAST_BORROW        5 (.assertion.2)
+               LOAD_FAST_BORROW         2 (expected)
+               STORE_FAST_BORROW        6 (.assertion.3)
+               COMPARE_OP              72 (==)
+               STORE_FAST_BORROW        7 (.assertion.4)
+               TO_BOOL
+               STORE_FAST_BORROW        8 (.assertion.5)
+               POP_JUMP_IF_TRUE        10 (to L4)
+       L2:     NOT_TAKEN
+       L3:     LOAD_COMMON_CONSTANT     0 (AssertionError)
+               PUSH_NULL
+               CALL                     0
+               LOAD_CONST               0 (('price * quantity == expected', ((3, 'price', 'value', (2, 11, 2, 16), None, 2), (4, 'quantity', 'value', (2, 19, 2, 27), None, 3), (5, 'price * quantity', 'value', (2, 11, 2, 27), None, 1), (6, 'expected', 'value', (2, 31, 2, 39), None, 4), (7, 'price * quantity == expected', 'comparison', (2, 11, 2, 39), (5, 6, '==', 1, 4), 0), (7, 'price * quantity == expected', 'value', (2, 11, 2, 39), None, 0), (8, 'price * quantity == expected', 'truth', (2, 11, 2, 39), None, 0)), (('price * quantity == expected', 'compare', (2, 11, 2, 39), (1, 4)), ('price * quantity', 'binary', (2, 11, 2, 27), (2, 3)), ('price', 'name', (2, 11, 2, 16), ()), ('quantity', 'name', (2, 19, 2, 27), ()), ('expected', 'name', (2, 31, 2, 39), ()))))
+               CALL_INTRINSIC_2         8 (INTRINSIC_ASSERT_DETAILS)
+               RAISE_VARARGS            1
+       L4:     CLEAR_FAST               3 (.assertion.0)
+               CLEAR_FAST               4 (.assertion.1)
+               CLEAR_FAST               5 (.assertion.2)
+               CLEAR_FAST               6 (.assertion.3)
+               CLEAR_FAST               7 (.assertion.4)
+               CLEAR_FAST               8 (.assertion.5)
+               LOAD_COMMON_CONSTANT     7 (None)
+               RETURN_VALUE
+
+  --   L5:     CLEAR_FAST               3 (.assertion.0)
+               CLEAR_FAST               4 (.assertion.1)
+               CLEAR_FAST               5 (.assertion.2)
+               CLEAR_FAST               6 (.assertion.3)
+               CLEAR_FAST               7 (.assertion.4)
+               CLEAR_FAST               8 (.assertion.5)
+               RERAISE                  0
+ExceptionTable:
+  L1 to L2 -> L5 [0]
+  L3 to L4 -> L5 [0]

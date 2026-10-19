@@ -1,0 +1,4742 @@
+diff --git a/Doc/library/assertionlib.rst b/Doc/library/assertionlib.rst
+new file mode 100644
+index 00000000000..4eb319aeb11
+--- /dev/null
++++ b/Doc/library/assertionlib.rst
+@@ -0,0 +1,157 @@
++:mod:`!assertionlib` --- Native assertion diagnostics
++===================================================
++
++.. module:: assertionlib
++   :synopsis: Structured values and callbacks for native assertions.
++
++.. versionadded:: 3.16
++
++This experimental module exposes values from native assertion capture.
++The compiler preserves expression order and short circuit behavior.
++Capture does not repeat expression evaluation or truth conversion.
++
++Enable capture
++--------------
++
++Compile source with :data:`ast.PyCF_ASSERT_DETAILS`::
++
++    import ast
++    code = compile(source, filename, "exec",
++                   flags=ast.PyCF_ASSERT_DETAILS, dont_inherit=True)
++
++The flag applies to nested code in that compilation.
++It does not change code that already exists or code in imported modules.
++Use ``python -X assert_details`` to enable capture for source compilation
++throughout the process. Frozen modules and previously compiled code objects retain
++their original behavior.
++
++Two additional flags control separate features:
++
++* ``ast.PyCF_ASSERT_EVENTS`` enables capture and successful-assertion events.
++  The command-line equivalent is ``-X assert_details=events``.
++* ``ast.PyCF_KEEP_ASSERTS`` retains assertions at optimization levels 1 and 2.
++  The command-line equivalent is ``-X keep_asserts``.
++  Other optimization behavior remains unchanged. This includes ``__debug__``.
++
++The same names without the ``ast.`` prefix are C compiler flags for
++``PyCompilerFlags.cf_flags``. The compiler does not inherit these flags
++through function calls. The command-line modes use distinct bytecode cache
++tags. A custom loader must also distinguish its compiler flags in its cache.
++
++Read and format details
++-----------------------
++
++.. function:: get_details(error)
++
++   Return an :class:`AssertionDetails` object, or ``None`` when the exception
++   has no native assertion data. Repeated calls return the same object while
++   the exception retains the same capture payload.
++
++.. function:: format_details(details, *, compare=None)
++
++   Return explanation lines with terminal newlines. The default formatter
++   substitutes captured operands into a compact assertion explanation.
++   Calls and attributes use nested ``where`` lines. A chained comparison
++   shows its first failed link. Skipped expressions remain available in
++   the graph but do not appear in the explanation.
++   Representations and differences for builtin objects have size limits.
++
++   For example, ``assert price * quantity == expected`` with values 18, 3,
++   and 60 produces::
++
++       assert (18 * 3) == 60
++
++   The optional ``compare(op, left, right)`` callback receives the operator
++   string and both operand objects. It returns custom lines without terminal
++   newlines, or ``None`` to request the default explanation. The first custom
++   line replaces the comparison summary. Additional lines supply detail.
++   An empty result retains the summary and suppresses the default difference.
++
++   The formatter calls it for each evaluated comparison. Callback errors propagate.
++
++.. function:: clear_details(error)
++
++   Detach the capture payload and public details object from the exception.
++   A details object that another consumer retains still owns its values.
++
++.. class:: AssertionDetails
++
++   An immutable description of one assertion event. Its attributes are:
++
++   * ``expression`` and ``location``
++   * ``root`` and ``nodes``
++   * ``comparisons`` and ``passed``
++
++   ``nodes`` and ``comparisons`` are tuples. ``root`` identifies
++   the expression at the top of the graph.
++
++.. class:: Expression
++
++   An immutable expression node with ``id``, ``text``, ``kind``, ``location``,
++   ``children``, ``evaluated``, ``value``, and ``truth`` attributes.
++   Node IDs are unique within one assertion. Repeated source expressions
++   have distinct nodes. Children are expression nodes in a tuple.
++
++   ``value`` returns the captured result. It raises :exc:`ValueError` if no
++   result is available. An evaluated value of ``None`` differs from a skipped
++   expression. ``truth`` is the recorded truth result, or ``None`` when no
++   truth result is available. It does not call ``bool(value)``.
++
++.. class:: Comparison
++
++   An immutable comparison record with ``operator``, ``left``, ``right``,
++   ``expression``, ``text``, ``evaluated``, ``value``, and ``truth`` attributes.
++   ``left`` and ``right`` identify operand nodes. A chained comparison has
++   one record for each comparison link. This includes skipped links.
++
++.. class:: SourceLocation
++
++   An immutable location with ``filename``, ``lineno``, ``col_offset``,
++   ``end_lineno``, and ``end_col_offset`` attributes. Columns use AST byte
++   offsets. Expression text comes from the AST unparser and can differ from
++   the original source text.
++
++Callbacks
++---------
++
++.. function:: handlers(*, on_failure=None, on_pass=None)
++
++   Return a context manager that installs synchronous callbacks in the
++   current execution context. Nested scopes restore their previous callbacks.
++   Context copies inherit the callbacks. New asyncio tasks also inherit them.
++   Normal thread context inheritance rules apply.
++
++   ``on_failure(error, details)`` runs after assertion message evaluation,
++   before the exception reaches the caller. The callback can change
++   ``error.args`` to supply a library-specific explanation.
++
++   ``on_pass(details)`` requires the ``PyCF_ASSERT_EVENTS`` compiler flag.
++   It runs before capture cleanup. Ordinary diagnostic mode does not check
++   for successful-assertion callbacks on its success path.
++
++   Recursive assertions inside a callback do not invoke another callback.
++   If a failure callback raises, its error has the assertion error as its context.
++   The assertion error retains any earlier exception context.
++
++Example::
++
++    import assertionlib
++
++    def explain(error, details):
++        error.args = ("".join(assertionlib.format_details(details)).strip(),)
++
++    with assertionlib.handlers(on_failure=explain):
++        exec(code)
++
++Limits
++------
++
++Captured objects remain live references. Capture extends their lifetimes
++and can delay destructors. It does not freeze mutable state.
++Comprehensions and generator expressions expose their result as one value.
++Capture does not record their iteration history or the internal execution
++of called functions.
++
++Exception serialization has no special capture policy in this prototype.
++A consumer must detach captures before it serializes an exception with
++arbitrary operand objects. For remote reports, send formatted text.
+diff --git a/Doc/library/ast.rst b/Doc/library/ast.rst
+index e30dadc9733..51598368bcc 100644
+--- a/Doc/library/ast.rst
++++ b/Doc/library/ast.rst
+@@ -2585,6 +2585,25 @@ effects on the compilation of a program:
+ 
+    .. versionadded:: 3.8
+ 
++.. data:: PyCF_ASSERT_DETAILS
++
++   Capture assertion values for :mod:`assertionlib` diagnostics.
++
++   .. versionadded:: 3.16
++
++.. data:: PyCF_ASSERT_EVENTS
++
++   Enable assertion capture and successful-assertion callbacks.
++
++   .. versionadded:: 3.16
++
++.. data:: PyCF_KEEP_ASSERTS
++
++   Retain assertions at optimization levels 1 and 2. Other optimization
++   behavior remains unchanged.
++
++   .. versionadded:: 3.16
++
+ .. data:: PyCF_ONLY_AST
+ 
+    Generates and returns an abstract syntax tree instead of returning a
+diff --git a/Doc/library/debug.rst b/Doc/library/debug.rst
+index f87c2481fb8..522a566a31d 100644
+--- a/Doc/library/debug.rst
++++ b/Doc/library/debug.rst
+@@ -11,6 +11,7 @@ intrusive debugging or patching.
+ 
+ .. toctree::
+ 
++   assertionlib.rst
+    audit_events.rst
+    bdb.rst
+    faulthandler.rst
+diff --git a/Doc/using/cmdline.rst b/Doc/using/cmdline.rst
+index e0ad7945a8e..390f46adac6 100644
+--- a/Doc/using/cmdline.rst
++++ b/Doc/using/cmdline.rst
+@@ -615,6 +615,14 @@ Miscellaneous options
+ 
+      .. versionadded:: 3.10
+ 
++   * ``-X assert_details`` enables native assertion capture for
++     :mod:`assertionlib`. ``-X assert_details=events`` also enables callbacks
++     for successful assertions.
++
++   * ``-X keep_asserts`` retains assertions at optimization levels 1 and 2.
++     Other optimization behavior remains unchanged. Each assertion mode
++     uses a separate bytecode cache tag.
++
+    * ``-X no_debug_ranges`` disables the inclusion of the tables mapping extra
+      location information (end line, start column offset and end column offset)
+      to every instruction in code objects. This is useful when smaller code
+diff --git a/Include/cpython/code.h b/Include/cpython/code.h
+index 1be47e42ed6..47462e8224d 100644
+--- a/Include/cpython/code.h
++++ b/Include/cpython/code.h
+@@ -135,7 +135,8 @@ struct PyCodeObject _PyCode_DEF(1);
+ /* bpo-39562: These constant values are changed in Python 3.9
+    to prevent collision with compiler flags. CO_FUTURE_ and PyCF_
+    constants must be kept unique. PyCF_ constants can use bits from
+-   0x0100 to 0x10000. CO_FUTURE_ constants use bits starting at 0x20000. */
++   0x0100 to 0x10000. CO_FUTURE_ constants use bits starting at 0x20000.
++   Experimental assertion controls also use 0x10000000 and 0x20000000. */
+ #define CO_FUTURE_DIVISION      0x20000
+ #define CO_FUTURE_ABSOLUTE_IMPORT 0x40000 /* do absolute imports by default */
+ #define CO_FUTURE_WITH_STATEMENT  0x80000
+diff --git a/Include/cpython/compile.h b/Include/cpython/compile.h
+index cfdb7080d45..9d0b5a7815b 100644
+--- a/Include/cpython/compile.h
++++ b/Include/cpython/compile.h
+@@ -11,7 +11,8 @@
+ 
+ /* bpo-39562: CO_FUTURE_ and PyCF_ constants must be kept unique.
+    PyCF_ constants can use bits from 0x0100 to 0x10000.
+-   CO_FUTURE_ constants use bits starting at 0x20000. */
++   CO_FUTURE_ constants use bits starting at 0x20000.
++   Experimental assertion controls also use 0x10000000 and 0x20000000. */
+ #define PyCF_SOURCE_IS_UTF8  0x0100
+ #define PyCF_DONT_IMPLY_DEDENT 0x0200
+ #define PyCF_ONLY_AST 0x0400
+@@ -20,9 +21,15 @@
+ #define PyCF_ALLOW_TOP_LEVEL_AWAIT 0x2000
+ #define PyCF_ALLOW_INCOMPLETE_INPUT 0x4000
+ #define PyCF_OPTIMIZED_AST (0x8000 | PyCF_ONLY_AST)
++#define PyCF_ASSERT_DETAILS 0x10000
++/* Experimental assertion controls occupy bits above the existing code flags. */
++#define PyCF_KEEP_ASSERTS 0x10000000
++#define PyCF_ASSERT_EVENTS 0x20000000
+ #define PyCF_COMPILE_MASK (PyCF_ONLY_AST | PyCF_ALLOW_TOP_LEVEL_AWAIT | \
+                            PyCF_TYPE_COMMENTS | PyCF_DONT_IMPLY_DEDENT | \
+-                           PyCF_ALLOW_INCOMPLETE_INPUT | PyCF_OPTIMIZED_AST)
++                           PyCF_ALLOW_INCOMPLETE_INPUT | PyCF_OPTIMIZED_AST | \
++                           PyCF_ASSERT_DETAILS | PyCF_KEEP_ASSERTS | \
++                           PyCF_ASSERT_EVENTS)
+ 
+ typedef struct {
+     int cf_flags;  /* bitmask of CO_xxx flags relevant to future */
+diff --git a/Include/internal/pycore_code.h b/Include/internal/pycore_code.h
+index aeb2ad06ad0..3d7a47f41b8 100644
+--- a/Include/internal/pycore_code.h
++++ b/Include/internal/pycore_code.h
+@@ -193,6 +193,7 @@ typedef struct {
+ #define CO_FAST_ARG_KW  (0x04)  // kw-only, pos-or-kw, varkwargs
+ #define CO_FAST_ARG_VAR (0x08)  // varargs, varkwargs
+ #define CO_FAST_ARG     (CO_FAST_ARG_POS | CO_FAST_ARG_KW | CO_FAST_ARG_VAR)
++#define CO_FAST_INTERNAL (0x01)
+ #define CO_FAST_HIDDEN  (0x10)
+ #define CO_FAST_LOCAL   (0x20)
+ #define CO_FAST_CELL    (0x40)
+diff --git a/Include/internal/pycore_compile.h b/Include/internal/pycore_compile.h
+index 31738f2074d..5aa209fdd32 100644
+--- a/Include/internal/pycore_compile.h
++++ b/Include/internal/pycore_compile.h
+@@ -72,6 +72,9 @@ typedef struct {
+     PyObject *u_fasthidden; /* set of names that are fast-locals only
+                                temporarily within an inlined comprehension. */
+ 
++    PyObject *u_internal;  /* compiler-only fast locals */
++    void *u_assert;        /* active assertion capture context, borrowed */
++
+     Py_ssize_t u_argcount;        /* number of arguments for block */
+     Py_ssize_t u_posonlyargcount;        /* number of positional only arguments for block */
+     Py_ssize_t u_kwonlyargcount; /* number of keyword only arguments for block */
+@@ -157,6 +160,10 @@ int _PyCompile_ResolveNameop(struct _PyCompiler *c, PyObject *mangled,
+ int _PyCompile_IsInteractiveTopLevel(struct _PyCompiler *c);
+ int _PyCompile_ScopeType(struct _PyCompiler *c);
+ int _PyCompile_OptimizationLevel(struct _PyCompiler *c);
++int _PyCompile_AssertionFlags(void);
++int _PyCompile_AssertDetails(struct _PyCompiler *c);
++int _PyCompile_KeepAsserts(struct _PyCompiler *c);
++int _PyCompile_AssertEvents(struct _PyCompiler *c);
+ int _PyCompile_LookupArg(struct _PyCompiler *c, PyCodeObject *co, PyObject *name);
+ PyObject *_PyCompile_Qualname(struct _PyCompiler *c);
+ _PyCompile_CodeUnitMetadata *_PyCompile_Metadata(struct _PyCompiler *c);
+diff --git a/Include/internal/pycore_global_objects_fini_generated.h b/Include/internal/pycore_global_objects_fini_generated.h
+index 0e2fab84aec..a538d8f340c 100644
+--- a/Include/internal/pycore_global_objects_fini_generated.h
++++ b/Include/internal/pycore_global_objects_fini_generated.h
+@@ -252,6 +252,7 @@ _PyStaticObjects_CheckAll(PyInterpreterState *interp) {
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_bootstrap), "_bootstrap", 10);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_check_retval_), "_check_retval_", 14);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_dealloc_warn), "_dealloc_warn", 13);
++    _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_dispatch), "_dispatch", 9);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_feature_version), "_feature_version", 16);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_field_types), "_field_types", 12);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_fields_), "_fields_", 8);
+@@ -263,6 +264,7 @@ _PyStaticObjects_CheckAll(PyInterpreterState *interp) {
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_flags_), "_flags_", 7);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_get_sourcefile), "_get_sourcefile", 15);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_handle_fromlist), "_handle_fromlist", 16);
++    _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_handlers), "_handlers", 9);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_initializing), "_initializing", 13);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_internal_use), "_internal_use", 13);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(_io), "_io", 3);
+@@ -310,6 +312,7 @@ _PyStaticObjects_CheckAll(PyInterpreterState *interp) {
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(argv), "argv", 4);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(as_integer_ratio), "as_integer_ratio", 16);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(asend), "asend", 5);
++    _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(assertionlib), "assertionlib", 12);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(assoclen), "assoclen", 8);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(ast), "ast", 3);
+     _PyStaticObject_CheckUnicodeSingleton((PyObject *)&_Py_ID(athrow), "athrow", 6);
+diff --git a/Include/internal/pycore_global_strings.h b/Include/internal/pycore_global_strings.h
+index cbfa80f76b6..bec07e5eb5f 100644
+--- a/Include/internal/pycore_global_strings.h
++++ b/Include/internal/pycore_global_strings.h
+@@ -264,6 +264,7 @@ struct _Py_global_strings {
+         STRUCT_FOR_ID(_bootstrap)
+         STRUCT_FOR_ID(_check_retval_)
+         STRUCT_FOR_ID(_dealloc_warn)
++        STRUCT_FOR_ID(_dispatch)
+         STRUCT_FOR_ID(_feature_version)
+         STRUCT_FOR_ID(_field_types)
+         STRUCT_FOR_ID(_fields_)
+@@ -275,6 +276,7 @@ struct _Py_global_strings {
+         STRUCT_FOR_ID(_flags_)
+         STRUCT_FOR_ID(_get_sourcefile)
+         STRUCT_FOR_ID(_handle_fromlist)
++        STRUCT_FOR_ID(_handlers)
+         STRUCT_FOR_ID(_initializing)
+         STRUCT_FOR_ID(_internal_use)
+         STRUCT_FOR_ID(_io)
+@@ -322,6 +324,7 @@ struct _Py_global_strings {
+         STRUCT_FOR_ID(argv)
+         STRUCT_FOR_ID(as_integer_ratio)
+         STRUCT_FOR_ID(asend)
++        STRUCT_FOR_ID(assertionlib)
+         STRUCT_FOR_ID(assoclen)
+         STRUCT_FOR_ID(ast)
+         STRUCT_FOR_ID(athrow)
+diff --git a/Include/internal/pycore_intrinsics.h b/Include/internal/pycore_intrinsics.h
+index e8ddafed912..19c709eb58d 100644
+--- a/Include/internal/pycore_intrinsics.h
++++ b/Include/internal/pycore_intrinsics.h
+@@ -33,7 +33,9 @@
+ #define INTRINSIC_ADD_CONDITIONAL_ANNOTATION     6
+ #define INTRINSIC_MATCH_CLASS_ISINSTANCE         7
+ 
+-#define MAX_INTRINSIC_2                          7
++#define INTRINSIC_ASSERT_DETAILS                 8
++
++#define MAX_INTRINSIC_2                          8
+ 
+ typedef PyObject *(*intrinsic_func1)(PyThreadState* tstate, PyObject *value);
+ typedef PyObject *(*intrinsic_func2)(PyThreadState* tstate, PyObject *value1, PyObject *value2);
+diff --git a/Include/internal/pycore_magic_number.h b/Include/internal/pycore_magic_number.h
+index 15d3ad6f3a3..b6826c18960 100644
+--- a/Include/internal/pycore_magic_number.h
++++ b/Include/internal/pycore_magic_number.h
+@@ -304,6 +304,9 @@ Known values:
+     Python 3.16a1 3704 (Replace DELETE_ATTR with PUSH_NULL; STORE_ATTR)
+     Python 3.16a1 3705 (Add INTRINSIC_ADD_CONDITIONAL_ANNOTATION)
+     Python 3.16a1 3706 (Add INTRINSIC_MATCH_CLASS_ISINSTANCE)
++    Python 3.16a1 3707 (Experimental native assertion diagnostics)
++    Python 3.16a1 3708 (Assertion captures, cleanup and expression plans)
++    Python 3.16a1 3709 (Borrowed assertion captures and internal-local bit)
+ 
+     Python 3.17 will start with 3750
+ 
+@@ -313,7 +316,7 @@ Known values:
+ 
+ */
+ 
+-#define PYC_MAGIC_NUMBER 3706
++#define PYC_MAGIC_NUMBER 3709
+ /* This is equivalent to converting PYC_MAGIC_NUMBER to 2 bytes
+    (little-endian) and then appending b'\r\n'. */
+ #define PYC_MAGIC_NUMBER_TOKEN \
+diff --git a/Include/internal/pycore_opcode_metadata.h b/Include/internal/pycore_opcode_metadata.h
+index d3546119bc9..86c49015726 100644
+--- a/Include/internal/pycore_opcode_metadata.h
++++ b/Include/internal/pycore_opcode_metadata.h
+@@ -158,6 +158,8 @@ int _PyOpcode_num_popped(int opcode, int oparg)  {
+             return 2;
+         case CLEANUP_THROW:
+             return 4;
++        case CLEAR_FAST:
++            return 0;
+         case COMPARE_OP:
+             return 2;
+         case COMPARE_OP_FLOAT:
+@@ -178,6 +180,8 @@ int _PyOpcode_num_popped(int opcode, int oparg)  {
+             return 1 + (oparg-1);
+         case COPY_FREE_VARS:
+             return 0;
++        case COPY_TO_FAST:
++            return 1;
+         case DELETE_DEREF:
+             return 0;
+         case DELETE_FAST:
+@@ -464,6 +468,8 @@ int _PyOpcode_num_popped(int opcode, int oparg)  {
+             return 1;
+         case STORE_FAST:
+             return 1;
++        case STORE_FAST_BORROW:
++            return 1;
+         case STORE_FAST_LOAD_FAST:
+             return 1;
+         case STORE_FAST_MAYBE_NULL:
+@@ -653,6 +659,8 @@ int _PyOpcode_num_pushed(int opcode, int oparg)  {
+             return 2;
+         case CLEANUP_THROW:
+             return 3;
++        case CLEAR_FAST:
++            return 0;
+         case COMPARE_OP:
+             return 1;
+         case COMPARE_OP_FLOAT:
+@@ -673,6 +681,8 @@ int _PyOpcode_num_pushed(int opcode, int oparg)  {
+             return 2 + (oparg-1);
+         case COPY_FREE_VARS:
+             return 0;
++        case COPY_TO_FAST:
++            return 1;
+         case DELETE_DEREF:
+             return 0;
+         case DELETE_FAST:
+@@ -959,6 +969,8 @@ int _PyOpcode_num_pushed(int opcode, int oparg)  {
+             return 0;
+         case STORE_FAST:
+             return 0;
++        case STORE_FAST_BORROW:
++            return 1;
+         case STORE_FAST_LOAD_FAST:
+             return 1;
+         case STORE_FAST_MAYBE_NULL:
+@@ -1160,6 +1172,7 @@ const struct opcode_metadata _PyOpcode_opcode_metadata[267] = {
+     [CHECK_EG_MATCH] = { true, INSTR_FMT_IX, HAS_ERROR_FLAG | HAS_ESCAPES_FLAG },
+     [CHECK_EXC_MATCH] = { true, INSTR_FMT_IX, HAS_ERROR_FLAG | HAS_ERROR_NO_POP_FLAG | HAS_ESCAPES_FLAG },
+     [CLEANUP_THROW] = { true, INSTR_FMT_IX, HAS_ERROR_FLAG | HAS_ERROR_NO_POP_FLAG | HAS_ESCAPES_FLAG },
++    [CLEAR_FAST] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_LOCAL_FLAG | HAS_ESCAPES_FLAG },
+     [COMPARE_OP] = { true, INSTR_FMT_IBC, HAS_ARG_FLAG | HAS_ERROR_FLAG | HAS_ESCAPES_FLAG },
+     [COMPARE_OP_FLOAT] = { true, INSTR_FMT_IBC, HAS_ARG_FLAG | HAS_EXIT_FLAG },
+     [COMPARE_OP_INT] = { true, INSTR_FMT_IBC, HAS_ARG_FLAG | HAS_EXIT_FLAG },
+@@ -1170,6 +1183,7 @@ const struct opcode_metadata _PyOpcode_opcode_metadata[267] = {
+     [CONVERT_VALUE] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_ERROR_FLAG | HAS_ESCAPES_FLAG },
+     [COPY] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_PURE_FLAG },
+     [COPY_FREE_VARS] = { true, INSTR_FMT_IB, HAS_ARG_FLAG },
++    [COPY_TO_FAST] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_LOCAL_FLAG | HAS_ESCAPES_FLAG },
+     [DELETE_DEREF] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_FREE_FLAG | HAS_ERROR_FLAG | HAS_ERROR_NO_POP_FLAG | HAS_ESCAPES_FLAG },
+     [DELETE_FAST] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_LOCAL_FLAG | HAS_ERROR_FLAG | HAS_ESCAPES_FLAG },
+     [DELETE_SUBSCR] = { true, INSTR_FMT_IX, HAS_ERROR_FLAG | HAS_ESCAPES_FLAG },
+@@ -1304,6 +1318,7 @@ const struct opcode_metadata _PyOpcode_opcode_metadata[267] = {
+     [STORE_ATTR_WITH_HINT] = { true, INSTR_FMT_IBC000, HAS_ARG_FLAG | HAS_NAME_FLAG | HAS_DEOPT_FLAG | HAS_EXIT_FLAG | HAS_ESCAPES_FLAG | HAS_RECORDS_VALUE_FLAG },
+     [STORE_DEREF] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_FREE_FLAG | HAS_ESCAPES_FLAG },
+     [STORE_FAST] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_LOCAL_FLAG | HAS_ESCAPES_FLAG },
++    [STORE_FAST_BORROW] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_LOCAL_FLAG | HAS_ESCAPES_FLAG },
+     [STORE_FAST_LOAD_FAST] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_LOCAL_FLAG | HAS_ESCAPES_FLAG },
+     [STORE_FAST_STORE_FAST] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_LOCAL_FLAG | HAS_ESCAPES_FLAG },
+     [STORE_GLOBAL] = { true, INSTR_FMT_IB, HAS_ARG_FLAG | HAS_NAME_FLAG | HAS_ERROR_FLAG | HAS_ESCAPES_FLAG },
+@@ -1410,6 +1425,7 @@ _PyOpcode_macro_expansion[256] = {
+     [CALL_TYPE_1] = { .nuops = 4, .uops = { { _GUARD_NOS_NULL, OPARG_SIMPLE, 3 }, { _GUARD_CALLABLE_TYPE_1, OPARG_SIMPLE, 3 }, { _CALL_TYPE_1, OPARG_SIMPLE, 3 }, { _POP_TOP, OPARG_SIMPLE, 3 } } },
+     [CHECK_EG_MATCH] = { .nuops = 1, .uops = { { _CHECK_EG_MATCH, OPARG_SIMPLE, 0 } } },
+     [CHECK_EXC_MATCH] = { .nuops = 1, .uops = { { _CHECK_EXC_MATCH, OPARG_SIMPLE, 0 } } },
++    [CLEAR_FAST] = { .nuops = 1, .uops = { { _CLEAR_FAST, OPARG_SIMPLE, 0 } } },
+     [COMPARE_OP] = { .nuops = 1, .uops = { { _COMPARE_OP, OPARG_SIMPLE, 0 } } },
+     [COMPARE_OP_FLOAT] = { .nuops = 5, .uops = { { _GUARD_TOS_FLOAT, OPARG_SIMPLE, 0 }, { _GUARD_NOS_FLOAT, OPARG_SIMPLE, 0 }, { _COMPARE_OP_FLOAT, OPARG_SIMPLE, 1 }, { _POP_TOP_FLOAT, OPARG_SIMPLE, 1 }, { _POP_TOP_FLOAT, OPARG_SIMPLE, 1 } } },
+     [COMPARE_OP_INT] = { .nuops = 5, .uops = { { _GUARD_TOS_INT, OPARG_SIMPLE, 0 }, { _GUARD_NOS_INT, OPARG_SIMPLE, 0 }, { _COMPARE_OP_INT, OPARG_SIMPLE, 1 }, { _POP_TOP_INT, OPARG_SIMPLE, 1 }, { _POP_TOP_INT, OPARG_SIMPLE, 1 } } },
+@@ -1420,6 +1436,7 @@ _PyOpcode_macro_expansion[256] = {
+     [CONVERT_VALUE] = { .nuops = 1, .uops = { { _CONVERT_VALUE, OPARG_SIMPLE, 0 } } },
+     [COPY] = { .nuops = 1, .uops = { { _COPY, OPARG_SIMPLE, 0 } } },
+     [COPY_FREE_VARS] = { .nuops = 1, .uops = { { _COPY_FREE_VARS, OPARG_SIMPLE, 0 } } },
++    [COPY_TO_FAST] = { .nuops = 1, .uops = { { _COPY_TO_FAST, OPARG_SIMPLE, 0 } } },
+     [DELETE_DEREF] = { .nuops = 1, .uops = { { _DELETE_DEREF, OPARG_SIMPLE, 0 } } },
+     [DELETE_FAST] = { .nuops = 1, .uops = { { _DELETE_FAST, OPARG_SIMPLE, 0 } } },
+     [DELETE_SUBSCR] = { .nuops = 1, .uops = { { _DELETE_SUBSCR, OPARG_SIMPLE, 0 } } },
+@@ -1520,6 +1537,7 @@ _PyOpcode_macro_expansion[256] = {
+     [STORE_ATTR_WITH_HINT] = { .nuops = 4, .uops = { { _RECORD_TOS_TYPE, OPARG_SIMPLE, 1 }, { _GUARD_TYPE_VERSION, 2, 1 }, { _STORE_ATTR_WITH_HINT, 1, 3 }, { _POP_TOP, OPARG_SIMPLE, 4 } } },
+     [STORE_DEREF] = { .nuops = 1, .uops = { { _STORE_DEREF, OPARG_SIMPLE, 0 } } },
+     [STORE_FAST] = { .nuops = 2, .uops = { { _SWAP_FAST, OPARG_SIMPLE, 0 }, { _POP_TOP, OPARG_SIMPLE, 0 } } },
++    [STORE_FAST_BORROW] = { .nuops = 1, .uops = { { _STORE_FAST_BORROW, OPARG_SIMPLE, 0 } } },
+     [STORE_FAST_LOAD_FAST] = { .nuops = 3, .uops = { { _SWAP_FAST, OPARG_TOP, 0 }, { _POP_TOP, OPARG_TOP, 0 }, { _LOAD_FAST, OPARG_BOTTOM, 0 } } },
+     [STORE_FAST_STORE_FAST] = { .nuops = 4, .uops = { { _SWAP_FAST, OPARG_TOP, 0 }, { _POP_TOP, OPARG_TOP, 0 }, { _SWAP_FAST, OPARG_BOTTOM, 0 }, { _POP_TOP, OPARG_BOTTOM, 0 } } },
+     [STORE_GLOBAL] = { .nuops = 1, .uops = { { _STORE_GLOBAL, OPARG_SIMPLE, 0 } } },
+@@ -1613,6 +1631,7 @@ const char *_PyOpcode_OpName[267] = {
+     [CHECK_EG_MATCH] = "CHECK_EG_MATCH",
+     [CHECK_EXC_MATCH] = "CHECK_EXC_MATCH",
+     [CLEANUP_THROW] = "CLEANUP_THROW",
++    [CLEAR_FAST] = "CLEAR_FAST",
+     [COMPARE_OP] = "COMPARE_OP",
+     [COMPARE_OP_FLOAT] = "COMPARE_OP_FLOAT",
+     [COMPARE_OP_INT] = "COMPARE_OP_INT",
+@@ -1623,6 +1642,7 @@ const char *_PyOpcode_OpName[267] = {
+     [CONVERT_VALUE] = "CONVERT_VALUE",
+     [COPY] = "COPY",
+     [COPY_FREE_VARS] = "COPY_FREE_VARS",
++    [COPY_TO_FAST] = "COPY_TO_FAST",
+     [DELETE_DEREF] = "DELETE_DEREF",
+     [DELETE_FAST] = "DELETE_FAST",
+     [DELETE_SUBSCR] = "DELETE_SUBSCR",
+@@ -1766,6 +1786,7 @@ const char *_PyOpcode_OpName[267] = {
+     [STORE_ATTR_WITH_HINT] = "STORE_ATTR_WITH_HINT",
+     [STORE_DEREF] = "STORE_DEREF",
+     [STORE_FAST] = "STORE_FAST",
++    [STORE_FAST_BORROW] = "STORE_FAST_BORROW",
+     [STORE_FAST_LOAD_FAST] = "STORE_FAST_LOAD_FAST",
+     [STORE_FAST_MAYBE_NULL] = "STORE_FAST_MAYBE_NULL",
+     [STORE_FAST_STORE_FAST] = "STORE_FAST_STORE_FAST",
+@@ -1828,9 +1849,6 @@ const uint8_t _PyOpcode_Caches[256] = {
+ PyAPI_DATA(const uint8_t) _PyOpcode_Deopt[256];
+ #ifdef NEED_OPCODE_METADATA
+ const uint8_t _PyOpcode_Deopt[256] = {
+-    [117] = 117,
+-    [118] = 118,
+-    [119] = 119,
+     [120] = 120,
+     [121] = 121,
+     [122] = 122,
+@@ -1913,6 +1931,7 @@ const uint8_t _PyOpcode_Deopt[256] = {
+     [CHECK_EG_MATCH] = CHECK_EG_MATCH,
+     [CHECK_EXC_MATCH] = CHECK_EXC_MATCH,
+     [CLEANUP_THROW] = CLEANUP_THROW,
++    [CLEAR_FAST] = CLEAR_FAST,
+     [COMPARE_OP] = COMPARE_OP,
+     [COMPARE_OP_FLOAT] = COMPARE_OP,
+     [COMPARE_OP_INT] = COMPARE_OP,
+@@ -1923,6 +1942,7 @@ const uint8_t _PyOpcode_Deopt[256] = {
+     [CONVERT_VALUE] = CONVERT_VALUE,
+     [COPY] = COPY,
+     [COPY_FREE_VARS] = COPY_FREE_VARS,
++    [COPY_TO_FAST] = COPY_TO_FAST,
+     [DELETE_DEREF] = DELETE_DEREF,
+     [DELETE_FAST] = DELETE_FAST,
+     [DELETE_SUBSCR] = DELETE_SUBSCR,
+@@ -2057,6 +2077,7 @@ const uint8_t _PyOpcode_Deopt[256] = {
+     [STORE_ATTR_WITH_HINT] = STORE_ATTR,
+     [STORE_DEREF] = STORE_DEREF,
+     [STORE_FAST] = STORE_FAST,
++    [STORE_FAST_BORROW] = STORE_FAST_BORROW,
+     [STORE_FAST_LOAD_FAST] = STORE_FAST_LOAD_FAST,
+     [STORE_FAST_STORE_FAST] = STORE_FAST_STORE_FAST,
+     [STORE_GLOBAL] = STORE_GLOBAL,
+@@ -2089,9 +2110,6 @@ const uint8_t _PyOpcode_Deopt[256] = {
+ #endif // NEED_OPCODE_METADATA
+ 
+ #define EXTRA_CASES \
+-    case 117: \
+-    case 118: \
+-    case 119: \
+     case 120: \
+     case 121: \
+     case 122: \
+diff --git a/Include/internal/pycore_runtime_init_generated.h b/Include/internal/pycore_runtime_init_generated.h
+index 34dc6228a0b..d1d6879c227 100644
+--- a/Include/internal/pycore_runtime_init_generated.h
++++ b/Include/internal/pycore_runtime_init_generated.h
+@@ -1539,6 +1539,7 @@ extern "C" {
+     INIT_ID(_bootstrap), \
+     INIT_ID(_check_retval_), \
+     INIT_ID(_dealloc_warn), \
++    INIT_ID(_dispatch), \
+     INIT_ID(_feature_version), \
+     INIT_ID(_field_types), \
+     INIT_ID(_fields_), \
+@@ -1550,6 +1551,7 @@ extern "C" {
+     INIT_ID(_flags_), \
+     INIT_ID(_get_sourcefile), \
+     INIT_ID(_handle_fromlist), \
++    INIT_ID(_handlers), \
+     INIT_ID(_initializing), \
+     INIT_ID(_internal_use), \
+     INIT_ID(_io), \
+@@ -1597,6 +1599,7 @@ extern "C" {
+     INIT_ID(argv), \
+     INIT_ID(as_integer_ratio), \
+     INIT_ID(asend), \
++    INIT_ID(assertionlib), \
+     INIT_ID(assoclen), \
+     INIT_ID(ast), \
+     INIT_ID(athrow), \
+diff --git a/Include/internal/pycore_unicodeobject_generated.h b/Include/internal/pycore_unicodeobject_generated.h
+index f2f3b9de4a0..3e585958dd7 100644
+--- a/Include/internal/pycore_unicodeobject_generated.h
++++ b/Include/internal/pycore_unicodeobject_generated.h
+@@ -216,6 +216,7 @@ _PyUnicode_InitStaticStrings(PyInterpreterState *interp) {
+         offsetof(struct _Py_global_strings, identifiers._py__bootstrap._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py__check_retval_._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py__dealloc_warn._ascii.ob_base),
++        offsetof(struct _Py_global_strings, identifiers._py__dispatch._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py__feature_version._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py__field_types._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py__fields_._ascii.ob_base),
+@@ -227,6 +228,7 @@ _PyUnicode_InitStaticStrings(PyInterpreterState *interp) {
+         offsetof(struct _Py_global_strings, identifiers._py__flags_._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py__get_sourcefile._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py__handle_fromlist._ascii.ob_base),
++        offsetof(struct _Py_global_strings, identifiers._py__handlers._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py__initializing._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py__internal_use._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py__io._ascii.ob_base),
+@@ -274,6 +276,7 @@ _PyUnicode_InitStaticStrings(PyInterpreterState *interp) {
+         offsetof(struct _Py_global_strings, identifiers._py_argv._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py_as_integer_ratio._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py_asend._ascii.ob_base),
++        offsetof(struct _Py_global_strings, identifiers._py_assertionlib._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py_assoclen._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py_ast._ascii.ob_base),
+         offsetof(struct _Py_global_strings, identifiers._py_athrow._ascii.ob_base),
+diff --git a/Include/internal/pycore_uop_ids.h b/Include/internal/pycore_uop_ids.h
+index ba6e0252024..1eac0701480 100644
+--- a/Include/internal/pycore_uop_ids.h
++++ b/Include/internal/pycore_uop_ids.h
+@@ -378,8 +378,10 @@ enum {
+ #define _BUILD_TUPLE BUILD_TUPLE
+ #define _CHECK_EG_MATCH CHECK_EG_MATCH
+ #define _CHECK_EXC_MATCH CHECK_EXC_MATCH
++#define _CLEAR_FAST CLEAR_FAST
+ #define _CONVERT_VALUE CONVERT_VALUE
+ #define _COPY_FREE_VARS COPY_FREE_VARS
++#define _COPY_TO_FAST COPY_TO_FAST
+ #define _DELETE_DEREF DELETE_DEREF
+ #define _DELETE_FAST DELETE_FAST
+ #define _DELETE_SUBSCR DELETE_SUBSCR
+@@ -432,6 +434,7 @@ enum {
+ #define _SET_ADD SET_ADD
+ #define _SET_FUNCTION_ATTRIBUTE SET_FUNCTION_ATTRIBUTE
+ #define _STORE_DEREF STORE_DEREF
++#define _STORE_FAST_BORROW STORE_FAST_BORROW
+ #define _STORE_GLOBAL STORE_GLOBAL
+ #define _STORE_NAME STORE_NAME
+ #define _TO_BOOL_BOOL TO_BOOL_BOOL
+@@ -621,6 +624,7 @@ enum {
+     _CHECK_VALIDITY_r11,
+     _CHECK_VALIDITY_r22,
+     _CHECK_VALIDITY_r33,
++    _CLEAR_FAST_r00,
+     _COLD_DYNAMIC_EXIT_r00,
+     _COLD_EXIT_r00,
+     _COMPARE_OP_r21,
+@@ -648,6 +652,7 @@ enum {
+     _COPY_FREE_VARS_r11,
+     _COPY_FREE_VARS_r22,
+     _COPY_FREE_VARS_r33,
++    _COPY_TO_FAST_r11,
+     _CREATE_INIT_FRAME_r01,
+     _DELETE_DEREF_r00,
+     _DELETE_FAST_r00,
+@@ -1344,6 +1349,7 @@ enum {
+     _STORE_ATTR_SLOT_r21,
+     _STORE_ATTR_WITH_HINT_r21,
+     _STORE_DEREF_r10,
++    _STORE_FAST_BORROW_r11,
+     _STORE_FAST_LOAD_FAST_r11,
+     _STORE_FAST_STORE_FAST_r20,
+     _STORE_GLOBAL_r10,
+@@ -1444,7 +1450,7 @@ enum {
+     _WITH_EXCEPT_START_r33,
+     _YIELD_VALUE_r11,
+ };
+-#define MAX_UOP_REGS_ID 1655
++#define MAX_UOP_REGS_ID 1658
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/Include/internal/pycore_uop_metadata.h b/Include/internal/pycore_uop_metadata.h
+index 86b449158f0..7356ffcbf20 100644
+--- a/Include/internal/pycore_uop_metadata.h
++++ b/Include/internal/pycore_uop_metadata.h
+@@ -65,6 +65,9 @@ const uint32_t _PyUop_Flags[MAX_UOP_ID+1] = {
+     [_LOAD_SMALL_INT_2] = 0,
+     [_LOAD_SMALL_INT_3] = 0,
+     [_LOAD_SMALL_INT] = HAS_ARG_FLAG,
++    [_COPY_TO_FAST] = HAS_ARG_FLAG | HAS_LOCAL_FLAG | HAS_ESCAPES_FLAG,
++    [_STORE_FAST_BORROW] = HAS_ARG_FLAG | HAS_LOCAL_FLAG | HAS_ESCAPES_FLAG,
++    [_CLEAR_FAST] = HAS_ARG_FLAG | HAS_LOCAL_FLAG | HAS_ESCAPES_FLAG,
+     [_SWAP_FAST_0] = HAS_LOCAL_FLAG,
+     [_SWAP_FAST_1] = HAS_LOCAL_FLAG,
+     [_SWAP_FAST_2] = HAS_LOCAL_FLAG,
+@@ -717,6 +720,33 @@ const _PyUopCachingInfo _PyUop_Caching[MAX_UOP_ID+1] = {
+             { -1, -1, -1 },
+         },
+     },
++    [_COPY_TO_FAST] = {
++        .best = { 1, 1, 1, 1 },
++        .entries = {
++            { -1, -1, -1 },
++            { 1, 1, _COPY_TO_FAST_r11 },
++            { -1, -1, -1 },
++            { -1, -1, -1 },
++        },
++    },
++    [_STORE_FAST_BORROW] = {
++        .best = { 1, 1, 1, 1 },
++        .entries = {
++            { -1, -1, -1 },
++            { 1, 1, _STORE_FAST_BORROW_r11 },
++            { -1, -1, -1 },
++            { -1, -1, -1 },
++        },
++    },
++    [_CLEAR_FAST] = {
++        .best = { 0, 0, 0, 0 },
++        .entries = {
++            { 0, 0, _CLEAR_FAST_r00 },
++            { -1, -1, -1 },
++            { -1, -1, -1 },
++            { -1, -1, -1 },
++        },
++    },
+     [_SWAP_FAST_0] = {
+         .best = { 0, 1, 2, 3 },
+         .entries = {
+@@ -4003,6 +4033,9 @@ const uint16_t _PyUop_Uncached[MAX_UOP_REGS_ID+1] = {
+     [_LOAD_SMALL_INT_r01] = _LOAD_SMALL_INT,
+     [_LOAD_SMALL_INT_r12] = _LOAD_SMALL_INT,
+     [_LOAD_SMALL_INT_r23] = _LOAD_SMALL_INT,
++    [_COPY_TO_FAST_r11] = _COPY_TO_FAST,
++    [_STORE_FAST_BORROW_r11] = _STORE_FAST_BORROW,
++    [_CLEAR_FAST_r00] = _CLEAR_FAST,
+     [_SWAP_FAST_0_r01] = _SWAP_FAST_0,
+     [_SWAP_FAST_0_r11] = _SWAP_FAST_0,
+     [_SWAP_FAST_0_r22] = _SWAP_FAST_0,
+@@ -5135,6 +5168,8 @@ const char *const _PyOpcode_uop_name[MAX_UOP_REGS_ID+1] = {
+     [_CHECK_VALIDITY_r11] = "_CHECK_VALIDITY_r11",
+     [_CHECK_VALIDITY_r22] = "_CHECK_VALIDITY_r22",
+     [_CHECK_VALIDITY_r33] = "_CHECK_VALIDITY_r33",
++    [_CLEAR_FAST] = "_CLEAR_FAST",
++    [_CLEAR_FAST_r00] = "_CLEAR_FAST_r00",
+     [_COLD_DYNAMIC_EXIT] = "_COLD_DYNAMIC_EXIT",
+     [_COLD_DYNAMIC_EXIT_r00] = "_COLD_DYNAMIC_EXIT_r00",
+     [_COLD_EXIT] = "_COLD_EXIT",
+@@ -5177,6 +5212,8 @@ const char *const _PyOpcode_uop_name[MAX_UOP_REGS_ID+1] = {
+     [_COPY_FREE_VARS_r11] = "_COPY_FREE_VARS_r11",
+     [_COPY_FREE_VARS_r22] = "_COPY_FREE_VARS_r22",
+     [_COPY_FREE_VARS_r33] = "_COPY_FREE_VARS_r33",
++    [_COPY_TO_FAST] = "_COPY_TO_FAST",
++    [_COPY_TO_FAST_r11] = "_COPY_TO_FAST_r11",
+     [_CREATE_INIT_FRAME] = "_CREATE_INIT_FRAME",
+     [_CREATE_INIT_FRAME_r01] = "_CREATE_INIT_FRAME_r01",
+     [_DELETE_DEREF] = "_DELETE_DEREF",
+@@ -6058,6 +6095,8 @@ const char *const _PyOpcode_uop_name[MAX_UOP_REGS_ID+1] = {
+     [_STORE_ATTR_WITH_HINT_r21] = "_STORE_ATTR_WITH_HINT_r21",
+     [_STORE_DEREF] = "_STORE_DEREF",
+     [_STORE_DEREF_r10] = "_STORE_DEREF_r10",
++    [_STORE_FAST_BORROW] = "_STORE_FAST_BORROW",
++    [_STORE_FAST_BORROW_r11] = "_STORE_FAST_BORROW_r11",
+     [_STORE_GLOBAL] = "_STORE_GLOBAL",
+     [_STORE_GLOBAL_r10] = "_STORE_GLOBAL_r10",
+     [_STORE_NAME] = "_STORE_NAME",
+@@ -6258,6 +6297,12 @@ int _PyUop_num_popped(int opcode, int oparg)
+             return 0;
+         case _LOAD_SMALL_INT:
+             return 0;
++        case _COPY_TO_FAST:
++            return 0;
++        case _STORE_FAST_BORROW:
++            return 1;
++        case _CLEAR_FAST:
++            return 0;
+         case _SWAP_FAST_0:
+             return 1;
+         case _SWAP_FAST_1:
+diff --git a/Include/opcode_ids.h b/Include/opcode_ids.h
+index 11342ae451b..d4934275dfc 100644
+--- a/Include/opcode_ids.h
++++ b/Include/opcode_ids.h
+@@ -64,69 +64,72 @@ extern "C" {
+ #define CALL_INTRINSIC_1                        51
+ #define CALL_INTRINSIC_2                        52
+ #define CALL_KW                                 53
+-#define COMPARE_OP                              54
+-#define CONTAINS_OP                             55
+-#define CONVERT_VALUE                           56
+-#define COPY                                    57
+-#define COPY_FREE_VARS                          58
+-#define DELETE_DEREF                            59
+-#define DELETE_FAST                             60
+-#define DICT_MERGE                              61
+-#define DICT_UPDATE                             62
+-#define END_ASYNC_FOR                           63
+-#define EXTENDED_ARG                            64
+-#define FOR_ITER                                65
+-#define GET_AWAITABLE                           66
+-#define GET_ITER                                67
+-#define IMPORT_FROM                             68
+-#define IMPORT_NAME                             69
+-#define IS_OP                                   70
+-#define JUMP_BACKWARD                           71
+-#define JUMP_BACKWARD_NO_INTERRUPT              72
+-#define JUMP_FORWARD                            73
+-#define LIST_APPEND                             74
+-#define LIST_EXTEND                             75
+-#define LOAD_ATTR                               76
+-#define LOAD_COMMON_CONSTANT                    77
+-#define LOAD_CONST                              78
+-#define LOAD_DEREF                              79
+-#define LOAD_FAST                               80
+-#define LOAD_FAST_AND_CLEAR                     81
+-#define LOAD_FAST_BORROW                        82
+-#define LOAD_FAST_BORROW_LOAD_FAST_BORROW       83
+-#define LOAD_FAST_CHECK                         84
+-#define LOAD_FAST_LOAD_FAST                     85
+-#define LOAD_FROM_DICT_OR_DEREF                 86
+-#define LOAD_FROM_DICT_OR_GLOBALS               87
+-#define LOAD_GLOBAL                             88
+-#define LOAD_NAME                               89
+-#define LOAD_SMALL_INT                          90
+-#define LOAD_SPECIAL                            91
+-#define LOAD_SUPER_ATTR                         92
+-#define MAKE_CELL                               93
+-#define MAP_ADD                                 94
+-#define MATCH_CLASS                             95
+-#define POP_JUMP_IF_FALSE                       96
+-#define POP_JUMP_IF_NONE                        97
+-#define POP_JUMP_IF_NOT_NONE                    98
+-#define POP_JUMP_IF_TRUE                        99
+-#define RAISE_VARARGS                          100
+-#define RERAISE                                101
+-#define SEND                                   102
+-#define SET_ADD                                103
+-#define SET_FUNCTION_ATTRIBUTE                 104
+-#define SET_UPDATE                             105
+-#define STORE_ATTR                             106
+-#define STORE_DEREF                            107
+-#define STORE_FAST                             108
+-#define STORE_FAST_LOAD_FAST                   109
+-#define STORE_FAST_STORE_FAST                  110
+-#define STORE_GLOBAL                           111
+-#define STORE_NAME                             112
+-#define SWAP                                   113
+-#define UNPACK_EX                              114
+-#define UNPACK_SEQUENCE                        115
+-#define YIELD_VALUE                            116
++#define CLEAR_FAST                              54
++#define COMPARE_OP                              55
++#define CONTAINS_OP                             56
++#define CONVERT_VALUE                           57
++#define COPY                                    58
++#define COPY_FREE_VARS                          59
++#define COPY_TO_FAST                            60
++#define DELETE_DEREF                            61
++#define DELETE_FAST                             62
++#define DICT_MERGE                              63
++#define DICT_UPDATE                             64
++#define END_ASYNC_FOR                           65
++#define EXTENDED_ARG                            66
++#define FOR_ITER                                67
++#define GET_AWAITABLE                           68
++#define GET_ITER                                69
++#define IMPORT_FROM                             70
++#define IMPORT_NAME                             71
++#define IS_OP                                   72
++#define JUMP_BACKWARD                           73
++#define JUMP_BACKWARD_NO_INTERRUPT              74
++#define JUMP_FORWARD                            75
++#define LIST_APPEND                             76
++#define LIST_EXTEND                             77
++#define LOAD_ATTR                               78
++#define LOAD_COMMON_CONSTANT                    79
++#define LOAD_CONST                              80
++#define LOAD_DEREF                              81
++#define LOAD_FAST                               82
++#define LOAD_FAST_AND_CLEAR                     83
++#define LOAD_FAST_BORROW                        84
++#define LOAD_FAST_BORROW_LOAD_FAST_BORROW       85
++#define LOAD_FAST_CHECK                         86
++#define LOAD_FAST_LOAD_FAST                     87
++#define LOAD_FROM_DICT_OR_DEREF                 88
++#define LOAD_FROM_DICT_OR_GLOBALS               89
++#define LOAD_GLOBAL                             90
++#define LOAD_NAME                               91
++#define LOAD_SMALL_INT                          92
++#define LOAD_SPECIAL                            93
++#define LOAD_SUPER_ATTR                         94
++#define MAKE_CELL                               95
++#define MAP_ADD                                 96
++#define MATCH_CLASS                             97
++#define POP_JUMP_IF_FALSE                       98
++#define POP_JUMP_IF_NONE                        99
++#define POP_JUMP_IF_NOT_NONE                   100
++#define POP_JUMP_IF_TRUE                       101
++#define RAISE_VARARGS                          102
++#define RERAISE                                103
++#define SEND                                   104
++#define SET_ADD                                105
++#define SET_FUNCTION_ATTRIBUTE                 106
++#define SET_UPDATE                             107
++#define STORE_ATTR                             108
++#define STORE_DEREF                            109
++#define STORE_FAST                             110
++#define STORE_FAST_BORROW                      111
++#define STORE_FAST_LOAD_FAST                   112
++#define STORE_FAST_STORE_FAST                  113
++#define STORE_GLOBAL                           114
++#define STORE_NAME                             115
++#define SWAP                                   116
++#define UNPACK_EX                              117
++#define UNPACK_SEQUENCE                        118
++#define YIELD_VALUE                            119
+ #define RESUME                                 128
+ #define BINARY_OP_ADD_FLOAT                    129
+ #define BINARY_OP_ADD_INT                      130
+diff --git a/Lib/_assertion.py b/Lib/_assertion.py
+new file mode 100644
+index 00000000000..90973c04e7d
+--- /dev/null
++++ b/Lib/_assertion.py
+@@ -0,0 +1,229 @@
++"""Private formatter for the native assertion prototype.
++
++The compiler emits a plan with one record per capture. Each optional value is
++an empty tuple for a skipped expression, or a one-item tuple for an evaluated
++expression. Raw values are references, not snapshots of mutable object state.
++"""
++
++import difflib
++import reprlib
++
++
++_repr = reprlib.Repr()
++_repr.maxstring = 240
++_repr.maxother = 240
++_repr.maxlist = 12
++_repr.maxtuple = 12
++_repr.maxdict = 12
++_repr.maxset = 12
++_repr.maxlevel = 4
++
++
++def _safe_repr(value):
++    try:
++        return _repr.repr(value)
++    except Exception:
++        return '<repr failed>'
++
++
++def _plain(value, depth=0):
++    """Permit diffs only when equality cannot invoke user-defined methods."""
++    if type(value) in (str, bytes, int, float, bool, type(None)):
++        return True
++    if depth >= 4:
++        return False
++    if type(value) in (tuple, list, set, frozenset):
++        return len(value) <= 100 and all(_plain(v, depth + 1) for v in value)
++    if type(value) is dict:
++        return len(value) <= 100 and all(
++            _plain(k, depth + 1) and _plain(v, depth + 1)
++            for k, v in value.items())
++    return False
++
++
++def _difference(left, right, op):
++    if op != '==' or not (_plain(left) and _plain(right)):
++        return []
++    if type(left) is str and type(right) is str:
++        # Bound the input to the diff algorithm as well as its output.
++        if len(left) > 4000 or len(right) > 4000:
++            return ['    string diff omitted: input exceeds 4000 characters\n']
++        lines = difflib.ndiff(right.splitlines(), left.splitlines())
++        return ['    ' + line + '\n' for _, line in zip(range(40), lines)]
++    if type(left) in (list, tuple) and type(right) is type(left):
++        for index, (a, b) in enumerate(zip(left, right)):
++            if a != b:
++                return [f'    At index {index} diff: '
++                        f'{_safe_repr(a)} != {_safe_repr(b)}\n']
++        if len(left) != len(right):
++            return [f'    sequence lengths: {len(left)} != {len(right)}\n']
++    if type(left) is dict and type(right) is dict:
++        lines = []
++        for key in left:
++            if key not in right:
++                lines.append(f'    only in left: {_safe_repr(key)}\n')
++            elif left[key] != right[key]:
++                lines.append(f'    key {_safe_repr(key)}: '
++                             f'{_safe_repr(left[key])} != {_safe_repr(right[key])}\n')
++            if len(lines) == 12:
++                break
++        for key in right:
++            if len(lines) == 12:
++                break
++            if key not in left:
++                lines.append(f'    only in right: {_safe_repr(key)}\n')
++        return lines
++    if type(left) in (set, frozenset) and type(right) is type(left):
++        return [f'    only in left: {_safe_repr(left - right)}\n',
++                f'    only in right: {_safe_repr(right - left)}\n']
++    return []
++
++
++class _Explanation:
++    def __init__(self, details, compare):
++        self.representations = {}
++        self.comparisons = {}
++        self.overrides = {}
++        self.differences = []
++        for comparison in details.comparisons:
++            if comparison.evaluated:
++                links = self.comparisons.setdefault(comparison.expression.id, [])
++                links.append(comparison)
++                if compare is not None:
++                    result = compare(comparison.operator, comparison.left.value,
++                                     comparison.right.value)
++                    if result is not None:
++                        self.overrides[comparison] = list(result)
++
++    def represent(self, value):
++        key = id(value)
++        if key not in self.representations:
++            self.representations[key] = _safe_repr(value)
++        return self.representations[key]
++
++    def comparison(self, node):
++        links = self.comparisons[node.id]
++        chosen = links[-1]
++        for link in links:
++            if link.truth is False:
++                chosen = link
++                break
++        override = self.overrides.get(chosen)
++        if override:
++            self.differences.extend('    ' + line + '\n' for line in override[1:])
++            return override[0], []
++        left, left_bindings = self.render(chosen.left)
++        right, right_bindings = self.render(chosen.right)
++        if override is None and (chosen.truth is False or chosen.value is False):
++            self.differences.extend(_difference(
++                chosen.left.value, chosen.right.value, chosen.operator))
++        return f'{left} {chosen.operator} {right}', left_bindings + right_bindings
++
++    def compose(self, node):
++        # Parse only the compiler's normalized text. Source offsets from that
++        # parse let us substitute operands without changing literals or names.
++        import ast
++        tree = ast.parse(node.text, mode='eval').body
++        if node.kind == 'binary':
++            operands = [tree.left, tree.right]
++        elif node.kind == 'unary':
++            operands = [tree.operand]
++        elif node.kind == 'attribute':
++            operands = [tree.value]
++        elif node.kind == 'subscript':
++            operands = [tree.value, tree.slice]
++        else:
++            operands = [tree.func]
++            operands.extend(arg.value if isinstance(arg, ast.Starred) else arg
++                            for arg in tree.args)
++            operands.extend(keyword.value for keyword in tree.keywords)
++
++        source = node.text.encode('utf-8')
++        offsets = [0]
++        for line in source.splitlines(keepends=True):
++            offsets.append(offsets[-1] + len(line))
++        replacements = []
++        bindings = []
++        for index, (operand, child) in enumerate(
++                zip(operands, node.children, strict=True)):
++            if isinstance(operand, ast.Slice):
++                # Constant-folded bounds need not have their own graph nodes.
++                value = child.value
++                bounds = [value.start, value.stop]
++                if value.step is not None:
++                    bounds.append(value.step)
++                text = ':'.join(self.represent(bound) if bound is not None else ''
++                                for bound in bounds)
++                nested = []
++            elif node.kind == 'call' and index == 0:
++                if child.kind == 'attribute':
++                    text, nested = self.compose(child)
++                else:
++                    text, nested = child.text, []
++            else:
++                text, nested = self.render(child)
++            bindings.extend(nested)
++            start = offsets[operand.lineno - 1] + operand.col_offset
++            end = offsets[operand.end_lineno - 1] + operand.end_col_offset
++            replacements.append((start, end, text.encode('utf-8')))
++        for start, end, text in sorted(replacements, reverse=True):
++            source = source[:start] + text + source[end:]
++        return source.decode('utf-8'), bindings
++
++    def render(self, node):
++        if not node.evaluated:
++            return node.text, []
++        if node.kind == 'compare':
++            return self.comparison(node)
++        if node.kind in ('and', 'or'):
++            parts, bindings = [], []
++            for child in node.children:
++                if not child.evaluated:
++                    break
++                text, nested = self.render(child)
++                parts.append(text)
++                bindings.extend(nested)
++                if child.truth is (node.kind == 'or'):
++                    break
++            return '(' + f' {node.kind} '.join(parts) + ')', bindings
++        if node.kind == 'conditional':
++            condition, body, otherwise = node.children
++            return self.render(body if condition.truth is True else otherwise)
++        if node.kind == 'not':
++            text, bindings = self.render(node.children[0])
++            return f'not ({text})', bindings
++        if node.kind in ('binary', 'unary', 'call', 'attribute', 'subscript'):
++            text, bindings = self.compose(node)
++            if node.kind == 'binary':
++                return f'({text})', bindings
++            if node.kind == 'unary':
++                return text, bindings
++            value = self.represent(node.value)
++            return value, [(f'{value} = {text}', bindings)]
++        return self.represent(node.value), []
++
++
++def _format_bindings(bindings, depth=0):
++    for index, (text, children) in enumerate(bindings):
++        label = 'where' if index == 0 else 'and'
++        yield '    ' + '  ' * depth + f'+ {label} {text}\n'
++        yield from _format_bindings(children, depth + 1)
++
++
++def format_details(details, *, compare=None):
++    """Return a compact explanation from captured values, without evaluation."""
++    from assertionlib import _from_payload
++    return _format_details(_from_payload(details), compare=compare)
++
++
++def _format_details(details, *, compare=None):
++    explanation = _Explanation(details, compare)
++    text, bindings = explanation.render(details.root)
++    return [f'  assert {text}\n', *_format_bindings(bindings), *explanation.differences]
++
++
++def clear_details(exc):
++    """Release captured references after a consumer stores formatted text."""
++    exc.__dict__.pop('_assertion', None)
++    exc.__dict__.pop('_assertion_details', None)
++    exc.__dict__.pop('_assertion_explained', None)
+diff --git a/Lib/_opcode_metadata.py b/Lib/_opcode_metadata.py
+index df92eae151d..ec5f5465951 100644
+--- a/Lib/_opcode_metadata.py
++++ b/Lib/_opcode_metadata.py
+@@ -284,69 +284,72 @@ opmap = frozendict(
+     CALL_INTRINSIC_1=51,
+     CALL_INTRINSIC_2=52,
+     CALL_KW=53,
+-    COMPARE_OP=54,
+-    CONTAINS_OP=55,
+-    CONVERT_VALUE=56,
+-    COPY=57,
+-    COPY_FREE_VARS=58,
+-    DELETE_DEREF=59,
+-    DELETE_FAST=60,
+-    DICT_MERGE=61,
+-    DICT_UPDATE=62,
+-    END_ASYNC_FOR=63,
+-    EXTENDED_ARG=64,
+-    FOR_ITER=65,
+-    GET_AWAITABLE=66,
+-    GET_ITER=67,
+-    IMPORT_FROM=68,
+-    IMPORT_NAME=69,
+-    IS_OP=70,
+-    JUMP_BACKWARD=71,
+-    JUMP_BACKWARD_NO_INTERRUPT=72,
+-    JUMP_FORWARD=73,
+-    LIST_APPEND=74,
+-    LIST_EXTEND=75,
+-    LOAD_ATTR=76,
+-    LOAD_COMMON_CONSTANT=77,
+-    LOAD_CONST=78,
+-    LOAD_DEREF=79,
+-    LOAD_FAST=80,
+-    LOAD_FAST_AND_CLEAR=81,
+-    LOAD_FAST_BORROW=82,
+-    LOAD_FAST_BORROW_LOAD_FAST_BORROW=83,
+-    LOAD_FAST_CHECK=84,
+-    LOAD_FAST_LOAD_FAST=85,
+-    LOAD_FROM_DICT_OR_DEREF=86,
+-    LOAD_FROM_DICT_OR_GLOBALS=87,
+-    LOAD_GLOBAL=88,
+-    LOAD_NAME=89,
+-    LOAD_SMALL_INT=90,
+-    LOAD_SPECIAL=91,
+-    LOAD_SUPER_ATTR=92,
+-    MAKE_CELL=93,
+-    MAP_ADD=94,
+-    MATCH_CLASS=95,
+-    POP_JUMP_IF_FALSE=96,
+-    POP_JUMP_IF_NONE=97,
+-    POP_JUMP_IF_NOT_NONE=98,
+-    POP_JUMP_IF_TRUE=99,
+-    RAISE_VARARGS=100,
+-    RERAISE=101,
+-    SEND=102,
+-    SET_ADD=103,
+-    SET_FUNCTION_ATTRIBUTE=104,
+-    SET_UPDATE=105,
+-    STORE_ATTR=106,
+-    STORE_DEREF=107,
+-    STORE_FAST=108,
+-    STORE_FAST_LOAD_FAST=109,
+-    STORE_FAST_STORE_FAST=110,
+-    STORE_GLOBAL=111,
+-    STORE_NAME=112,
+-    SWAP=113,
+-    UNPACK_EX=114,
+-    UNPACK_SEQUENCE=115,
+-    YIELD_VALUE=116,
++    CLEAR_FAST=54,
++    COMPARE_OP=55,
++    CONTAINS_OP=56,
++    CONVERT_VALUE=57,
++    COPY=58,
++    COPY_FREE_VARS=59,
++    COPY_TO_FAST=60,
++    DELETE_DEREF=61,
++    DELETE_FAST=62,
++    DICT_MERGE=63,
++    DICT_UPDATE=64,
++    END_ASYNC_FOR=65,
++    EXTENDED_ARG=66,
++    FOR_ITER=67,
++    GET_AWAITABLE=68,
++    GET_ITER=69,
++    IMPORT_FROM=70,
++    IMPORT_NAME=71,
++    IS_OP=72,
++    JUMP_BACKWARD=73,
++    JUMP_BACKWARD_NO_INTERRUPT=74,
++    JUMP_FORWARD=75,
++    LIST_APPEND=76,
++    LIST_EXTEND=77,
++    LOAD_ATTR=78,
++    LOAD_COMMON_CONSTANT=79,
++    LOAD_CONST=80,
++    LOAD_DEREF=81,
++    LOAD_FAST=82,
++    LOAD_FAST_AND_CLEAR=83,
++    LOAD_FAST_BORROW=84,
++    LOAD_FAST_BORROW_LOAD_FAST_BORROW=85,
++    LOAD_FAST_CHECK=86,
++    LOAD_FAST_LOAD_FAST=87,
++    LOAD_FROM_DICT_OR_DEREF=88,
++    LOAD_FROM_DICT_OR_GLOBALS=89,
++    LOAD_GLOBAL=90,
++    LOAD_NAME=91,
++    LOAD_SMALL_INT=92,
++    LOAD_SPECIAL=93,
++    LOAD_SUPER_ATTR=94,
++    MAKE_CELL=95,
++    MAP_ADD=96,
++    MATCH_CLASS=97,
++    POP_JUMP_IF_FALSE=98,
++    POP_JUMP_IF_NONE=99,
++    POP_JUMP_IF_NOT_NONE=100,
++    POP_JUMP_IF_TRUE=101,
++    RAISE_VARARGS=102,
++    RERAISE=103,
++    SEND=104,
++    SET_ADD=105,
++    SET_FUNCTION_ATTRIBUTE=106,
++    SET_UPDATE=107,
++    STORE_ATTR=108,
++    STORE_DEREF=109,
++    STORE_FAST=110,
++    STORE_FAST_BORROW=111,
++    STORE_FAST_LOAD_FAST=112,
++    STORE_FAST_STORE_FAST=113,
++    STORE_GLOBAL=114,
++    STORE_NAME=115,
++    SWAP=116,
++    UNPACK_EX=117,
++    UNPACK_SEQUENCE=118,
++    YIELD_VALUE=119,
+     INSTRUMENTED_END_FOR=233,
+     INSTRUMENTED_POP_ITER=234,
+     INSTRUMENTED_END_SEND=235,
+diff --git a/Lib/assertionlib.py b/Lib/assertionlib.py
+new file mode 100644
+index 00000000000..c77c0c4d1de
+--- /dev/null
++++ b/Lib/assertionlib.py
+@@ -0,0 +1,217 @@
++"""Structured diagnostics and callbacks for native assertions.
++
++Compile with ast.PyCF_ASSERT_DETAILS to capture values on failure. Add
++ast.PyCF_ASSERT_EVENTS for successful-assertion callbacks. Values are live
++references; capture does not copy mutable objects.
++"""
++
++from contextlib import contextmanager
++from contextvars import ContextVar
++from dataclasses import dataclass, field
++
++__all__ = [
++    'AssertionDetails', 'Expression', 'Comparison', 'SourceLocation',
++    'get_details', 'clear_details', 'format_details', 'handlers',
++]
++
++_handlers = ContextVar('assertionlib.handlers', default=None)
++_dispatching = ContextVar('assertionlib.dispatching', default=None)
++
++
++@dataclass(frozen=True, slots=True)
++class SourceLocation:
++    filename: str
++    lineno: int
++    col_offset: int
++    end_lineno: int
++    end_col_offset: int
++
++
++@dataclass(frozen=True, slots=True, eq=False)
++class Expression:
++    id: int
++    text: str
++    kind: str
++    location: SourceLocation
++    children: tuple = ()
++    evaluated: bool = False
++    truth: bool | None = None
++    _capture: tuple = field(default=(), repr=False)
++
++    @property
++    def value(self):
++        """The captured result. Raise ValueError if no result is available."""
++        if not self._capture:
++            raise ValueError('expression has no captured result')
++        return self._capture[0]
++
++
++@dataclass(frozen=True, slots=True, eq=False)
++class Comparison:
++    operator: str
++    left: Expression
++    right: Expression
++    expression: Expression
++    text: str
++    evaluated: bool
++    truth: bool | None = None
++    _capture: tuple = field(default=(), repr=False)
++
++    @property
++    def value(self):
++        if not self._capture:
++            raise ValueError('comparison was not evaluated')
++        return self._capture[0]
++
++
++@dataclass(frozen=True, slots=True, eq=False)
++class AssertionDetails:
++    expression: str
++    location: SourceLocation
++    root: Expression
++    nodes: tuple[Expression, ...]
++    comparisons: tuple[Comparison, ...]
++    passed: bool
++    _payload: tuple = field(repr=False)
++
++
++def _from_payload(payload):
++    text, records, values, plan, filename, passed = payload
++    nodes = tuple(Expression(i, label, kind, SourceLocation(filename, *span))
++                  for i, (label, kind, span, children) in enumerate(plan))
++    set_attr = object.__setattr__
++    for node, descriptor in zip(nodes, plan):
++        set_attr(node, 'children', tuple(nodes[i] for i in descriptor[3]))
++    comparisons = []
++    by_link = {}
++    by_node = {}
++    for record, captured in zip(records, values):
++        slot, label, kind, span, extra, node_id = record
++        node = nodes[node_id]
++        if kind == 'value':
++            set_attr(node, '_capture', captured)
++            set_attr(node, 'evaluated', bool(captured))
++        elif kind == 'comparison':
++            left_slot, right_slot, op, left_id, right_id = extra
++            comparison = Comparison(op, nodes[left_id], nodes[right_id],
++                                    node, label, bool(captured), _capture=captured)
++            comparisons.append(comparison)
++            by_link[node_id, extra] = comparison
++            by_node.setdefault(node_id, []).append(comparison)
++        elif captured:
++            if extra is None:
++                set_attr(node, 'truth', captured[0])
++            else:
++                set_attr(by_link[node_id, extra], 'truth', captured[0])
++
++    # Control-flow expressions need not materialize their result in bytecode.
++    # Recover their selected result from captured children, without user calls.
++    for node in reversed(nodes):
++        children = node.children
++        selected = None
++        if node.kind in ('and', 'or'):
++            stop = node.kind == 'or'
++            for child in children:
++                if not child.evaluated:
++                    break
++                selected = child
++                if child.truth is stop:
++                    break
++        elif node.kind == 'conditional' and len(children) == 3:
++            condition, body, otherwise = children
++            if condition.truth is not None:
++                selected = body if condition.truth else otherwise
++        elif node.kind == 'not' and children and children[0].truth is not None:
++            result = not children[0].truth
++            set_attr(node, '_capture', (result,))
++            set_attr(node, 'truth', result)
++            set_attr(node, 'evaluated', True)
++        elif node.kind == 'compare':
++            links = by_node.get(node.id, ())
++            evaluated = [link for link in links if link.evaluated]
++            if evaluated:
++                selected = evaluated[-1]
++                if node.truth is not None and selected.truth is None:
++                    set_attr(selected, 'truth', node.truth)
++        if selected is not None:
++            if not node._capture:
++                set_attr(node, '_capture', selected._capture)
++            set_attr(node, 'evaluated', selected.evaluated)
++            if node.truth is None:
++                set_attr(node, 'truth', selected.truth)
++    root = nodes[0]
++    set_attr(root, 'truth', passed)
++    set_attr(root, 'evaluated', True)
++    return AssertionDetails(text, root.location, root, nodes,
++                            tuple(comparisons), passed, payload)
++
++
++def get_details(error):
++    """Return native assertion details, or None for an ordinary exception."""
++    if not isinstance(error, AssertionError):
++        return None
++    payload = error.__dict__.get('_assertion')
++    if payload is None:
++        return None
++    details = error.__dict__.get('_assertion_details')
++    if details is None or details._payload is not payload:
++        details = _from_payload(payload)
++        error.__dict__['_assertion_details'] = details
++    return details
++
++
++def clear_details(error):
++    """Detach captured references from an exception.
++
++    A separately retained AssertionDetails object still owns its values.
++    """
++    from _assertion import clear_details as clear_payload
++    clear_payload(error)
++
++
++def format_details(details, *, compare=None):
++    """Return explanation lines, including their terminal newlines.
++
++    compare(op, left, right) returns custom lines without terminal newlines,
++    or None to request the default explanation. Formatter errors propagate.
++    """
++    if not isinstance(details, AssertionDetails):
++        raise TypeError('expected AssertionDetails')
++    from _assertion import _format_details
++    return _format_details(details, compare=compare)
++
++
++@contextmanager
++def handlers(*, on_failure=None, on_pass=None):
++    """Install synchronous callbacks in the current execution context.
++
++    Nested scopes restore their previous callbacks. Context copies, including
++    new asyncio tasks, inherit these callbacks. Thread context rules apply.
++    """
++    for callback in (on_failure, on_pass):
++        if callback is not None and not callable(callback):
++            raise TypeError('assertion callbacks must be callable or None')
++    token = _handlers.set((on_failure, on_pass))
++    try:
++        yield
++    finally:
++        _handlers.reset(token)
++
++
++def _dispatch(error, payload):
++    active = _dispatching.get()
++    if active is not None and active[0]:
++        return
++    callbacks = _handlers.get()
++    callback = callbacks[error is None]
++    active = [True]
++    token = _dispatching.set(active)
++    try:
++        details = _from_payload(payload) if error is None else get_details(error)
++        if error is None:
++            callback(details)
++        else:
++            callback(error, details)
++    finally:
++        active[0] = False
++        _dispatching.reset(token)
+diff --git a/Lib/test/test_assert_details.py b/Lib/test/test_assert_details.py
+new file mode 100644
+index 00000000000..1c7c1a60946
+--- /dev/null
++++ b/Lib/test/test_assert_details.py
+@@ -0,0 +1,728 @@
++"""Semantic checks for the native assertion diagnostic prototype."""
++
++import ast
++import asyncio
++import gc
++import marshal
++import traceback
++import unittest
++import weakref
++from test.support import requires_jit_enabled
++
++from _assertion import clear_details, format_details
++
++
++FLAGS = ast.PyCF_ASSERT_DETAILS
++
++
++def execute(source, *, flags=FLAGS, optimize=0, namespace=None):
++    if namespace is None:
++        namespace = {}
++    code = compile(source, '<assert-details>', 'exec', flags=flags,
++                   dont_inherit=True, optimize=optimize)
++    exec(code, namespace)
++    return namespace
++
++
++def fail(source, namespace=None):
++    try:
++        execute(source, namespace=namespace)
++    except AssertionError as exc:
++        return exc
++    raise RuntimeError('assertion did not fail')
++
++
++class AssertionDetailsTests(unittest.TestCase):
++    def test_comparison(self):
++        exc = fail('left = 4\nright = 7\nassert left == right')
++        self.assertEqual(exc.args, ())
++        self.assertEqual(str(exc), '')
++        text = ''.join(format_details(exc._assertion))
++        self.assertEqual(text, '  assert 4 == 7\n')
++
++    def test_full_expression(self):
++        ns = execute('''
++class User:
++    name = 'ALICE'
++def normalize(name):
++    return name.lower()
++user = User()
++expected = 'bob'
++''')
++        exc = fail('assert normalize(user.name) == expected and user.missing', ns)
++        text = ''.join(format_details(exc._assertion))
++        self.assertIn("assert ('alice' == 'bob')", text)
++        self.assertIn("+ where 'alice' = normalize('ALICE')", text)
++        self.assertIn("+ where 'ALICE' = ", text)
++        self.assertNotIn('missing', text)
++
++    def test_control_flow_matches_plain(self):
++        setup = '''
++events = []
++class Flag:
++    def __init__(self, value): self.value = value
++    def __bool__(self):
++        events.append(('bool', self.value))
++        return self.value
++    def __repr__(self):
++        events.append('repr')
++        return 'Flag()'
++def call(name, value):
++    events.append(name)
++    return value
++f = Flag(False)
++t = Flag(True)
++'''
++        expressions = [
++            'f and call("skip", True)',
++            't or call("skip", False)',
++            '(f or t) and f',
++            'not (t or f)',
++            '(f and t) or f',
++            'call("a", 3) < call("b", 2) < call("c", 1)',
++            'call("a", 1) < call("b", 2) < call("c", 1)',
++            '(f if call("test", True) else t)',
++            '(t if call("test", False) else f)',
++            '(f and t) == f',
++            'not (f and t)',
++        ]
++        for expression in expressions:
++            with self.subTest(expression=expression):
++                results = []
++                for flags in (0, FLAGS):
++                    ns = {}
++                    try:
++                        execute(setup + '\nassert ' + expression, flags=flags,
++                                namespace=ns)
++                    except BaseException as exc:
++                        outcome = type(exc)
++                    else:
++                        outcome = None
++                    results.append((outcome, ns['events']))
++                self.assertEqual(*results)
++
++    def test_custom_comparison_truth(self):
++        ns = execute('''
++events = []
++class Result:
++    def __bool__(self):
++        events.append('bool')
++        return False
++    def __repr__(self): return 'Result()'
++class Value:
++    def __lt__(self, other):
++        events.append('lt')
++        return Result()
++a = Value()
++b = Value()
++''')
++        exc = fail('assert a < b < 0', ns)
++        self.assertEqual(ns['events'], ['lt', 'bool'])
++        format_details(exc._assertion)
++        self.assertEqual(ns['events'], ['lt', 'bool'])
++
++    def test_message_identity_and_order(self):
++        marker = object()
++        ns = {'marker': marker, 'events': []}
++        exc = fail('assert events.append("condition"), '
++                   '(events.append("message"), marker)[1]', ns)
++        self.assertIs(exc.args[0], marker)
++        self.assertEqual(ns['events'], ['condition', 'message'])
++        execute('assert True, 1/0')
++        with self.assertRaises(ZeroDivisionError):
++            execute('assert False, 1/0')
++
++    def test_expression_exception(self):
++        with self.assertRaisesRegex(ValueError, 'source'):
++            execute('def f(): raise ValueError("source")\nassert f()')
++
++    def test_named_expression_capture(self):
++        exc = fail('x = 2\nassert x + (x := 3) == 6')
++        values = {r[1]: v[0] for r, v in zip(exc._assertion[1], exc._assertion[2])
++                  if r[2] == 'value' and v}
++        self.assertEqual(values['x'], 2)
++        self.assertEqual(values['(x := 3)'], 3)
++        self.assertEqual(values['x + (x := 3)'], 5)
++
++    def test_calls_and_subscripts(self):
++        exc = fail('''
++def f(*args, **kwargs): return args[0] + kwargs['n']
++data = [10, 20]
++assert f(*data[:1], **{'n': 2}) * 2 == data[1]
++''')
++        text = ''.join(format_details(exc._assertion))
++        self.assertIn('assert (12 * 2) == 20', text)
++        self.assertIn("+ where 12 = f(*[10], **{'n': 2})", text)
++        self.assertIn('+ and 20 = [10, 20][1]', text)
++
++    def test_scopes_do_not_expose_captures(self):
++        ns = execute('''
++assert all(not key.startswith('.assertion.') for key in locals())
++class C:
++    assert all(not key.startswith('.assertion.') for key in locals())
++def f():
++    assert 1 == 1 and all(not k.startswith('.assertion.') for k in locals())
++    return locals()
++result = f()
++''')
++        self.assertFalse(any(k.startswith('.assertion.') for k in ns))
++        self.assertFalse(any(k.startswith('.assertion.') for k in vars(ns['C'])))
++        self.assertEqual(ns['result'], {})
++
++    def test_closure(self):
++        exc = fail('''
++def outer(x):
++    def inner():
++        assert x + 1 == 0
++    return inner
++outer(2)()
++''')
++        self.assertIn('assert (2 + 1) == 0', ''.join(format_details(exc._assertion)))
++
++    def test_comprehension_and_lambda(self):
++        for expression in ('[x + 1 for x in range(3)] == []',
++                           '{x for x in range(3)} == set()',
++                           '{x: x for x in range(3)} == {}',
++                           '(lambda x: x + 1)(3) == 0',
++                           'all(x < 2 for x in range(3))'):
++            with self.subTest(expression=expression):
++                exc = fail('assert ' + expression)
++                self.assertTrue(format_details(exc._assertion))
++
++    def test_repeated_assert_no_stale_captures(self):
++        ns = execute('''
++errors = []
++for value in [True, False]:
++    try:
++        assert value and (other := True)
++    except AssertionError as exc:
++        errors.append(exc)
++''')
++        text = ''.join(format_details(ns['errors'][0]._assertion))
++        self.assertEqual(text, '  assert (False)\n')
++        captures = dict((record[1], value) for record, value in
++                        zip(ns['errors'][0]._assertion[1], ns['errors'][0]._assertion[2]))
++        self.assertEqual(captures['(other := True)'], ())
++
++    def test_release_on_success_and_expression_error(self):
++        class Value:
++            pass
++        for expression in ('make() is not None', 'make() and explode()'):
++            refs = []
++            def make():
++                value = Value()
++                refs.append(weakref.ref(value))
++                return value
++            def explode():
++                raise ValueError
++            ns = {'make': make, 'explode': explode}
++            execute('def f():\n    try:\n        assert ' + expression +
++                    '\n    except ValueError:\n        pass\n'
++                    '    return 42\nf()', namespace=ns)
++            gc.collect()
++            self.assertTrue(all(ref() is None for ref in refs))
++
++    def test_generator_close(self):
++        ns = execute('def g():\n    assert (yield 1) == 3\n')
++        g = ns['g']()
++        self.assertEqual(next(g), 1)
++        with self.assertRaises(AssertionError) as caught:
++            g.send(2)
++        self.assertIn('assert 2 == 3', ''.join(format_details(caught.exception._assertion)))
++        g = ns['g']()
++        next(g)
++        g.close()
++
++    def test_await(self):
++        ns = execute('''
++async def value(): return 4
++async def f():
++    assert await value() == 5
++''')
++        with self.assertRaises(AssertionError) as caught:
++            asyncio.run(ns['f']())
++        self.assertIn('assert 4 == 5', ''.join(format_details(caught.exception._assertion)))
++
++    def test_repr_only_at_display(self):
++        class Value:
++            def __repr__(self):
++                raise RuntimeError('broken repr')
++        value = Value()
++        exc = fail('assert value is None', {'value': value})
++        self.assertIn('AssertionError', ''.join(traceback.format_exception(exc)))
++        self.assertNotIn('RuntimeError: broken repr', ''.join(traceback.format_exception(exc)))
++
++    def test_exception_subclass_dict_error(self):
++        class Error(AssertionError):
++            @property
++            def __dict__(self):
++                raise RuntimeError('dict error')
++        self.assertIn('Error: message', ''.join(traceback.format_exception(Error('message'))))
++
++    def test_string_expressions_and_super(self):
++        for source in (
++            "a = 3\nassert f'{a:04d}' == '0004'",
++            "a = 3\nassert t'{a}' is None",
++            "class A:\n def value(self): return 1\n"
++            "class B(A):\n def f(self):\n  assert super().value() == 2\nB().f()",
++        ):
++            with self.subTest(source=source):
++                exc = fail(source)
++                self.assertTrue(format_details(exc._assertion))
++
++    def test_builtin_differences(self):
++        for source, message in (
++            ("assert 'abc' == 'axc'", '    - axc\n    + abc\n'),
++            ('assert [1, 2] == [1, 3]', 'At index 1 diff: 2 != 3'),
++            ("assert {'a': 1} == {'a': 2}", "key 'a': 1 != 2"),
++            ('assert {1, 2} == {1, 3}', 'only in left'),
++        ):
++            with self.subTest(source=source):
++                exc = fail(source)
++                self.assertIn(message, ''.join(format_details(exc._assertion)))
++
++    def test_ast_and_marshal(self):
++        tree = ast.parse('assert 2 == 3')
++        code = compile(tree, '<ast>', 'exec', flags=FLAGS)
++        code = marshal.loads(marshal.dumps(code))
++        with self.assertRaises(AssertionError) as caught:
++            exec(code)
++        self.assertTrue(caught.exception._assertion)
++
++    def test_optimized_code_identical(self):
++        source = 'def f(x):\n    assert x + 1 == 3\n    return x\n'
++        for optimize in (1, 2):
++            a = compile(source, 'test', 'exec', optimize=optimize)
++            b = compile(source, 'test', 'exec', optimize=optimize, flags=FLAGS)
++            self.assertEqual(marshal.dumps(a), marshal.dumps(b))
++
++    def test_plain_assert(self):
++        with self.assertRaises(AssertionError) as caught:
++            execute('assert 1 == 2', flags=0)
++        self.assertFalse(hasattr(caught.exception, '_assertion'))
++
++    def test_traceback_and_clear(self):
++        exc = fail('assert 1 == 2')
++        summary = traceback.TracebackException.from_exception(exc)
++        clear_details(exc)
++        self.assertFalse(hasattr(exc, '_assertion'))
++        self.assertIn('assert 1 == 2', ''.join(summary.format()))
++
++
++class AssertionRenderingTests(unittest.TestCase):
++    def explanation(self, source, namespace=None):
++        return ''.join(format_details(fail(source, namespace)._assertion))
++
++    def test_arithmetic(self):
++        self.assertEqual(self.explanation(
++            'assert price * quantity == expected',
++            {'price': 18, 'quantity': 3, 'expected': 60}),
++            '  assert (18 * 3) == 60\n')
++        self.assertEqual(self.explanation('x = 2\nassert x + (x := 3) == 6'),
++                         '  assert (2 + (3)) == 6\n')
++
++    def test_nested_calls(self):
++        self.assertEqual(self.explanation(
++            'assert double(len(items)) == 5',
++            {'double': lambda x: x * 2, 'items': [1, 2]}),
++            '  assert 4 == 5\n'
++            '    + where 4 = double(2)\n'
++            '      + where 2 = len([1, 2])\n')
++
++    def test_methods(self):
++        self.assertEqual(self.explanation("assert name.strip().lower() == 'bob'",
++                                          {'name': ' ALICE '}),
++            "  assert 'alice' == 'bob'\n"
++            "    + where 'alice' = 'ALICE'.lower()\n"
++            "      + where 'ALICE' = ' ALICE '.strip()\n"
++            '    - bob\n'
++            '    + alice\n')
++
++    def test_literals_keywords_and_unicode(self):
++        self.assertEqual(self.explanation(
++            "assert f('x', *args, x=x, **kw) == 1",
++            {'f': lambda *args, **kwargs: 0, 'args': (2,), 'x': 3, 'kw': {'y': 4}}),
++            '  assert 0 == 1\n'
++            "    + where 0 = f('x', *(2,), x=3, **{'y': 4})\n")
++        self.assertEqual(self.explanation('assert α + β == 10', {'α': 2, 'β': 3}),
++                         '  assert (2 + 3) == 10\n')
++
++    def test_slice(self):
++        self.assertEqual(self.explanation('assert data[start:stop] == []',
++                                          {'data': [1, 2], 'start': 0, 'stop': 1}),
++            '  assert [1] == []\n'
++            '    + where [1] = [1, 2][0:1]\n'
++            '    sequence lengths: 1 != 0\n')
++
++    def test_boolean_and_chained_comparisons(self):
++        for expression, expected in (
++            ('1 == 2 and missing()', '(1 == 2)'),
++            ('0 or False', '(0 or False)'),
++            ('0 < 5 < 3 < missing()', '5 < 3'),
++            ('not (1 == 1)', 'not (1 == 1)'),
++            ('0 if True else missing()', '0'),
++        ):
++            with self.subTest(expression=expression):
++                self.assertEqual(self.explanation('assert ' + expression),
++                                 f'  assert {expected}\n')
++
++    def test_custom_comparison_replaces_summary(self):
++        import assertionlib
++        details = assertionlib.get_details(fail('assert 0 < 5 < 3'))
++        calls = []
++        def compare(op, left, right):
++            calls.append((op, left, right))
++            return [f'custom: {left} {op} {right}', 'comparison detail']
++        self.assertEqual(''.join(assertionlib.format_details(details, compare=compare)),
++                         '  assert custom: 5 < 3\n    comparison detail\n')
++        self.assertEqual(calls, [('<', 0, 5), ('<', 5, 3)])
++
++    def test_large_diff_is_bounded(self):
++        text = self.explanation('assert left == right',
++                                {'left': 'a' * 5000, 'right': 'b' * 5000})
++        self.assertIn('string diff omitted', text)
++        self.assertLess(len(text), 1000)
++
++    def test_framework_explanation_is_not_duplicated(self):
++        import assertionlib
++        error = fail('assert 1 == 2')
++        error.args = ('assert custom difference',)
++        error._assertion_explained = True
++        self.assertEqual(''.join(traceback.format_exception_only(error)),
++                         'AssertionError: assert custom difference\n')
++        self.assertIsNotNone(assertionlib.get_details(error))
++        assertionlib.clear_details(error)
++        self.assertFalse(hasattr(error, '_assertion_explained'))
++
++
++class PublicAssertionAPITests(unittest.TestCase):
++    def test_expression_graph_and_comparison(self):
++        import assertionlib
++        exc = fail('a = 3\nb = 4\nassert a == b and missing()')
++        details = assertionlib.get_details(exc)
++        self.assertIs(details, assertionlib.get_details(exc))
++        self.assertEqual(details.root.kind, 'and')
++        self.assertFalse(details.root.truth)
++        self.assertFalse(details.root.children[1].evaluated)
++        with self.assertRaises(ValueError):
++            details.root.children[1].value
++        comparison, = details.comparisons
++        self.assertEqual(comparison.operator, '==')
++        self.assertEqual(comparison.left.value, 3)
++        self.assertEqual(comparison.right.value, 4)
++        self.assertIs(comparison.truth, False)
++        self.assertEqual(details.location.filename, '<assert-details>')
++        self.assertEqual(details.location.lineno, 3)
++        self.assertIsNone(assertionlib.get_details(AssertionError()))
++        self.assertIsNone(assertionlib.get_details(ValueError()))
++
++    def test_distinct_occurrences_and_none(self):
++        import assertionlib
++        values = iter([None, 1])
++        details = assertionlib.get_details(fail('assert f() == f()', {'f': lambda: next(values)}))
++        comparison, = details.comparisons
++        self.assertIsNot(comparison.left, comparison.right)
++        self.assertTrue(comparison.left.evaluated)
++        self.assertIsNone(comparison.left.value)
++        self.assertEqual(comparison.right.value, 1)
++
++    def test_nested_control_flow_values(self):
++        import assertionlib
++        for expression in ('(a or b) and a', 'not b', 'a if b else b', '0 < b < a < 9'):
++            with self.subTest(expression=expression):
++                ns = {'a': 0, 'b': 2}
++                details = assertionlib.get_details(fail('assert ' + expression, ns))
++                self.assertFalse(details.root.truth)
++                self.assertEqual(details.root.value, eval(expression, ns))
++
++    def test_callbacks_before_catch_and_message_order(self):
++        import assertionlib
++        events = []
++        def handler(error, details):
++            events.append('callback')
++            self.assertEqual(error.args, ('original',))
++            self.assertFalse(details.passed)
++            error.args = ('custom explanation',)
++        with assertionlib.handlers(on_failure=handler):
++            exc = fail('assert events.append("condition"), '
++                       '(events.append("message"), "original")[1]', {'events': events})
++            self.assertEqual(str(exc), 'custom explanation')
++        self.assertEqual(events, ['condition', 'message', 'callback'])
++
++    def test_nested_scopes_and_recursion(self):
++        import assertionlib
++        events = []
++        def outer(error, details):
++            events.append('outer')
++            fail('assert False')
++        def inner(error, details):
++            events.append('inner')
++        with assertionlib.handlers(on_failure=outer):
++            fail('assert False')
++            with assertionlib.handlers(on_failure=inner):
++                fail('assert False')
++            fail('assert False')
++        fail('assert False')
++        self.assertEqual(events, ['outer', 'inner', 'outer'])
++        with self.assertRaises(TypeError):
++            with assertionlib.handlers(on_failure=42):
++                pass
++
++    def test_callback_exception_context(self):
++        import assertionlib
++        def broken(error, details):
++            raise RuntimeError('callback failed')
++        with assertionlib.handlers(on_failure=broken):
++            with self.assertRaisesRegex(RuntimeError, 'callback failed') as caught:
++                fail('assert 1 == 2')
++        self.assertIsInstance(caught.exception.__context__, AssertionError)
++        self.assertIsNotNone(assertionlib.get_details(caught.exception.__context__))
++
++    def test_pass_event_opt_in(self):
++        import assertionlib
++        events = []
++        with assertionlib.handlers(on_pass=events.append):
++            execute('assert 1 == 1')
++            self.assertEqual(events, [])
++            execute('assert 1 == 1\nassert True', flags=ast.PyCF_ASSERT_EVENTS)
++        self.assertEqual(len(events), 2)
++        for details in events:
++            self.assertTrue(details.passed)
++            self.assertTrue(details.root.truth)
++            self.assertTrue(details.root.value)
++
++    def test_async_contexts(self):
++        import assertionlib
++        async def worker(label):
++            events = []
++            def callback(error, details):
++                events.append(label)
++            with assertionlib.handlers(on_failure=callback):
++                await asyncio.sleep(0)
++                fail('assert False')
++                await asyncio.sleep(0)
++                fail('assert False')
++            return events
++        async def main():
++            return await asyncio.gather(worker('a'), worker('b'))
++        self.assertEqual(asyncio.run(main()), [['a', 'a'], ['b', 'b']])
++
++    def test_custom_comparison_formatter(self):
++        import assertionlib
++        left, right = object(), object()
++        details = assertionlib.get_details(fail('assert left == right', locals()))
++        calls = []
++        def compare(op, a, b):
++            calls.append((op, a, b))
++            return ['custom difference']
++        text = ''.join(assertionlib.format_details(details, compare=compare))
++        self.assertIn('custom difference', text)
++        self.assertEqual(len(calls), 1)
++        self.assertIs(calls[0][1], left)
++        self.assertIs(calls[0][2], right)
++        default = assertionlib.format_details(details, compare=lambda *args: None)
++        self.assertIn(' == ', ''.join(default))
++
++    def test_clear_detaches_public_and_private_data(self):
++        import assertionlib
++        class Value:
++            pass
++        def make():
++            value = Value()
++            ref = weakref.ref(value)
++            return fail('assert value is None', {'value': value}), ref
++        error, ref = make()
++        details = assertionlib.get_details(error)
++        error.__traceback__ = None
++        assertionlib.clear_details(error)
++        self.assertIsNone(assertionlib.get_details(error))
++        self.assertIsNotNone(ref())
++        del details
++        gc.collect()
++        self.assertIsNone(ref())
++
++    def test_keep_asserts_with_optimization(self):
++        import assertionlib
++        for optimize in (1, 2):
++            ns = {}
++            execute('debug = __debug__\nassert True', flags=ast.PyCF_KEEP_ASSERTS,
++                    optimize=optimize, namespace=ns)
++            self.assertFalse(ns['debug'])
++            with self.assertRaises(AssertionError) as caught:
++                execute('assert False', flags=FLAGS | ast.PyCF_KEEP_ASSERTS, optimize=optimize)
++            self.assertIsNotNone(assertionlib.get_details(caught.exception))
++            with self.assertRaises(AssertionError) as caught:
++                execute('assert False', flags=ast.PyCF_KEEP_ASSERTS, optimize=optimize)
++            self.assertIsNone(assertionlib.get_details(caught.exception))
++
++    def test_callback_context_copy_recovers(self):
++        import assertionlib
++        import contextvars
++        contexts = []
++        def callback(error, details):
++            contexts.append(contextvars.copy_context())
++        with assertionlib.handlers(on_failure=callback):
++            fail('assert False')
++        contexts[0].run(fail, 'assert False')
++        self.assertEqual(len(contexts), 2)
++
++    def test_callback_task_inherits_handlers(self):
++        import assertionlib
++        async def main():
++            events, tasks = [], []
++            async def later():
++                fail('assert False')
++            def callback(error, details):
++                events.append(details)
++                if len(events) == 1:
++                    tasks.append(asyncio.create_task(later()))
++            with assertionlib.handlers(on_failure=callback):
++                fail('assert False')
++            await tasks[0]
++            return len(events)
++        self.assertEqual(asyncio.run(main()), 2)
++
++    def test_callback_preserves_exception_chain(self):
++        import assertionlib
++        original = ValueError('outer')
++        def callback(error, details):
++            raise RuntimeError('callback')
++        try:
++            raise original
++        except ValueError:
++            with assertionlib.handlers(on_failure=callback):
++                with self.assertRaises(RuntimeError) as caught:
++                    fail('assert False')
++        assertion = caught.exception.__context__
++        self.assertIsInstance(assertion, AssertionError)
++        self.assertIs(assertion.__context__, original)
++
++    def test_nested_not_and_slice_details(self):
++        import assertionlib
++        details = assertionlib.get_details(fail('assert (not x) == True', {'x': [1]}))
++        node, = [node for node in details.nodes if node.text == 'x']
++        self.assertIs(node.truth, True)
++        details = assertionlib.get_details(fail('assert data[start:stop] == []',
++                                               {'data': [1, 2], 'start': 0, 'stop': 1}))
++        self.assertTrue(any(node.evaluated and isinstance(node.value, slice)
++                            for node in details.nodes))
++
++    def test_comparison_link_truth_does_not_change(self):
++        import assertionlib
++        class Result:
++            def __init__(self):
++                self.truths = iter((False, True))
++            def __bool__(self):
++                return next(self.truths)
++        class Value:
++            def __lt__(self, other):
++                return Result()
++        details = assertionlib.get_details(fail(
++            'assert ((a < b < c) and False) == True',
++            {'a': Value(), 'b': Value(), 'c': Value()}))
++        links = [c for c in details.comparisons if c.operator == '<']
++        self.assertIs(links[0].truth, False)
++        self.assertFalse(links[1].evaluated)
++
++    def test_formatter_reuses_object_repr(self):
++        import assertionlib
++        calls = []
++        class Value:
++            def __repr__(self):
++                calls.append(1)
++                return 'Value()'
++        details = assertionlib.get_details(fail('assert x == x and False', {'x': Value()}))
++        assertionlib.format_details(details)
++        self.assertEqual(calls, [1])
++
++    @requires_jit_enabled
++    def test_tier2_preserves_captured_floats(self):
++        import assertionlib
++        from test.test_capi.test_opt import get_all_executors, get_opnames
++        for expression in ('(a + b) * c', '(value := (a + b) * c)'):
++            with self.subTest(expression=expression):
++                ns = execute('def check(a, b, c, expected, n):\n'
++                             '    for _ in range(n):\n'
++                             f'        assert {expression} == expected\n')
++                check = ns['check']
++                for _ in range(20):
++                    check(2.0, 3.0, 4.0, 20.0, 1000)
++                uops = [name for executor in get_all_executors(check)
++                        for name in get_opnames(executor)]
++                self.assertTrue(any('FAST_BORROW' in name or 'COPY_TO_FAST' in name
++                                    for name in uops), uops)
++                with self.assertRaises(AssertionError) as caught:
++                    check(2.0, 3.0, 4.0, 99.0, 1000)
++                details = assertionlib.get_details(caught.exception)
++                intermediate, = [node for node in details.nodes if node.text == 'a + b']
++                self.assertEqual(intermediate.value, 5.0)
++                self.assertEqual(details.comparisons[0].left.value, 20.0)
++
++    def test_variadic_locals_are_visible(self):
++        for flags in (0, FLAGS):
++            ns = execute('def f(*args, **kwargs):\n    assert args\n    return locals()', flags=flags)
++            self.assertEqual(ns['f'](1, a=2), {'args': (1,), 'kwargs': {'a': 2}})
++
++    def test_slot_reuse_and_named_assignment_lifetime(self):
++        source = 'def f(a):\n' + '    assert a == a\n' * 100
++        ns = execute(source)
++        one = execute('def f(a):\n    assert a == a')
++        self.assertEqual(ns['f'].__code__.co_nlocals, one['f'].__code__.co_nlocals)
++        ns['f'](object())
++        ns = execute('''
++class Value: pass
++def f():
++    assert (value := Value()) is not None
++    assert value is not None
++    return value
++result = f()
++''')
++        self.assertIsInstance(ns['result'], ns['Value'])
++
++
++class AssertionCLITests(unittest.TestCase):
++    def test_cli_cache_separation_and_optimization(self):
++        from test.support.script_helper import assert_python_ok
++        import tempfile
++        from pathlib import Path
++        with tempfile.TemporaryDirectory() as directory:
++            Path(directory, 'assert_helper.py').write_text('def check():\n    assert 1 == 2\n')
++            source = (
++                'import sys, importlib.util\n'
++                'sys.path.insert(0, sys.argv[1])\n'
++                'import assert_helper as module\n'
++                'print(sys.implementation.cache_tag)\n'
++                'print(importlib.util.source_from_cache(module.__spec__.cached) == module.__file__)\n'
++                'try: module.check()\n'
++                'except AssertionError as exc: print(hasattr(exc, "_assertion"))\n'
++                'else: print("removed")\n'
++            )
++            cases = [
++                ([], 'False'),
++                (['-X', 'assert_details'], 'True'),
++                ([], 'False'),
++                (['-X', 'assert_details=events'], 'True'),
++                (['-O', '-X', 'assert_details'], 'removed'),
++                (['-OO', '-X', 'assert_details', '-X', 'keep_asserts'], 'True'),
++                (['-O', '-X', 'keep_asserts'], 'False'),
++            ]
++            tags = set()
++            for flags, expected in cases:
++                with self.subTest(flags=flags):
++                    _, out, _ = assert_python_ok(*flags, '-c', source, directory)
++                    tag, roundtrip, result = out.decode().splitlines()
++                    tags.add(tag)
++                    self.assertEqual(roundtrip, 'True')
++                    self.assertEqual(result, expected)
++            self.assertEqual(len(tags), 5)
++
++    def test_invalid_cli_options(self):
++        from test.support.script_helper import assert_python_failure
++        for option in ('assert_details=bad', 'keep_asserts=bad'):
++            with self.subTest(option=option):
++                _, _, err = assert_python_failure('-X', option, '-c', 'pass')
++                self.assertIn(option.split('=')[0].encode(), err)
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/Lib/traceback.py b/Lib/traceback.py
+index dcdab1f12e9..4dbfe80ab2a 100644
+--- a/Lib/traceback.py
++++ b/Lib/traceback.py
+@@ -1155,6 +1155,16 @@ def __init__(self, exc_type, exc_value, exc_traceback, *, limit=None,
+         # Capture now to permit freeing resources: only complication is in the
+         # unofficial API _format_final_exc_line
+         self._str = _safe_string(exc_value, 'exception')
++        self._assertion_lines = ()
++        if isinstance(exc_value, AssertionError):
++            try:
++                attributes = exc_value.__dict__
++                details = attributes.get('_assertion')
++                if details is not None and not attributes.get('_assertion_explained', False):
++                    from _assertion import format_details
++                    self._assertion_lines = tuple(format_details(details))
++            except Exception:
++                self._assertion_lines = ('  <assertion details unavailable>\n',)
+         try:
+             self.__notes__ = getattr(exc_value, '__notes__', None)
+         except Exception as e:
+@@ -1398,6 +1408,8 @@ def format_exception_only(self, *, show_group=False, _depth=0, **kwargs):
+         else:
+             yield from [indent + l for l in self._format_syntax_error(stype, colorize=colorize)]
+ 
++        yield from (indent + line for line in self._assertion_lines)
++
+         if (
+             isinstance(self.__notes__, collections.abc.Sequence)
+             and not isinstance(self.__notes__, (str, bytes))
+diff --git a/Makefile.pre.in b/Makefile.pre.in
+index 308fb964a0c..2ad331ac023 100644
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -2027,6 +2027,8 @@ regen-sre:
+ 		$(srcdir)/Modules/_sre/sre_constants.h \
+ 		$(srcdir)/Modules/_sre/sre_targets.h
+ 
++Python/codegen.o: $(srcdir)/Python/codegen_assert.h
++
+ Python/compile.o Python/codegen.o Python/symtable.o Python/ast_unparse.o Python/ast.o Python/future.o: $(srcdir)/Include/internal/pycore_ast.h $(srcdir)/Include/internal/pycore_ast.h
+ 
+ Python/getplatform.o: $(srcdir)/Python/getplatform.c
+diff --git a/Modules/_testinternalcapi/test_cases.c.h b/Modules/_testinternalcapi/test_cases.c.h
+index 3bdc16437e2..9be5c44ca8a 100644
+--- a/Modules/_testinternalcapi/test_cases.c.h
++++ b/Modules/_testinternalcapi/test_cases.c.h
+@@ -5245,6 +5245,23 @@
+             DISPATCH();
+         }
+ 
++        TARGET(CLEAR_FAST) {
++            #if _Py_TAIL_CALL_INTERP
++            int opcode = CLEAR_FAST;
++            (void)(opcode);
++            #endif
++            frame->instr_ptr = next_instr;
++            next_instr += 1;
++            INSTRUCTION_STATS(CLEAR_FAST);
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_NULL;
++            _PyFrame_SetStackPointer(frame, stack_pointer);
++            _PyFrame_StackPointerValidate(frame);
++            PyStackRef_XCLOSE(old);
++            _PyFrame_StackPointerInvalidate(frame);
++            DISPATCH();
++        }
++
+         TARGET(COMPARE_OP) {
+             #if _Py_TAIL_CALL_INTERP
+             int opcode = COMPARE_OP;
+@@ -5834,6 +5851,25 @@
+             DISPATCH();
+         }
+ 
++        TARGET(COPY_TO_FAST) {
++            #if _Py_TAIL_CALL_INTERP
++            int opcode = COPY_TO_FAST;
++            (void)(opcode);
++            #endif
++            frame->instr_ptr = next_instr;
++            next_instr += 1;
++            INSTRUCTION_STATS(COPY_TO_FAST);
++            _PyStackRef value;
++            value = stack_pointer[-1];
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_MakeHeapSafe(PyStackRef_DUP(value));
++            _PyFrame_SetStackPointer(frame, stack_pointer);
++            _PyFrame_StackPointerValidate(frame);
++            PyStackRef_XCLOSE(old);
++            _PyFrame_StackPointerInvalidate(frame);
++            DISPATCH();
++        }
++
+         TARGET(DELETE_DEREF) {
+             #if _Py_TAIL_CALL_INTERP
+             int opcode = DELETE_DEREF;
+@@ -12320,6 +12356,28 @@
+             DISPATCH();
+         }
+ 
++        TARGET(STORE_FAST_BORROW) {
++            #if _Py_TAIL_CALL_INTERP
++            int opcode = STORE_FAST_BORROW;
++            (void)(opcode);
++            #endif
++            frame->instr_ptr = next_instr;
++            next_instr += 1;
++            INSTRUCTION_STATS(STORE_FAST_BORROW);
++            _PyStackRef value;
++            _PyStackRef borrowed;
++            value = stack_pointer[-1];
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_MakeHeapSafe(value);
++            borrowed = PyStackRef_Borrow(GETLOCAL(oparg));
++            stack_pointer[-1] = borrowed;
++            _PyFrame_SetStackPointer(frame, stack_pointer);
++            _PyFrame_StackPointerValidate(frame);
++            PyStackRef_XCLOSE(old);
++            _PyFrame_StackPointerInvalidate(frame);
++            DISPATCH();
++        }
++
+         TARGET(STORE_FAST_LOAD_FAST) {
+             #if _Py_TAIL_CALL_INTERP
+             int opcode = STORE_FAST_LOAD_FAST;
+diff --git a/Modules/_testinternalcapi/test_targets.h b/Modules/_testinternalcapi/test_targets.h
+index 91b42477322..5577499a319 100644
+--- a/Modules/_testinternalcapi/test_targets.h
++++ b/Modules/_testinternalcapi/test_targets.h
+@@ -54,11 +54,13 @@ static void *opcode_targets_table[256] = {
+     &&TARGET_CALL_INTRINSIC_1,
+     &&TARGET_CALL_INTRINSIC_2,
+     &&TARGET_CALL_KW,
++    &&TARGET_CLEAR_FAST,
+     &&TARGET_COMPARE_OP,
+     &&TARGET_CONTAINS_OP,
+     &&TARGET_CONVERT_VALUE,
+     &&TARGET_COPY,
+     &&TARGET_COPY_FREE_VARS,
++    &&TARGET_COPY_TO_FAST,
+     &&TARGET_DELETE_DEREF,
+     &&TARGET_DELETE_FAST,
+     &&TARGET_DICT_MERGE,
+@@ -109,6 +111,7 @@ static void *opcode_targets_table[256] = {
+     &&TARGET_STORE_ATTR,
+     &&TARGET_STORE_DEREF,
+     &&TARGET_STORE_FAST,
++    &&TARGET_STORE_FAST_BORROW,
+     &&TARGET_STORE_FAST_LOAD_FAST,
+     &&TARGET_STORE_FAST_STORE_FAST,
+     &&TARGET_STORE_GLOBAL,
+@@ -125,9 +128,6 @@ static void *opcode_targets_table[256] = {
+     &&_unknown_opcode,
+     &&_unknown_opcode,
+     &&_unknown_opcode,
+-    &&_unknown_opcode,
+-    &&_unknown_opcode,
+-    &&_unknown_opcode,
+     &&TARGET_RESUME,
+     &&TARGET_BINARY_OP_ADD_FLOAT,
+     &&TARGET_BINARY_OP_ADD_INT,
+@@ -376,9 +376,9 @@ static void *opcode_tracing_targets_table[256] = {
+     &&TARGET_TRACE_RECORD,
+     &&TARGET_TRACE_RECORD,
+     &&TARGET_TRACE_RECORD,
+-    &&_unknown_opcode,
+-    &&_unknown_opcode,
+-    &&_unknown_opcode,
++    &&TARGET_TRACE_RECORD,
++    &&TARGET_TRACE_RECORD,
++    &&TARGET_TRACE_RECORD,
+     &&_unknown_opcode,
+     &&_unknown_opcode,
+     &&_unknown_opcode,
+@@ -591,6 +591,7 @@ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CALL_TYPE_1(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CHECK_EG_MATCH(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CHECK_EXC_MATCH(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CLEANUP_THROW(TAIL_CALL_PARAMS);
++static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CLEAR_FAST(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COMPARE_OP(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COMPARE_OP_FLOAT(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COMPARE_OP_INT(TAIL_CALL_PARAMS);
+@@ -601,6 +602,7 @@ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CONTAINS_OP_SET(TAIL_CALL_PARAMS
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CONVERT_VALUE(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COPY(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COPY_FREE_VARS(TAIL_CALL_PARAMS);
++static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COPY_TO_FAST(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_DELETE_DEREF(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_DELETE_FAST(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_DELETE_SUBSCR(TAIL_CALL_PARAMS);
+@@ -735,6 +737,7 @@ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_ATTR_SLOT(TAIL_CALL_PARAMS
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_ATTR_WITH_HINT(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_DEREF(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_FAST(TAIL_CALL_PARAMS);
++static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_FAST_BORROW(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_FAST_LOAD_FAST(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_FAST_STORE_FAST(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_GLOBAL(TAIL_CALL_PARAMS);
+@@ -834,6 +837,7 @@ static py_tail_call_funcptr instruction_funcptr_handler_table[256] = {
+     [CHECK_EG_MATCH] = _TAIL_CALL_CHECK_EG_MATCH,
+     [CHECK_EXC_MATCH] = _TAIL_CALL_CHECK_EXC_MATCH,
+     [CLEANUP_THROW] = _TAIL_CALL_CLEANUP_THROW,
++    [CLEAR_FAST] = _TAIL_CALL_CLEAR_FAST,
+     [COMPARE_OP] = _TAIL_CALL_COMPARE_OP,
+     [COMPARE_OP_FLOAT] = _TAIL_CALL_COMPARE_OP_FLOAT,
+     [COMPARE_OP_INT] = _TAIL_CALL_COMPARE_OP_INT,
+@@ -844,6 +848,7 @@ static py_tail_call_funcptr instruction_funcptr_handler_table[256] = {
+     [CONVERT_VALUE] = _TAIL_CALL_CONVERT_VALUE,
+     [COPY] = _TAIL_CALL_COPY,
+     [COPY_FREE_VARS] = _TAIL_CALL_COPY_FREE_VARS,
++    [COPY_TO_FAST] = _TAIL_CALL_COPY_TO_FAST,
+     [DELETE_DEREF] = _TAIL_CALL_DELETE_DEREF,
+     [DELETE_FAST] = _TAIL_CALL_DELETE_FAST,
+     [DELETE_SUBSCR] = _TAIL_CALL_DELETE_SUBSCR,
+@@ -978,6 +983,7 @@ static py_tail_call_funcptr instruction_funcptr_handler_table[256] = {
+     [STORE_ATTR_WITH_HINT] = _TAIL_CALL_STORE_ATTR_WITH_HINT,
+     [STORE_DEREF] = _TAIL_CALL_STORE_DEREF,
+     [STORE_FAST] = _TAIL_CALL_STORE_FAST,
++    [STORE_FAST_BORROW] = _TAIL_CALL_STORE_FAST_BORROW,
+     [STORE_FAST_LOAD_FAST] = _TAIL_CALL_STORE_FAST_LOAD_FAST,
+     [STORE_FAST_STORE_FAST] = _TAIL_CALL_STORE_FAST_STORE_FAST,
+     [STORE_GLOBAL] = _TAIL_CALL_STORE_GLOBAL,
+@@ -1005,9 +1011,6 @@ static py_tail_call_funcptr instruction_funcptr_handler_table[256] = {
+     [UNPACK_SEQUENCE_TWO_TUPLE] = _TAIL_CALL_UNPACK_SEQUENCE_TWO_TUPLE,
+     [WITH_EXCEPT_START] = _TAIL_CALL_WITH_EXCEPT_START,
+     [YIELD_VALUE] = _TAIL_CALL_YIELD_VALUE,
+-    [117] = _TAIL_CALL_UNKNOWN_OPCODE,
+-    [118] = _TAIL_CALL_UNKNOWN_OPCODE,
+-    [119] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [120] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [121] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [122] = _TAIL_CALL_UNKNOWN_OPCODE,
+@@ -1092,6 +1095,7 @@ static py_tail_call_funcptr instruction_funcptr_tracing_table[256] = {
+     [CHECK_EG_MATCH] = _TAIL_CALL_TRACE_RECORD,
+     [CHECK_EXC_MATCH] = _TAIL_CALL_TRACE_RECORD,
+     [CLEANUP_THROW] = _TAIL_CALL_TRACE_RECORD,
++    [CLEAR_FAST] = _TAIL_CALL_TRACE_RECORD,
+     [COMPARE_OP] = _TAIL_CALL_TRACE_RECORD,
+     [COMPARE_OP_FLOAT] = _TAIL_CALL_TRACE_RECORD,
+     [COMPARE_OP_INT] = _TAIL_CALL_TRACE_RECORD,
+@@ -1102,6 +1106,7 @@ static py_tail_call_funcptr instruction_funcptr_tracing_table[256] = {
+     [CONVERT_VALUE] = _TAIL_CALL_TRACE_RECORD,
+     [COPY] = _TAIL_CALL_TRACE_RECORD,
+     [COPY_FREE_VARS] = _TAIL_CALL_TRACE_RECORD,
++    [COPY_TO_FAST] = _TAIL_CALL_TRACE_RECORD,
+     [DELETE_DEREF] = _TAIL_CALL_TRACE_RECORD,
+     [DELETE_FAST] = _TAIL_CALL_TRACE_RECORD,
+     [DELETE_SUBSCR] = _TAIL_CALL_TRACE_RECORD,
+@@ -1236,6 +1241,7 @@ static py_tail_call_funcptr instruction_funcptr_tracing_table[256] = {
+     [STORE_ATTR_WITH_HINT] = _TAIL_CALL_TRACE_RECORD,
+     [STORE_DEREF] = _TAIL_CALL_TRACE_RECORD,
+     [STORE_FAST] = _TAIL_CALL_TRACE_RECORD,
++    [STORE_FAST_BORROW] = _TAIL_CALL_TRACE_RECORD,
+     [STORE_FAST_LOAD_FAST] = _TAIL_CALL_TRACE_RECORD,
+     [STORE_FAST_STORE_FAST] = _TAIL_CALL_TRACE_RECORD,
+     [STORE_GLOBAL] = _TAIL_CALL_TRACE_RECORD,
+@@ -1263,9 +1269,6 @@ static py_tail_call_funcptr instruction_funcptr_tracing_table[256] = {
+     [UNPACK_SEQUENCE_TWO_TUPLE] = _TAIL_CALL_TRACE_RECORD,
+     [WITH_EXCEPT_START] = _TAIL_CALL_TRACE_RECORD,
+     [YIELD_VALUE] = _TAIL_CALL_TRACE_RECORD,
+-    [117] = _TAIL_CALL_UNKNOWN_OPCODE,
+-    [118] = _TAIL_CALL_UNKNOWN_OPCODE,
+-    [119] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [120] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [121] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [122] = _TAIL_CALL_UNKNOWN_OPCODE,
+diff --git a/Objects/frameobject.c b/Objects/frameobject.c
+index a4cc14a6eaa..17a3746444a 100644
+--- a/Objects/frameobject.c
++++ b/Objects/frameobject.c
+@@ -48,6 +48,9 @@ framelocalsproxy_getval(_PyInterpreterFrame *frame, PyCodeObject *co, int i)
+     _PyStackRef *fast = _PyFrame_GetLocalsArray(frame);
+     _PyLocals_Kind kind = _PyLocals_GetKind(co->co_localspluskinds, i);
+ 
++    if (kind & CO_FAST_INTERNAL) {
++        return NULL;
++    }
+     PyObject *value = PyStackRef_AsPyObjectBorrow(fast[i]);
+     PyObject *cell = NULL;
+ 
+diff --git a/Parser/asdl_c.py b/Parser/asdl_c.py
+index 2b83e97353b..aad89ba0d3d 100755
+--- a/Parser/asdl_c.py
++++ b/Parser/asdl_c.py
+@@ -1990,6 +1990,15 @@ def visitModule(self, mod):
+         self.emit('if (PyModule_AddIntMacro(m, PyCF_TYPE_COMMENTS) < 0) {', 1)
+         self.emit("return -1;", 2)
+         self.emit('}', 1)
++        self.emit('if (PyModule_AddIntMacro(m, PyCF_ASSERT_DETAILS) < 0) {', 1)
++        self.emit('return -1;', 2)
++        self.emit('}', 1)
++        self.emit('if (PyModule_AddIntMacro(m, PyCF_KEEP_ASSERTS) < 0) {', 1)
++        self.emit('return -1;', 2)
++        self.emit('}', 1)
++        self.emit('if (PyModule_AddIntMacro(m, PyCF_ASSERT_EVENTS) < 0) {', 1)
++        self.emit('return -1;', 2)
++        self.emit('}', 1)
+         self.emit('if (PyModule_AddIntMacro(m, PyCF_OPTIMIZED_AST) < 0) {', 1)
+         self.emit("return -1;", 2)
+         self.emit('}', 1)
+diff --git a/Python/Python-ast.c b/Python/Python-ast.c
+index 0d89f7e87f1..f208ff4a27e 100644
+--- a/Python/Python-ast.c
++++ b/Python/Python-ast.c
+@@ -14369,6 +14369,15 @@ astmodule_exec(PyObject *m)
+     if (PyModule_AddIntMacro(m, PyCF_TYPE_COMMENTS) < 0) {
+         return -1;
+     }
++    if (PyModule_AddIntMacro(m, PyCF_ASSERT_DETAILS) < 0) {
++        return -1;
++    }
++    if (PyModule_AddIntMacro(m, PyCF_KEEP_ASSERTS) < 0) {
++        return -1;
++    }
++    if (PyModule_AddIntMacro(m, PyCF_ASSERT_EVENTS) < 0) {
++        return -1;
++    }
+     if (PyModule_AddIntMacro(m, PyCF_OPTIMIZED_AST) < 0) {
+         return -1;
+     }
+diff --git a/Python/assemble.c b/Python/assemble.c
+index 8f68e233ab7..60959edaf61 100644
+--- a/Python/assemble.c
++++ b/Python/assemble.c
+@@ -537,6 +537,15 @@ compute_localsplus_info(_PyCompile_CodeUnitMetadata *umd, int nlocalsplus,
+ 
+             _PyLocals_Kind kind = CO_FAST_LOCAL | argvarkinds[i].kind;
+ 
++            if (umd->u_internal != NULL) {
++                int internal = PySet_Contains(umd->u_internal, k);
++                if (internal < 0) {
++                    return -1;
++                }
++                if (internal) {
++                    kind |= CO_FAST_INTERNAL | CO_FAST_HIDDEN;
++                }
++            }
+             if (umd->u_fasthidden != NULL) {
+                 int hidden = PySet_Contains(umd->u_fasthidden, k);
+                 RETURN_IF_ERROR(hidden);
+diff --git a/Python/bytecodes.c b/Python/bytecodes.c
+index 31eaeab0d67..5b9822e74d9 100644
+--- a/Python/bytecodes.c
++++ b/Python/bytecodes.c
+@@ -324,6 +324,26 @@ dummy_func(
+ 
+         macro(STORE_FAST) = _SWAP_FAST + POP_TOP;
+ 
++        inst(COPY_TO_FAST, (value -- value)) {
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_MakeHeapSafe(PyStackRef_DUP(value));
++            PyStackRef_XCLOSE(old);
++        }
++
++        inst(STORE_FAST_BORROW, (value -- borrowed)) {
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_MakeHeapSafe(value);
++            DEAD(value);
++            borrowed = PyStackRef_Borrow(GETLOCAL(oparg));
++            PyStackRef_XCLOSE(old);
++        }
++
++        inst(CLEAR_FAST, (--)) {
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_NULL;
++            PyStackRef_XCLOSE(old);
++        }
++
+         replicate(8) op(_SWAP_FAST, (value -- trash)) {
+             _PyStackRef tmp = GETLOCAL(oparg);
+             GETLOCAL(oparg) = value;
+diff --git a/Python/codegen.c b/Python/codegen.c
+index 840dd3103a8..8f6744db860 100644
+--- a/Python/codegen.c
++++ b/Python/codegen.c
+@@ -486,6 +486,8 @@ codegen_addop_j(instr_sequence *seq, location loc,
+ #define VISIT_UNUSED(C, TYPE, V) \
+     RETURN_IF_ERROR(codegen_visit_unused_ ## TYPE((C), (V)))
+ 
++#include "codegen_assert.h"
++
+ static int
+ codegen_call_exit_with_nones(compiler *c, location loc)
+ {
+@@ -1974,8 +1976,25 @@ codegen_addcompare(compiler *c, location loc, cmpop_ty op)
+     return SUCCESS;
+ }
+ 
++static int codegen_jump_if_impl(compiler *, location, expr_ty,
++                                jump_target_label, int);
++
++static int
++codegen_jump_if(compiler *c, location loc, expr_ty e,
++                jump_target_label next, int cond)
++{
++    assertion_context *ctx = METADATA(c)->u_assert;
++    int parent = ctx ? ctx->parent : -1;
++    RETURN_IF_ERROR(codegen_assert_enter(c, e));
++    int ret = codegen_jump_if_impl(c, loc, e, next, cond);
++    if (ctx) {
++        ctx->parent = parent;
++    }
++    return ret;
++}
++
+ static int
+-codegen_jump_if(compiler *c, location loc,
++codegen_jump_if_impl(compiler *c, location loc,
+                 expr_ty e, jump_target_label next, int cond)
+ {
+     switch (e->kind) {
+@@ -2034,12 +2053,16 @@ codegen_jump_if(compiler *c, location loc,
+                 ADDOP_I(c, LOC(e), SWAP, 2);
+                 ADDOP_I(c, LOC(e), COPY, 2);
+                 ADDOP_COMPARE(c, LOC(e), asdl_seq_GET(e->v.Compare.ops, i));
++                RETURN_IF_ERROR(codegen_assert_capture(c, e, "comparison", (int)i));
+                 ADDOP(c, LOC(e), TO_BOOL);
++                RETURN_IF_ERROR(codegen_assert_capture(c, e, "truth", (int)i));
+                 ADDOP_JUMP(c, LOC(e), POP_JUMP_IF_FALSE, cleanup);
+             }
+             VISIT(c, expr, (expr_ty)asdl_seq_GET(e->v.Compare.comparators, n));
+             ADDOP_COMPARE(c, LOC(e), asdl_seq_GET(e->v.Compare.ops, n));
++            RETURN_IF_ERROR(codegen_assert_capture(c, e, "comparison", (int)n));
+             ADDOP(c, LOC(e), TO_BOOL);
++            RETURN_IF_ERROR(codegen_assert_capture(c, e, "truth", (int)n));
+             ADDOP_JUMP(c, LOC(e), cond ? POP_JUMP_IF_TRUE : POP_JUMP_IF_FALSE, next);
+             NEW_JUMP_TARGET_LABEL(c, end);
+             ADDOP_JUMP(c, NO_LOCATION, JUMP_NO_INTERRUPT, end);
+@@ -2064,6 +2087,7 @@ codegen_jump_if(compiler *c, location loc,
+     /* general implementation */
+     VISIT(c, expr, e);
+     ADDOP(c, LOC(e), TO_BOOL);
++    RETURN_IF_ERROR(codegen_assert_capture(c, e, "truth", -1));
+     ADDOP_JUMP(c, LOC(e), cond ? POP_JUMP_IF_TRUE : POP_JUMP_IF_FALSE, next);
+     return SUCCESS;
+ }
+@@ -3074,9 +3098,12 @@ codegen_assert(compiler *c, stmt_ty s)
+             _PyCompile_Warn(c, LOC(s), "assertion is always true, "
+                                        "perhaps remove parentheses?"));
+     }
+-    if (OPTIMIZATION_LEVEL(c)) {
++    if (OPTIMIZATION_LEVEL(c) && !_PyCompile_KeepAsserts(c)) {
+         return SUCCESS;
+     }
++    if (_PyCompile_AssertDetails(c)) {
++        return codegen_assert_details(c, s);
++    }
+     NEW_JUMP_TARGET_LABEL(c, end);
+     RETURN_IF_ERROR(codegen_jump_if(c, LOC(s), s->v.Assert.test, end, 1));
+     ADDOP_I(c, LOC(s), LOAD_COMMON_CONSTANT, CONSTANT_ASSERTIONERROR);
+@@ -3440,7 +3467,18 @@ codegen_boolop(compiler *c, expr_ty e)
+     assert(n >= 0);
+     for (i = 0; i < n; ++i) {
+         VISIT(c, expr, (expr_ty)asdl_seq_GET(s, i));
+-        ADDOP_JUMP(c, loc, jumpi, end);
++        if (METADATA(c)->u_assert) {
++            ADDOP_I(c, loc, COPY, 1);
++            ADDOP(c, loc, TO_BOOL);
++            RETURN_IF_ERROR(codegen_assert_capture(
++                c, asdl_seq_GET(s, i), "truth", -1));
++            ADDOP_JUMP(c, loc,
++                       jumpi == JUMP_IF_FALSE ? POP_JUMP_IF_FALSE : POP_JUMP_IF_TRUE,
++                       end);
++        }
++        else {
++            ADDOP_JUMP(c, loc, jumpi, end);
++        }
+         ADDOP(c, loc, POP_TOP);
+     }
+     VISIT(c, expr, (expr_ty)asdl_seq_GET(s, n));
+@@ -3724,6 +3762,7 @@ codegen_compare(compiler *c, expr_ty e)
+     if (n == 0) {
+         VISIT(c, expr, (expr_ty)asdl_seq_GET(e->v.Compare.comparators, 0));
+         ADDOP_COMPARE(c, loc, asdl_seq_GET(e->v.Compare.ops, 0));
++        RETURN_IF_ERROR(codegen_assert_capture(c, e, "comparison", 0));
+     }
+     else {
+         NEW_JUMP_TARGET_LABEL(c, cleanup);
+@@ -3733,13 +3772,16 @@ codegen_compare(compiler *c, expr_ty e)
+             ADDOP_I(c, loc, SWAP, 2);
+             ADDOP_I(c, loc, COPY, 2);
+             ADDOP_COMPARE(c, loc, asdl_seq_GET(e->v.Compare.ops, i));
++            RETURN_IF_ERROR(codegen_assert_capture(c, e, "comparison", (int)i));
+             ADDOP_I(c, loc, COPY, 1);
+             ADDOP(c, loc, TO_BOOL);
++            RETURN_IF_ERROR(codegen_assert_capture(c, e, "truth", (int)i));
+             ADDOP_JUMP(c, loc, POP_JUMP_IF_FALSE, cleanup);
+             ADDOP(c, loc, POP_TOP);
+         }
+         VISIT(c, expr, (expr_ty)asdl_seq_GET(e->v.Compare.comparators, n));
+         ADDOP_COMPARE(c, loc, asdl_seq_GET(e->v.Compare.ops, n));
++        RETURN_IF_ERROR(codegen_assert_capture(c, e, "comparison", (int)n));
+         NEW_JUMP_TARGET_LABEL(c, end);
+         ADDOP_JUMP(c, NO_LOCATION, JUMP_NO_INTERRUPT, end);
+ 
+@@ -4249,7 +4291,7 @@ static int
+ codegen_call(compiler *c, expr_ty e)
+ {
+     RETURN_IF_ERROR(codegen_validate_keywords(c, e->v.Call.keywords));
+-    int ret = maybe_optimize_method_call(c, e);
++    int ret = METADATA(c)->u_assert ? 0 : maybe_optimize_method_call(c, e);
+     if (ret < 0) {
+         return ERROR;
+     }
+@@ -4259,7 +4301,9 @@ codegen_call(compiler *c, expr_ty e)
+     NEW_JUMP_TARGET_LABEL(c, skip_normal_call);
+     RETURN_IF_ERROR(check_caller(c, e->v.Call.func));
+     VISIT(c, expr, e->v.Call.func);
+-    RETURN_IF_ERROR(maybe_optimize_function_call(c, e, skip_normal_call));
++    if (!METADATA(c)->u_assert) {
++        RETURN_IF_ERROR(maybe_optimize_function_call(c, e, skip_normal_call));
++    }
+     location loc = LOC(e->v.Call.func);
+     ADDOP(c, loc, PUSH_NULL);
+     loc = LOC(e);
+@@ -5503,6 +5547,8 @@ codegen_visit_expr_impl(compiler *c, expr_ty e, bool result_is_unused)
+         }
+         else if (e->v.UnaryOp.op == Not) {
+             ADDOP(c, loc, TO_BOOL);
++            RETURN_IF_ERROR(codegen_assert_capture(
++                c, e->v.UnaryOp.operand, "truth", -1));
+             ADDOP(c, loc, UNARY_NOT);
+         }
+         else {
+@@ -5574,7 +5620,7 @@ codegen_visit_expr_impl(compiler *c, expr_ty e, bool result_is_unused)
+     /* The following exprs can be assignment targets. */
+     case Attribute_kind:
+         if (e->v.Attribute.ctx == Load) {
+-            int ret = can_optimize_super_call(c, e);
++            int ret = METADATA(c)->u_assert ? 0 : can_optimize_super_call(c, e);
+             RETURN_IF_ERROR(ret);
+             if (ret) {
+                 RETURN_IF_ERROR(load_args_for_super(c, e->v.Attribute.value));
+@@ -5636,7 +5682,35 @@ codegen_visit_expr_impl(compiler *c, expr_ty e, bool result_is_unused)
+ static int
+ codegen_visit_expr(compiler *c, expr_ty e)
+ {
+-    return codegen_visit_expr_impl(c, e, false);
++    assertion_context *capture = METADATA(c)->u_assert;
++    int parent = capture ? capture->parent : -1;
++    bool borrow = capture && capture->borrow;
++    RETURN_IF_ERROR(codegen_assert_enter(c, e));
++    /* STORE_FAST requires an owned reference. A named expression can store
++       the selected child of a boolean expression, so protect the subtree. */
++    if (capture && e->kind == NamedExpr_kind) {
++        capture->borrow = false;
++    }
++    /* A comprehension has its own execution scope. Capture its result, as
++       pytest does, rather than the final iteration's local values. */
++    bool opaque = e->kind == ListComp_kind || e->kind == SetComp_kind ||
++                  e->kind == DictComp_kind || e->kind == GeneratorExp_kind;
++    if (opaque) {
++        METADATA(c)->u_assert = NULL;
++    }
++    int ret = codegen_visit_expr_impl(c, e, false);
++    METADATA(c)->u_assert = capture;
++    if (ret < 0) {
++        return ret;
++    }
++    if (capture) {
++        capture->borrow = borrow;
++    }
++    ret = codegen_assert_capture(c, e, "value", -1);
++    if (capture) {
++        capture->parent = parent;
++    }
++    return ret;
+ }
+ 
+ static int
+@@ -5860,7 +5934,8 @@ codegen_subscript(compiler *c, expr_ty e)
+     }
+ 
+     VISIT(c, expr, e->v.Subscript.value);
+-    if (should_apply_two_element_slice_optimization(e->v.Subscript.slice) &&
++    if (!METADATA(c)->u_assert &&
++        should_apply_two_element_slice_optimization(e->v.Subscript.slice) &&
+         ctx != Del
+     ) {
+         RETURN_IF_ERROR(codegen_slice_two_parts(c, e->v.Subscript.slice));
+diff --git a/Python/codegen_assert.h b/Python/codegen_assert.h
+new file mode 100644
+index 00000000000..1dd1a245d46
+--- /dev/null
++++ b/Python/codegen_assert.h
+@@ -0,0 +1,350 @@
++/* Compiler support for opt-in assertion diagnostics. */
++
++typedef struct {
++    PyObject *records;
++    PyObject *slots;
++    PyObject *nodes;
++    PyObject *node_ids;
++    int parent;
++    int next_slot;
++    bool borrow;
++} assertion_context;
++
++static int codegen_jump_if(compiler *, location, expr_ty,
++                           jump_target_label, int);
++
++static int
++assertion_node_id(assertion_context *ctx, expr_ty e)
++{
++    PyObject *key = PyLong_FromVoidPtr(e);
++    if (key == NULL) {
++        return -1;
++    }
++    PyObject *value = PyDict_GetItemWithError(ctx->node_ids, key);
++    Py_DECREF(key);
++    return value == NULL ? -1 : (int)PyLong_AsLong(value);
++}
++
++static int
++codegen_assert_enter(compiler *c, expr_ty e)
++{
++    assertion_context *ctx = METADATA(c)->u_assert;
++    if (ctx == NULL) {
++        return SUCCESS;
++    }
++    int id = assertion_node_id(ctx, e);
++    if (id < 0) {
++        if (PyErr_Occurred()) {
++            return ERROR;
++        }
++        const char *kind = "expression";
++        switch (e->kind) {
++            case BoolOp_kind: kind = e->v.BoolOp.op == And ? "and" : "or"; break;
++            case UnaryOp_kind: kind = e->v.UnaryOp.op == Not ? "not" : "unary"; break;
++            case IfExp_kind: kind = "conditional"; break;
++            case Compare_kind: kind = "compare"; break;
++            case Call_kind: kind = "call"; break;
++            case Name_kind: kind = "name"; break;
++            case Constant_kind: kind = "constant"; break;
++            case Attribute_kind: kind = "attribute"; break;
++            case Subscript_kind: kind = "subscript"; break;
++            case BinOp_kind: kind = "binary"; break;
++            default: break;
++        }
++        PyObject *text = _PyAST_ExprAsUnicode(e);
++        PyObject *children = PyList_New(0);
++        PyObject *key = PyLong_FromVoidPtr(e);
++        PyObject *node = NULL;
++        id = (int)PyList_GET_SIZE(ctx->nodes);
++        if (text && children && key) {
++            node = Py_BuildValue("(Os(iiii)O)", text, kind,
++                                 e->lineno, e->col_offset,
++                                 e->end_lineno, e->end_col_offset, children);
++        }
++        PyObject *index = PyLong_FromLong(id);
++        int res = ERROR;
++        if (node && index && PyList_Append(ctx->nodes, node) == 0 &&
++            PyDict_SetItem(ctx->node_ids, key, index) == 0) {
++            res = SUCCESS;
++        }
++        Py_XDECREF(text);
++        Py_XDECREF(children);
++        Py_XDECREF(key);
++        Py_XDECREF(node);
++        Py_XDECREF(index);
++        RETURN_IF_ERROR(res);
++    }
++    if (ctx->parent >= 0 && ctx->parent != id) {
++        PyObject *parent = PyList_GET_ITEM(ctx->nodes, ctx->parent);
++        PyObject *children = PyTuple_GET_ITEM(parent, 3);
++        PyObject *index = PyLong_FromLong(id);
++        if (index == NULL) {
++            return ERROR;
++        }
++        int contains = PySequence_Contains(children, index);
++        int res = contains < 0 ? ERROR :
++            contains ? SUCCESS : PyList_Append(children, index);
++        Py_DECREF(index);
++        RETURN_IF_ERROR(res);
++    }
++    ctx->parent = id;
++    return SUCCESS;
++}
++
++static int
++assertion_value_slot(assertion_context *ctx, expr_ty e)
++{
++    PyObject *key = PyLong_FromVoidPtr(e);
++    if (key == NULL) {
++        return -1;
++    }
++    PyObject *value = PyDict_GetItemWithError(ctx->slots, key);
++    Py_DECREF(key);
++    if (value == NULL) {
++        return -1;
++    }
++    return (int)PyLong_AsLong(value);
++}
++
++static PyObject *
++assertion_node_text(assertion_context *ctx, expr_ty e)
++{
++    int id = assertion_node_id(ctx, e);
++    if (id < 0) {
++        return NULL;
++    }
++    return Py_NewRef(PyTuple_GET_ITEM(PyList_GET_ITEM(ctx->nodes, id), 0));
++}
++
++static int
++codegen_assert_capture(compiler *c, expr_ty e, const char *kind, int link)
++{
++    assertion_context *ctx = METADATA(c)->u_assert;
++    if (ctx == NULL) {
++        return SUCCESS;
++    }
++    if ((e->kind == Name_kind && e->v.Name.ctx != Load) ||
++        (e->kind == Attribute_kind && e->v.Attribute.ctx != Load) ||
++        (e->kind == Subscript_kind && e->v.Subscript.ctx != Load) ||
++        (e->kind == List_kind && e->v.List.ctx != Load) ||
++        (e->kind == Tuple_kind && e->v.Tuple.ctx != Load)) {
++        return SUCCESS;
++    }
++    PyObject *label = NULL, *extra = NULL, *name = NULL, *record = NULL;
++    int ret = ERROR;
++    if (link >= 0) {
++        static const char *operators[] = {
++            "", "==", "!=", "<", "<=", ">", ">=", "is", "is not", "in", "not in"
++        };
++        expr_ty left = link == 0 ? e->v.Compare.left :
++            asdl_seq_GET(e->v.Compare.comparators, link - 1);
++        expr_ty right = asdl_seq_GET(e->v.Compare.comparators, link);
++        const char *op = operators[asdl_seq_GET(e->v.Compare.ops, link)];
++        PyObject *l = assertion_node_text(ctx, left);
++        PyObject *r = assertion_node_text(ctx, right);
++        if (l != NULL && r != NULL) {
++            label = PyUnicode_FromFormat("%U %s %U", l, op, r);
++        }
++        Py_XDECREF(l);
++        Py_XDECREF(r);
++        if (label == NULL) {
++            goto done;
++        }
++        int left_slot = assertion_value_slot(ctx, left);
++        int right_slot = assertion_value_slot(ctx, right);
++        if (PyErr_Occurred()) {
++            goto done;
++        }
++        extra = Py_BuildValue("(iisii)", left_slot, right_slot, op,
++                              assertion_node_id(ctx, left),
++                              assertion_node_id(ctx, right));
++    }
++    else {
++        label = assertion_node_text(ctx, e);
++        extra = Py_NewRef(Py_None);
++    }
++    if (label == NULL || extra == NULL) {
++        goto done;
++    }
++    Py_ssize_t slot = -1;
++    /* A single comparison and its expression result are the same value. */
++    bool alias = strcmp(kind, "value") == 0 && e->kind == Compare_kind &&
++                 asdl_seq_LEN(e->v.Compare.ops) == 1;
++    if (alias) {
++        PyObject *previous = PyList_GET_ITEM(ctx->records,
++                                           PyList_GET_SIZE(ctx->records) - 1);
++        slot = PyLong_AsSsize_t(PyTuple_GET_ITEM(previous, 0));
++    }
++    else {
++        name = PyUnicode_FromFormat(".assertion.%d", ctx->next_slot++);
++        if (name == NULL) {
++            goto done;
++        }
++        slot = _PyCompile_DictAddObj(METADATA(c)->u_varnames, name);
++        if (slot < 0) {
++            goto done;
++        }
++    }
++    if (METADATA(c)->u_internal == NULL) {
++        METADATA(c)->u_internal = PySet_New(NULL);
++        if (METADATA(c)->u_internal == NULL) {
++            goto done;
++        }
++    }
++    if (name != NULL && PySet_Add(METADATA(c)->u_internal, name) < 0) {
++        goto done;
++    }
++    record = Py_BuildValue("(nOs(iiii)Oi)", slot, label, kind,
++                          e->lineno, e->col_offset,
++                          e->end_lineno, e->end_col_offset, extra, assertion_node_id(ctx, e));
++    if (record == NULL || PyList_Append(ctx->records, record) < 0) {
++        goto done;
++    }
++    if (strcmp(kind, "value") == 0) {
++        PyObject *key = PyLong_FromVoidPtr(e);
++        if (key == NULL) {
++            goto done;
++        }
++        int res = PyDict_SetItem(ctx->slots, key, PyTuple_GET_ITEM(record, 0));
++        Py_DECREF(key);
++        if (res < 0) {
++            goto done;
++        }
++    }
++    if (!alias &&
++        codegen_addop_i(INSTR_SEQUENCE(c),
++                        ctx->borrow ? STORE_FAST_BORROW : COPY_TO_FAST,
++                        slot, NO_LOCATION) < 0) {
++        goto done;
++    }
++    ret = SUCCESS;
++done:
++    Py_XDECREF(label);
++    Py_XDECREF(extra);
++    Py_XDECREF(name);
++    Py_XDECREF(record);
++    return ret;
++}
++
++static int
++codegen_assert_clear(compiler *c, assertion_context *ctx)
++{
++    for (int i = 0; i < ctx->next_slot; i++) {
++        PyObject *name = PyUnicode_FromFormat(".assertion.%d", i);
++        if (name == NULL) {
++            return ERROR;
++        }
++        PyObject *index = PyDict_GetItemWithError(METADATA(c)->u_varnames, name);
++        Py_DECREF(name);
++        if (index == NULL) {
++            return ERROR;
++        }
++        ADDOP_I(c, NO_LOCATION, CLEAR_FAST, PyLong_AsLong(index));
++    }
++    return SUCCESS;
++}
++
++static int
++codegen_assert_details_body(compiler *c, stmt_ty s, assertion_context *ctx)
++{
++    NEW_JUMP_TARGET_LABEL(c, passed);
++    NEW_JUMP_TARGET_LABEL(c, cleanup);
++    NEW_JUMP_TARGET_LABEL(c, end);
++    location loc = LOC(s);
++    /* There are no return/break/continue statements inside an expression,
++       but the handler must count against the compiler's block limit. */
++    RETURN_IF_ERROR(_PyCompile_PushFBlock(c, loc, COMPILE_FBLOCK_TRY_EXCEPT,
++                                         cleanup, NO_LABEL, NULL));
++    ADDOP_JUMP(c, NO_LOCATION, SETUP_FINALLY, cleanup);
++    METADATA(c)->u_assert = ctx;
++    int res = codegen_jump_if(c, loc, s->v.Assert.test, passed, 1);
++    METADATA(c)->u_assert = NULL;
++    RETURN_IF_ERROR(res);
++
++    ADDOP_I(c, loc, LOAD_COMMON_CONSTANT, CONSTANT_ASSERTIONERROR);
++    if (s->v.Assert.msg) {
++        VISIT(c, expr, s->v.Assert.msg);
++    }
++    else {
++        ADDOP(c, NO_LOCATION, PUSH_NULL);
++    }
++    ADDOP_I(c, loc, CALL, 0);
++
++    PyObject *text = assertion_node_text(ctx, s->v.Assert.test);
++    PyObject *records = PyList_AsTuple(ctx->records);
++    PyObject *nodes = PyTuple_New(PyList_GET_SIZE(ctx->nodes));
++    if (nodes != NULL) {
++        for (Py_ssize_t i = 0; i < PyTuple_GET_SIZE(nodes); i++) {
++            PyObject *node = PyList_GET_ITEM(ctx->nodes, i);
++            PyObject *children = PyList_AsTuple(PyTuple_GET_ITEM(node, 3));
++            PyObject *frozen = children == NULL ? NULL : PyTuple_Pack(
++                4, PyTuple_GET_ITEM(node, 0), PyTuple_GET_ITEM(node, 1),
++                PyTuple_GET_ITEM(node, 2), children);
++            Py_XDECREF(children);
++            if (frozen == NULL) {
++                Py_CLEAR(nodes);
++                break;
++            }
++            PyTuple_SET_ITEM(nodes, i, frozen);
++        }
++    }
++    PyObject *plan = NULL;
++    if (text && records && nodes) {
++        plan = PyTuple_Pack(3, text, records, nodes);
++    }
++    Py_XDECREF(text);
++    Py_XDECREF(records);
++    Py_XDECREF(nodes);
++    if (plan == NULL) {
++        return ERROR;
++    }
++    Py_ssize_t plan_index = _PyCompile_AddConst(c, plan);
++    Py_DECREF(plan);
++    RETURN_IF_ERROR(plan_index);
++    ADDOP_I(c, NO_LOCATION, LOAD_CONST, plan_index);
++    ADDOP_I(c, NO_LOCATION, CALL_INTRINSIC_2, INTRINSIC_ASSERT_DETAILS);
++    ADDOP_I(c, LOC(s->v.Assert.test), RAISE_VARARGS, 1);
++
++    USE_LABEL(c, passed);
++    if (_PyCompile_AssertEvents(c)) {
++        ADDOP_LOAD_CONST(c, NO_LOCATION, Py_None);
++        ADDOP_I(c, NO_LOCATION, LOAD_CONST, plan_index);
++        ADDOP_I(c, NO_LOCATION, CALL_INTRINSIC_2, INTRINSIC_ASSERT_DETAILS);
++        ADDOP(c, NO_LOCATION, POP_TOP);
++    }
++    ADDOP(c, NO_LOCATION, POP_BLOCK);
++    _PyCompile_PopFBlock(c, COMPILE_FBLOCK_TRY_EXCEPT, cleanup);
++    RETURN_IF_ERROR(codegen_assert_clear(c, ctx));
++    ADDOP_JUMP(c, NO_LOCATION, JUMP_NO_INTERRUPT, end);
++
++    USE_LABEL(c, cleanup);
++    RETURN_IF_ERROR(codegen_assert_clear(c, ctx));
++    ADDOP_I(c, NO_LOCATION, RERAISE, 0);
++    USE_LABEL(c, end);
++    return SUCCESS;
++}
++
++static int
++codegen_assert_details(compiler *c, stmt_ty s)
++{
++    if (!_PyCompile_AssertEvents(c) && s->v.Assert.test->kind == Constant_kind &&
++        PyObject_IsTrue(s->v.Assert.test->v.Constant.value) == 1) {
++        ADDOP(c, LOC(s), NOP);
++        return SUCCESS;
++    }
++    assertion_context ctx = {
++        .records = PyList_New(0), .slots = PyDict_New(),
++        .nodes = PyList_New(0), .node_ids = PyDict_New(), .parent = -1,
++        .borrow = true,
++    };
++    int ret = ERROR;
++    if (ctx.records && ctx.slots && ctx.nodes && ctx.node_ids) {
++        ret = codegen_assert_details_body(c, s, &ctx);
++    }
++    METADATA(c)->u_assert = NULL;
++    Py_XDECREF(ctx.records);
++    Py_XDECREF(ctx.slots);
++    Py_XDECREF(ctx.nodes);
++    Py_XDECREF(ctx.node_ids);
++    return ret;
++}
+diff --git a/Python/compile.c b/Python/compile.c
+index b574767a918..b05a652d663 100644
+--- a/Python/compile.c
++++ b/Python/compile.c
+@@ -15,6 +15,7 @@
+  */
+ 
+ #include "Python.h"
++#include "pycore_initconfig.h"
+ #include "pycore_ast.h"           // PyAST_Check()
+ #include "pycore_code.h"
+ #include "pycore_compile.h"
+@@ -107,6 +108,24 @@ typedef struct _PyCompiler {
+     PyObject *c_module;
+ } compiler;
+ 
++int
++_PyCompile_AssertionFlags(void)
++{
++    int flags = 0;
++    const PyWideStringList *xoptions = &_Py_GetConfig()->xoptions;
++    const wchar_t *option = _Py_get_xoption(xoptions, L"assert_details");
++    if (option != NULL) {
++        flags |= PyCF_ASSERT_DETAILS;
++        if (wcscmp(option, L"assert_details=events") == 0) {
++            flags |= PyCF_ASSERT_EVENTS;
++        }
++    }
++    if (_Py_get_xoption(xoptions, L"keep_asserts") != NULL) {
++        flags |= PyCF_KEEP_ASSERTS;
++    }
++    return flags;
++}
++
+ static int
+ compiler_setup(compiler *c, mod_ty mod, PyObject *filename,
+                PyCompilerFlags *flags, int optimize, PyArena *arena,
+@@ -136,6 +155,7 @@ compiler_setup(compiler *c, mod_ty mod, PyObject *filename,
+     c->c_future.ff_features = merged;
+     flags->cf_flags = merged;
+     c->c_flags = *flags;
++    c->c_flags.cf_flags |= _PyCompile_AssertionFlags();
+     c->c_optimize = (optimize == -1) ? _Py_GetConfig()->optimization_level : optimize;
+     c->c_save_nested_seqs = false;
+ 
+@@ -197,6 +217,7 @@ compiler_unit_free(struct compiler_unit *u)
+     Py_CLEAR(u->u_metadata.u_freevars);
+     Py_CLEAR(u->u_metadata.u_cellvars);
+     Py_CLEAR(u->u_metadata.u_fasthidden);
++    Py_CLEAR(u->u_metadata.u_internal);
+     Py_CLEAR(u->u_private);
+     Py_CLEAR(u->u_static_attributes);
+     Py_CLEAR(u->u_deferred_annotations);
+@@ -1579,6 +1600,24 @@ intern_final_constants(PyObject *const_cache, PyObject *consts)
+     return SUCCESS;
+ }
+ 
++int
++_PyCompile_AssertDetails(compiler *c)
++{
++    return (c->c_flags.cf_flags & (PyCF_ASSERT_DETAILS | PyCF_ASSERT_EVENTS)) != 0;
++}
++
++int
++_PyCompile_KeepAsserts(compiler *c)
++{
++    return (c->c_flags.cf_flags & PyCF_KEEP_ASSERTS) != 0;
++}
++
++int
++_PyCompile_AssertEvents(compiler *c)
++{
++    return (c->c_flags.cf_flags & PyCF_ASSERT_EVENTS) != 0;
++}
++
+ static int
+ compute_code_flags(compiler *c)
+ {
+diff --git a/Python/executor_cases.c.h b/Python/executor_cases.c.h
+index c5b2dfcf5f6..3f558d00b3f 100644
+--- a/Python/executor_cases.c.h
++++ b/Python/executor_cases.c.h
+@@ -1542,6 +1542,78 @@
+             break;
+         }
+ 
++        case _COPY_TO_FAST_r11: {
++            CHECK_CURRENT_CACHED_VALUES(1);
++            ASSERT_WITHIN_STACK_BOUNDS_IGNORING_CACHE(__FILE__, __LINE__);
++            _PyStackRef value;
++            _PyStackRef _stack_item_0 = _tos_cache0;
++            oparg = CURRENT_OPARG();
++            value = _stack_item_0;
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_MakeHeapSafe(PyStackRef_DUP(value));
++            stack_pointer[0] = value;
++            stack_pointer += 1;
++            ASSERT_WITHIN_STACK_BOUNDS(__FILE__, __LINE__);
++            _PyFrame_SetStackPointer(frame, stack_pointer);
++            _PyFrame_StackPointerValidate(frame);
++            PyStackRef_XCLOSE(old);
++            _PyFrame_StackPointerInvalidate(frame);
++            _tos_cache0 = value;
++            _tos_cache1 = PyStackRef_ZERO_BITS;
++            _tos_cache2 = PyStackRef_ZERO_BITS;
++            SET_CURRENT_CACHED_VALUES(1);
++            stack_pointer += -1;
++            ASSERT_WITHIN_STACK_BOUNDS(__FILE__, __LINE__);
++            ASSERT_WITHIN_STACK_BOUNDS_IGNORING_CACHE(__FILE__, __LINE__);
++            break;
++        }
++
++        case _STORE_FAST_BORROW_r11: {
++            CHECK_CURRENT_CACHED_VALUES(1);
++            ASSERT_WITHIN_STACK_BOUNDS_IGNORING_CACHE(__FILE__, __LINE__);
++            _PyStackRef value;
++            _PyStackRef borrowed;
++            _PyStackRef _stack_item_0 = _tos_cache0;
++            oparg = CURRENT_OPARG();
++            value = _stack_item_0;
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_MakeHeapSafe(value);
++            borrowed = PyStackRef_Borrow(GETLOCAL(oparg));
++            stack_pointer[0] = borrowed;
++            stack_pointer += 1;
++            ASSERT_WITHIN_STACK_BOUNDS(__FILE__, __LINE__);
++            _PyFrame_SetStackPointer(frame, stack_pointer);
++            _PyFrame_StackPointerValidate(frame);
++            PyStackRef_XCLOSE(old);
++            _PyFrame_StackPointerInvalidate(frame);
++            _tos_cache0 = borrowed;
++            _tos_cache1 = PyStackRef_ZERO_BITS;
++            _tos_cache2 = PyStackRef_ZERO_BITS;
++            SET_CURRENT_CACHED_VALUES(1);
++            stack_pointer += -1;
++            ASSERT_WITHIN_STACK_BOUNDS(__FILE__, __LINE__);
++            ASSERT_WITHIN_STACK_BOUNDS_IGNORING_CACHE(__FILE__, __LINE__);
++            break;
++        }
++
++        case _CLEAR_FAST_r00: {
++            CHECK_CURRENT_CACHED_VALUES(0);
++            ASSERT_WITHIN_STACK_BOUNDS_IGNORING_CACHE(__FILE__, __LINE__);
++            oparg = CURRENT_OPARG();
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_NULL;
++            _PyFrame_SetStackPointer(frame, stack_pointer);
++            _PyFrame_StackPointerValidate(frame);
++            PyStackRef_XCLOSE(old);
++            _PyFrame_StackPointerInvalidate(frame);
++            _tos_cache0 = PyStackRef_ZERO_BITS;
++            _tos_cache1 = PyStackRef_ZERO_BITS;
++            _tos_cache2 = PyStackRef_ZERO_BITS;
++            SET_CURRENT_CACHED_VALUES(0);
++            ASSERT_WITHIN_STACK_BOUNDS_IGNORING_CACHE(__FILE__, __LINE__);
++            break;
++        }
++
+         case _SWAP_FAST_0_r01: {
+             CHECK_CURRENT_CACHED_VALUES(0);
+             ASSERT_WITHIN_STACK_BOUNDS_IGNORING_CACHE(__FILE__, __LINE__);
+diff --git a/Python/flowgraph.c b/Python/flowgraph.c
+index a5138d1a1fa..2aa78fafedc 100644
+--- a/Python/flowgraph.c
++++ b/Python/flowgraph.c
+@@ -2945,6 +2945,7 @@ optimize_load_fast(cfg_builder *g)
+             assert(opcode != EXTENDED_ARG);
+             switch (opcode) {
+                 // Opcodes that load and store locals
++                case CLEAR_FAST:
+                 case DELETE_FAST: {
+                     kill_local(instr_flags, &refs, oparg);
+                     break;
+@@ -2967,6 +2968,20 @@ optimize_load_fast(cfg_builder *g)
+                     break;
+                 }
+ 
++                case STORE_FAST_BORROW: {
++                    ref_stack_pop(&refs);
++                    kill_local(instr_flags, &refs, oparg);
++                    PUSH_REF(i, NOT_LOCAL);
++                    break;
++                }
++
++                case COPY_TO_FAST: {
++                    ref r = ref_stack_pop(&refs);
++                    kill_local(instr_flags, &refs, oparg);
++                    PUSH_REF(r.instr, r.local);
++                    break;
++                }
++
+                 case STORE_FAST: {
+                     ref r = ref_stack_pop(&refs);
+                     store_local(instr_flags, &refs, oparg, r);
+@@ -3215,11 +3230,14 @@ scan_block_for_locals(basicblock *b, basicblock ***sp)
+         assert(instr->i_oparg >= 0);
+         uint64_t bit = (uint64_t)1 << instr->i_oparg;
+         switch (instr->i_opcode) {
++            case CLEAR_FAST:
+             case DELETE_FAST:
+             case LOAD_FAST_AND_CLEAR:
+             case STORE_FAST_MAYBE_NULL:
+                 unsafe_mask |= bit;
+                 break;
++            case STORE_FAST_BORROW:
++            case COPY_TO_FAST:
+             case STORE_FAST:
+                 unsafe_mask &= ~bit;
+                 break;
+@@ -3270,11 +3288,14 @@ fast_scan_many_locals(basicblock *entryblock, int nlocals)
+             }
+             assert(arg >= 0);
+             switch (instr->i_opcode) {
++                case CLEAR_FAST:
+                 case DELETE_FAST:
+                 case LOAD_FAST_AND_CLEAR:
+                 case STORE_FAST_MAYBE_NULL:
+                     states[arg - 64] = blocknum - 1;
+                     break;
++                case STORE_FAST_BORROW:
++                case COPY_TO_FAST:
+                 case STORE_FAST:
+                     states[arg - 64] = blocknum;
+                     break;
+diff --git a/Python/generated_cases.c.h b/Python/generated_cases.c.h
+index dd0ce41e4b0..dbcc1bce050 100644
+--- a/Python/generated_cases.c.h
++++ b/Python/generated_cases.c.h
+@@ -5245,6 +5245,23 @@
+             DISPATCH();
+         }
+ 
++        TARGET(CLEAR_FAST) {
++            #if _Py_TAIL_CALL_INTERP
++            int opcode = CLEAR_FAST;
++            (void)(opcode);
++            #endif
++            frame->instr_ptr = next_instr;
++            next_instr += 1;
++            INSTRUCTION_STATS(CLEAR_FAST);
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_NULL;
++            _PyFrame_SetStackPointer(frame, stack_pointer);
++            _PyFrame_StackPointerValidate(frame);
++            PyStackRef_XCLOSE(old);
++            _PyFrame_StackPointerInvalidate(frame);
++            DISPATCH();
++        }
++
+         TARGET(COMPARE_OP) {
+             #if _Py_TAIL_CALL_INTERP
+             int opcode = COMPARE_OP;
+@@ -5834,6 +5851,25 @@
+             DISPATCH();
+         }
+ 
++        TARGET(COPY_TO_FAST) {
++            #if _Py_TAIL_CALL_INTERP
++            int opcode = COPY_TO_FAST;
++            (void)(opcode);
++            #endif
++            frame->instr_ptr = next_instr;
++            next_instr += 1;
++            INSTRUCTION_STATS(COPY_TO_FAST);
++            _PyStackRef value;
++            value = stack_pointer[-1];
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_MakeHeapSafe(PyStackRef_DUP(value));
++            _PyFrame_SetStackPointer(frame, stack_pointer);
++            _PyFrame_StackPointerValidate(frame);
++            PyStackRef_XCLOSE(old);
++            _PyFrame_StackPointerInvalidate(frame);
++            DISPATCH();
++        }
++
+         TARGET(DELETE_DEREF) {
+             #if _Py_TAIL_CALL_INTERP
+             int opcode = DELETE_DEREF;
+@@ -12317,6 +12353,28 @@
+             DISPATCH();
+         }
+ 
++        TARGET(STORE_FAST_BORROW) {
++            #if _Py_TAIL_CALL_INTERP
++            int opcode = STORE_FAST_BORROW;
++            (void)(opcode);
++            #endif
++            frame->instr_ptr = next_instr;
++            next_instr += 1;
++            INSTRUCTION_STATS(STORE_FAST_BORROW);
++            _PyStackRef value;
++            _PyStackRef borrowed;
++            value = stack_pointer[-1];
++            _PyStackRef old = GETLOCAL(oparg);
++            GETLOCAL(oparg) = PyStackRef_MakeHeapSafe(value);
++            borrowed = PyStackRef_Borrow(GETLOCAL(oparg));
++            stack_pointer[-1] = borrowed;
++            _PyFrame_SetStackPointer(frame, stack_pointer);
++            _PyFrame_StackPointerValidate(frame);
++            PyStackRef_XCLOSE(old);
++            _PyFrame_StackPointerInvalidate(frame);
++            DISPATCH();
++        }
++
+         TARGET(STORE_FAST_LOAD_FAST) {
+             #if _Py_TAIL_CALL_INTERP
+             int opcode = STORE_FAST_LOAD_FAST;
+diff --git a/Python/import.c b/Python/import.c
+index 88d4980991f..b5167bda2f1 100644
+--- a/Python/import.c
++++ b/Python/import.c
+@@ -2766,12 +2766,12 @@ PyImport_GetMagicNumber(void)
+     return PYC_MAGIC_NUMBER_TOKEN;
+ }
+ 
+-extern const char * _PySys_ImplCacheTag;
++extern const char *_PySys_ImplCacheTag(void);
+ 
+ const char *
+ PyImport_GetMagicTag(void)
+ {
+-    return _PySys_ImplCacheTag;
++    return _PySys_ImplCacheTag();
+ }
+ 
+ 
+diff --git a/Python/initconfig.c b/Python/initconfig.c
+index 363739a1a1b..784f1166bd3 100644
+--- a/Python/initconfig.c
++++ b/Python/initconfig.c
+@@ -441,6 +441,9 @@ static const char usage_help[] =
+ 
+ static const char usage_xoptions[] =
+ "#h{The following implementation-specific options are available:}\n"
++"#s{-X} #L{assert_details}#b{[=events]}: capture assertion values; events also enables\n"
++"         callbacks for successful assertions.\n"
++"#s{-X} #L{keep_asserts}: retain assertions at optimization levels 1 and 2.\n"
+ "#s{-X} #L{context_aware_warnings}#b{=[0|1]}: if true (#B{1}) then the warnings module will\n"
+ "         use a context variables; if false (#B{0}) then the warnings module will\n"
+ "         use module globals, which is not concurrent-safe; set to true for\n"
+@@ -2401,6 +2404,17 @@ static PyStatus
+ config_read_complex_options(PyConfig *config)
+ {
+     /* More complex options configured by env var and -X option */
++    const wchar_t *assertion_option = config_get_xoption(config, L"assert_details");
++    if (assertion_option != NULL &&
++        wcscmp(assertion_option, L"assert_details") != 0 &&
++        wcscmp(assertion_option, L"assert_details=events") != 0) {
++        return _PyStatus_ERR("-X assert_details: expected no value or 'events'");
++    }
++    assertion_option = config_get_xoption(config, L"keep_asserts");
++    if (assertion_option != NULL && wcscmp(assertion_option, L"keep_asserts") != 0) {
++        return _PyStatus_ERR("-X keep_asserts does not accept a value");
++    }
++
+     if (config->faulthandler < 0) {
+         if (config_get_env(config, "PYTHONFAULTHANDLER")
+            || config_get_xoption(config, L"faulthandler")) {
+diff --git a/Python/intrinsics.c b/Python/intrinsics.c
+index dfa81baa654..667b31d225a 100644
+--- a/Python/intrinsics.c
++++ b/Python/intrinsics.c
+@@ -306,6 +306,134 @@ match_class_isinstance(PyThreadState* tstate, PyObject *subject, PyObject *type)
+     return res ? Py_True : Py_False;
+ }
+ 
++/* Look up callbacks only if a consumer imported assertionlib. Failures keep
++ * their private payload even when no Python callback is installed. */
++static PyObject *
++assertion_dispatcher(int passed)
++{
++    PyObject *module = PyImport_GetModule(&_Py_ID(assertionlib));
++    if (module == NULL) {
++        return PyErr_Occurred() ? NULL : Py_NewRef(Py_None);
++    }
++    PyObject *var = NULL, *handlers = NULL, *dispatch = NULL;
++    int found = PyObject_GetOptionalAttr(module, &_Py_ID(_handlers), &var);
++    if (found == 0) {
++        dispatch = Py_NewRef(Py_None);
++    }
++    else if (found > 0 && PyContextVar_CheckExact(var) &&
++             PyContextVar_Get(var, Py_None, &handlers) == 0) {
++        if (handlers == Py_None) {
++            dispatch = Py_NewRef(Py_None);
++        }
++        else if (PyTuple_CheckExact(handlers) && PyTuple_GET_SIZE(handlers) == 2) {
++            if (PyTuple_GET_ITEM(handlers, passed) == Py_None) {
++                dispatch = Py_NewRef(Py_None);
++            }
++            else {
++                dispatch = PyObject_GetAttr(module, &_Py_ID(_dispatch));
++            }
++        }
++    }
++    if (dispatch == NULL && !PyErr_Occurred()) {
++        PyErr_SetString(PyExc_TypeError, "invalid assertion callback state");
++    }
++    Py_XDECREF(var);
++    Py_XDECREF(handlers);
++    Py_DECREF(module);
++    return dispatch;
++}
++
++static PyObject *
++assert_details(PyThreadState *tstate, PyObject *exc, PyObject *plan)
++{
++    int passed = exc == Py_None;
++    _PyInterpreterFrame *frame = tstate->current_frame;
++    if ((!passed && !PyExceptionInstance_Check(exc)) ||
++        !PyTuple_CheckExact(plan) || PyTuple_GET_SIZE(plan) != 3 ||
++        !PyTuple_CheckExact(PyTuple_GET_ITEM(plan, 1)) ||
++        !PyTuple_CheckExact(PyTuple_GET_ITEM(plan, 2))) {
++        PyErr_SetString(PyExc_SystemError, "invalid assertion plan");
++        return NULL;
++    }
++    PyObject *dispatch = assertion_dispatcher(passed);
++    if (dispatch == NULL) {
++        return NULL;
++    }
++    if (passed && dispatch == Py_None) {
++        return dispatch;
++    }
++    PyObject *records = PyTuple_GET_ITEM(plan, 1);
++    Py_ssize_t n = PyTuple_GET_SIZE(records);
++    PyObject *values = PyTuple_New(n);
++    PyObject *details = NULL, *result = NULL;
++    if (values == NULL) {
++        goto done;
++    }
++    for (Py_ssize_t i = 0; i < n; i++) {
++        PyObject *record = PyTuple_GET_ITEM(records, i);
++        if (!PyTuple_CheckExact(record) || PyTuple_GET_SIZE(record) != 6) {
++            PyErr_SetString(PyExc_SystemError, "invalid assertion record");
++            goto done;
++        }
++        Py_ssize_t slot = PyLong_AsSsize_t(PyTuple_GET_ITEM(record, 0));
++        if (slot < 0 || slot >= _PyFrame_GetCode(frame)->co_nlocals) {
++            if (!PyErr_Occurred()) {
++                PyErr_SetString(PyExc_SystemError, "invalid assertion slot");
++            }
++            goto done;
++        }
++        if (i > 0 && slot == PyLong_AsSsize_t(
++                PyTuple_GET_ITEM(PyTuple_GET_ITEM(records, i - 1), 0))) {
++            PyTuple_SET_ITEM(values, i, Py_NewRef(PyTuple_GET_ITEM(values, i - 1)));
++            continue;
++        }
++        _PyStackRef ref = frame->localsplus[slot];
++        PyObject *value = PyStackRef_IsNull(ref)
++            ? PyTuple_New(0)
++            : PyTuple_Pack(1, PyStackRef_AsPyObjectBorrow(ref));
++        if (value == NULL) {
++            goto done;
++        }
++        PyTuple_SET_ITEM(values, i, value);
++    }
++    details = PyTuple_Pack(6, PyTuple_GET_ITEM(plan, 0), records, values,
++                          PyTuple_GET_ITEM(plan, 2),
++                          _PyFrame_GetCode(frame)->co_filename,
++                          passed ? Py_True : Py_False);
++    if (details == NULL) {
++        goto done;
++    }
++    if (!passed && PyObject_SetAttrString(exc, "_assertion", details) < 0) {
++        goto done;
++    }
++    if (dispatch != Py_None) {
++        PyObject *previous = NULL;
++        if (!passed) {
++            /* Establish ordinary exception chaining before a callback runs. */
++            _PyErr_SetObject(tstate, (PyObject *)Py_TYPE(exc), exc);
++            PyObject *raised = _PyErr_GetRaisedException(tstate);
++            Py_DECREF(raised);
++            previous = PyErr_GetHandledException();
++            PyErr_SetHandledException(exc);
++        }
++        PyObject *res = PyObject_CallFunctionObjArgs(dispatch, exc, details, NULL);
++        if (!passed) {
++            PyErr_SetHandledException(previous);
++            Py_XDECREF(previous);
++        }
++        if (res == NULL) {
++            goto done;
++        }
++        Py_DECREF(res);
++    }
++    result = Py_NewRef(exc);
++ done:
++    Py_XDECREF(details);
++    Py_XDECREF(values);
++    Py_DECREF(dispatch);
++    return result;
++}
++
+ const intrinsic_func2_info
+ _PyIntrinsics_BinaryFunctions[] = {
+     INTRINSIC_FUNC_ENTRY(INTRINSIC_2_INVALID, no_intrinsic2)
+@@ -316,6 +444,7 @@ _PyIntrinsics_BinaryFunctions[] = {
+     INTRINSIC_FUNC_ENTRY(INTRINSIC_SET_TYPEPARAM_DEFAULT, _Py_set_typeparam_default)
+     INTRINSIC_FUNC_ENTRY(INTRINSIC_ADD_CONDITIONAL_ANNOTATION, add_conditional_annotation)
+     INTRINSIC_FUNC_ENTRY(INTRINSIC_MATCH_CLASS_ISINSTANCE, match_class_isinstance)
++    INTRINSIC_FUNC_ENTRY(INTRINSIC_ASSERT_DETAILS, assert_details)
+ };
+ 
+ #undef INTRINSIC_FUNC_ENTRY
+diff --git a/Python/opcode_targets.h b/Python/opcode_targets.h
+index 91b42477322..5577499a319 100644
+--- a/Python/opcode_targets.h
++++ b/Python/opcode_targets.h
+@@ -54,11 +54,13 @@ static void *opcode_targets_table[256] = {
+     &&TARGET_CALL_INTRINSIC_1,
+     &&TARGET_CALL_INTRINSIC_2,
+     &&TARGET_CALL_KW,
++    &&TARGET_CLEAR_FAST,
+     &&TARGET_COMPARE_OP,
+     &&TARGET_CONTAINS_OP,
+     &&TARGET_CONVERT_VALUE,
+     &&TARGET_COPY,
+     &&TARGET_COPY_FREE_VARS,
++    &&TARGET_COPY_TO_FAST,
+     &&TARGET_DELETE_DEREF,
+     &&TARGET_DELETE_FAST,
+     &&TARGET_DICT_MERGE,
+@@ -109,6 +111,7 @@ static void *opcode_targets_table[256] = {
+     &&TARGET_STORE_ATTR,
+     &&TARGET_STORE_DEREF,
+     &&TARGET_STORE_FAST,
++    &&TARGET_STORE_FAST_BORROW,
+     &&TARGET_STORE_FAST_LOAD_FAST,
+     &&TARGET_STORE_FAST_STORE_FAST,
+     &&TARGET_STORE_GLOBAL,
+@@ -125,9 +128,6 @@ static void *opcode_targets_table[256] = {
+     &&_unknown_opcode,
+     &&_unknown_opcode,
+     &&_unknown_opcode,
+-    &&_unknown_opcode,
+-    &&_unknown_opcode,
+-    &&_unknown_opcode,
+     &&TARGET_RESUME,
+     &&TARGET_BINARY_OP_ADD_FLOAT,
+     &&TARGET_BINARY_OP_ADD_INT,
+@@ -376,9 +376,9 @@ static void *opcode_tracing_targets_table[256] = {
+     &&TARGET_TRACE_RECORD,
+     &&TARGET_TRACE_RECORD,
+     &&TARGET_TRACE_RECORD,
+-    &&_unknown_opcode,
+-    &&_unknown_opcode,
+-    &&_unknown_opcode,
++    &&TARGET_TRACE_RECORD,
++    &&TARGET_TRACE_RECORD,
++    &&TARGET_TRACE_RECORD,
+     &&_unknown_opcode,
+     &&_unknown_opcode,
+     &&_unknown_opcode,
+@@ -591,6 +591,7 @@ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CALL_TYPE_1(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CHECK_EG_MATCH(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CHECK_EXC_MATCH(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CLEANUP_THROW(TAIL_CALL_PARAMS);
++static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CLEAR_FAST(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COMPARE_OP(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COMPARE_OP_FLOAT(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COMPARE_OP_INT(TAIL_CALL_PARAMS);
+@@ -601,6 +602,7 @@ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CONTAINS_OP_SET(TAIL_CALL_PARAMS
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_CONVERT_VALUE(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COPY(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COPY_FREE_VARS(TAIL_CALL_PARAMS);
++static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_COPY_TO_FAST(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_DELETE_DEREF(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_DELETE_FAST(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_DELETE_SUBSCR(TAIL_CALL_PARAMS);
+@@ -735,6 +737,7 @@ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_ATTR_SLOT(TAIL_CALL_PARAMS
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_ATTR_WITH_HINT(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_DEREF(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_FAST(TAIL_CALL_PARAMS);
++static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_FAST_BORROW(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_FAST_LOAD_FAST(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_FAST_STORE_FAST(TAIL_CALL_PARAMS);
+ static PyObject *Py_PRESERVE_NONE_CC _TAIL_CALL_STORE_GLOBAL(TAIL_CALL_PARAMS);
+@@ -834,6 +837,7 @@ static py_tail_call_funcptr instruction_funcptr_handler_table[256] = {
+     [CHECK_EG_MATCH] = _TAIL_CALL_CHECK_EG_MATCH,
+     [CHECK_EXC_MATCH] = _TAIL_CALL_CHECK_EXC_MATCH,
+     [CLEANUP_THROW] = _TAIL_CALL_CLEANUP_THROW,
++    [CLEAR_FAST] = _TAIL_CALL_CLEAR_FAST,
+     [COMPARE_OP] = _TAIL_CALL_COMPARE_OP,
+     [COMPARE_OP_FLOAT] = _TAIL_CALL_COMPARE_OP_FLOAT,
+     [COMPARE_OP_INT] = _TAIL_CALL_COMPARE_OP_INT,
+@@ -844,6 +848,7 @@ static py_tail_call_funcptr instruction_funcptr_handler_table[256] = {
+     [CONVERT_VALUE] = _TAIL_CALL_CONVERT_VALUE,
+     [COPY] = _TAIL_CALL_COPY,
+     [COPY_FREE_VARS] = _TAIL_CALL_COPY_FREE_VARS,
++    [COPY_TO_FAST] = _TAIL_CALL_COPY_TO_FAST,
+     [DELETE_DEREF] = _TAIL_CALL_DELETE_DEREF,
+     [DELETE_FAST] = _TAIL_CALL_DELETE_FAST,
+     [DELETE_SUBSCR] = _TAIL_CALL_DELETE_SUBSCR,
+@@ -978,6 +983,7 @@ static py_tail_call_funcptr instruction_funcptr_handler_table[256] = {
+     [STORE_ATTR_WITH_HINT] = _TAIL_CALL_STORE_ATTR_WITH_HINT,
+     [STORE_DEREF] = _TAIL_CALL_STORE_DEREF,
+     [STORE_FAST] = _TAIL_CALL_STORE_FAST,
++    [STORE_FAST_BORROW] = _TAIL_CALL_STORE_FAST_BORROW,
+     [STORE_FAST_LOAD_FAST] = _TAIL_CALL_STORE_FAST_LOAD_FAST,
+     [STORE_FAST_STORE_FAST] = _TAIL_CALL_STORE_FAST_STORE_FAST,
+     [STORE_GLOBAL] = _TAIL_CALL_STORE_GLOBAL,
+@@ -1005,9 +1011,6 @@ static py_tail_call_funcptr instruction_funcptr_handler_table[256] = {
+     [UNPACK_SEQUENCE_TWO_TUPLE] = _TAIL_CALL_UNPACK_SEQUENCE_TWO_TUPLE,
+     [WITH_EXCEPT_START] = _TAIL_CALL_WITH_EXCEPT_START,
+     [YIELD_VALUE] = _TAIL_CALL_YIELD_VALUE,
+-    [117] = _TAIL_CALL_UNKNOWN_OPCODE,
+-    [118] = _TAIL_CALL_UNKNOWN_OPCODE,
+-    [119] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [120] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [121] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [122] = _TAIL_CALL_UNKNOWN_OPCODE,
+@@ -1092,6 +1095,7 @@ static py_tail_call_funcptr instruction_funcptr_tracing_table[256] = {
+     [CHECK_EG_MATCH] = _TAIL_CALL_TRACE_RECORD,
+     [CHECK_EXC_MATCH] = _TAIL_CALL_TRACE_RECORD,
+     [CLEANUP_THROW] = _TAIL_CALL_TRACE_RECORD,
++    [CLEAR_FAST] = _TAIL_CALL_TRACE_RECORD,
+     [COMPARE_OP] = _TAIL_CALL_TRACE_RECORD,
+     [COMPARE_OP_FLOAT] = _TAIL_CALL_TRACE_RECORD,
+     [COMPARE_OP_INT] = _TAIL_CALL_TRACE_RECORD,
+@@ -1102,6 +1106,7 @@ static py_tail_call_funcptr instruction_funcptr_tracing_table[256] = {
+     [CONVERT_VALUE] = _TAIL_CALL_TRACE_RECORD,
+     [COPY] = _TAIL_CALL_TRACE_RECORD,
+     [COPY_FREE_VARS] = _TAIL_CALL_TRACE_RECORD,
++    [COPY_TO_FAST] = _TAIL_CALL_TRACE_RECORD,
+     [DELETE_DEREF] = _TAIL_CALL_TRACE_RECORD,
+     [DELETE_FAST] = _TAIL_CALL_TRACE_RECORD,
+     [DELETE_SUBSCR] = _TAIL_CALL_TRACE_RECORD,
+@@ -1236,6 +1241,7 @@ static py_tail_call_funcptr instruction_funcptr_tracing_table[256] = {
+     [STORE_ATTR_WITH_HINT] = _TAIL_CALL_TRACE_RECORD,
+     [STORE_DEREF] = _TAIL_CALL_TRACE_RECORD,
+     [STORE_FAST] = _TAIL_CALL_TRACE_RECORD,
++    [STORE_FAST_BORROW] = _TAIL_CALL_TRACE_RECORD,
+     [STORE_FAST_LOAD_FAST] = _TAIL_CALL_TRACE_RECORD,
+     [STORE_FAST_STORE_FAST] = _TAIL_CALL_TRACE_RECORD,
+     [STORE_GLOBAL] = _TAIL_CALL_TRACE_RECORD,
+@@ -1263,9 +1269,6 @@ static py_tail_call_funcptr instruction_funcptr_tracing_table[256] = {
+     [UNPACK_SEQUENCE_TWO_TUPLE] = _TAIL_CALL_TRACE_RECORD,
+     [WITH_EXCEPT_START] = _TAIL_CALL_TRACE_RECORD,
+     [YIELD_VALUE] = _TAIL_CALL_TRACE_RECORD,
+-    [117] = _TAIL_CALL_UNKNOWN_OPCODE,
+-    [118] = _TAIL_CALL_UNKNOWN_OPCODE,
+-    [119] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [120] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [121] = _TAIL_CALL_UNKNOWN_OPCODE,
+     [122] = _TAIL_CALL_UNKNOWN_OPCODE,
+diff --git a/Python/optimizer_bytecodes.c b/Python/optimizer_bytecodes.c
+index 6284885c428..90caf6dccf9 100644
+--- a/Python/optimizer_bytecodes.c
++++ b/Python/optimizer_bytecodes.c
+@@ -174,6 +174,20 @@ dummy_func(void) {
+         o = owner;
+     }
+ 
++    op(_COPY_TO_FAST, (value -- value)) {
++        value = PyJitRef_RemoveUnique(value);
++        GETLOCAL(oparg) = PyJitRef_StripReferenceInfo(value);
++    }
++
++    op(_STORE_FAST_BORROW, (value -- borrowed)) {
++        GETLOCAL(oparg) = PyJitRef_StripReferenceInfo(value);
++        borrowed = PyJitRef_Borrow(value);
++    }
++
++    op(_CLEAR_FAST, (--)) {
++        GETLOCAL(oparg) = sym_new_null(ctx);
++    }
++
+     op(_SWAP_FAST, (value -- trash)) {
+         JitOptRef tmp = GETLOCAL(oparg);
+         GETLOCAL(oparg) = PyJitRef_RemoveUnique(value);
+diff --git a/Python/optimizer_cases.c.h b/Python/optimizer_cases.c.h
+index 9cd20c495db..406e556f1ce 100644
+--- a/Python/optimizer_cases.c.h
++++ b/Python/optimizer_cases.c.h
+@@ -101,6 +101,30 @@
+             break;
+         }
+ 
++        case _COPY_TO_FAST: {
++            JitOptRef value;
++            value = stack_pointer[-1];
++            value = PyJitRef_RemoveUnique(value);
++            GETLOCAL(oparg) = PyJitRef_StripReferenceInfo(value);
++            stack_pointer[-1] = value;
++            break;
++        }
++
++        case _STORE_FAST_BORROW: {
++            JitOptRef value;
++            JitOptRef borrowed;
++            value = stack_pointer[-1];
++            GETLOCAL(oparg) = PyJitRef_StripReferenceInfo(value);
++            borrowed = PyJitRef_Borrow(value);
++            stack_pointer[-1] = borrowed;
++            break;
++        }
++
++        case _CLEAR_FAST: {
++            GETLOCAL(oparg) = sym_new_null(ctx);
++            break;
++        }
++
+         case _SWAP_FAST: {
+             JitOptRef value;
+             JitOptRef trash;
+diff --git a/Python/stdlib_module_names.h b/Python/stdlib_module_names.h
+index 565be27b7ce..d256dc464b1 100644
+--- a/Python/stdlib_module_names.h
++++ b/Python/stdlib_module_names.h
+@@ -7,6 +7,7 @@ static const char* _Py_stdlib_module_names[] = {
+ "_aix_support",
+ "_android_support",
+ "_apple_support",
++"_assertion",
+ "_ast",
+ "_ast_unparse",
+ "_asyncio",
+@@ -112,6 +113,7 @@ static const char* _Py_stdlib_module_names[] = {
+ "antigravity",
+ "argparse",
+ "array",
++"assertionlib",
+ "ast",
+ "asyncio",
+ "atexit",
+diff --git a/Python/sysmodule.c b/Python/sysmodule.c
+index a284c8322ea..ae2e923c8ea 100644
+--- a/Python/sysmodule.c
++++ b/Python/sysmodule.c
+@@ -15,6 +15,7 @@ Data members:
+ */
+ 
+ #include "Python.h"
++#include "pycore_compile.h"
+ #include "pycore_audit.h"         // _Py_AuditHookEntry
+ #include "pycore_call.h"          // _PyObject_CallNoArgs()
+ #include "pycore_ceval.h"         // _PyEval_SetAsyncGenFinalizer()
+@@ -3697,7 +3698,20 @@ const char *_PySys_ImplName = _PY_IMPL_NAME;
+ #define MINOR Py_STRINGIFY(PY_MINOR_VERSION)
+ #define _PY_IMPL_CACHE_TAG _PY_IMPL_NAME "-" MAJOR MINOR
+ #endif
+-const char *_PySys_ImplCacheTag = _PY_IMPL_CACHE_TAG;
++const char *
++_PySys_ImplCacheTag(void)
++{
++    int flags = _PyCompile_AssertionFlags();
++    if (flags & PyCF_ASSERT_EVENTS) {
++        return flags & PyCF_KEEP_ASSERTS
++            ? _PY_IMPL_CACHE_TAG "-assert-events-keep" : _PY_IMPL_CACHE_TAG "-assert-events";
++    }
++    if (flags & PyCF_ASSERT_DETAILS) {
++        return flags & PyCF_KEEP_ASSERTS
++            ? _PY_IMPL_CACHE_TAG "-assert-keep" : _PY_IMPL_CACHE_TAG "-assert";
++    }
++    return flags & PyCF_KEEP_ASSERTS ? _PY_IMPL_CACHE_TAG "-keep" : _PY_IMPL_CACHE_TAG;
++}
+ #ifdef MAJOR
+ #undef MAJOR
+ #endif
+@@ -3725,9 +3739,8 @@ make_impl_info(PyObject *version_info)
+     if (res < 0)
+         goto error;
+ 
+-    value = _PySys_ImplCacheTag
+-        ? PyUnicode_FromString(_PySys_ImplCacheTag)
+-        : Py_NewRef(Py_None);
++    const char *cache_tag = _PySys_ImplCacheTag();
++    value = cache_tag ? PyUnicode_FromString(cache_tag) : Py_NewRef(Py_None);
+     if (value == NULL) {
+         goto error;
+     }
+diff --git a/Tools/assert_details/README.rst b/Tools/assert_details/README.rst
+new file mode 100644
+index 00000000000..105a5b3860e
+--- /dev/null
++++ b/Tools/assert_details/README.rst
+@@ -0,0 +1,123 @@
++Native assertion diagnostics prototype
++======================================
++
++The CPython compiler captures assertion values. The public ``assertionlib`` module
++provides expression graphs, formatters, and context-local callbacks.
++See ``Doc/library/assertionlib.rst`` for the API contract and compiler flags.
++
++Build and run
++-------------
++
++Build CPython with the normal configure and make commands. Use the release
++build for latency measurements::
++
++    ./python -X assert_details Tools/assert_details/demo.py
++    ./python -O -X assert_details -X keep_asserts Tools/assert_details/demo.py
++
++The example exits with an AssertionError and a detailed traceback.
++The default explanation substitutes captured operands into the assertion.
++Calls and attributes add nested ``where`` lines. The structured API retains
++all capture data. This includes skipped nodes and recorded truth results.
++
++Use ``-X assert_details=events`` to enable successful-assertion callbacks.
++Each command-line mode has a separate bytecode cache tag.
++
++``Tools/assert_details/run.py`` still provides capture for one selected file.
++The compiler flags apply to source and AST input. Flags do not affect code
++that already exists. Frozen modules retain their original behavior.
++
++Capture and cleanup
++-------------------
++
++Each capture uses a compiler-only fast local. Frames initialize these slots
++to NULL. A slot remains NULL when short circuit evaluation skips its expression.
++The compiler reuses slots between assertions and aliases duplicate comparison
++results. Constant true assertions emit no capture code without event mode.
++
++``STORE_FAST_BORROW`` transfers an owned result to a hidden local and returns
++a borrowed stack reference. For borrowed inputs, it creates an owned reference.
++Assignment-expression subtrees use ``COPY_TO_FAST`` because ordinary local
++stores require owned values. ``CLEAR_FAST`` clears initialized or NULL slots
++on success and on exceptions. Hidden slots do not appear in ``locals()``.
++
++The compiler captures actual truth results. It does not repeat truth conversion.
++Calls, attributes, slices, arithmetic, conditional expressions, assignment
++expressions, and containers use the same capture path. Comprehensions and
++generator expressions expose their result as one value.
++
++Method-call and builtin-call shortcuts can bypass expression values.
++Capture disables those shortcuts where necessary. This still contributes to
++the measured overhead. The three new instructions include tier-2 abstract
++ownership updates. Build-specific execution checks remain necessary.
++
++An intrinsic builds the payload on failure. The public details object is lazy.
++Failure callbacks can replace the exception message before the caller catches it.
++With no callback, ``AssertionError.args`` and ``str(error)`` retain their
++normal behavior. Successful assertions in ordinary diagnostic mode create no
++diagnostic containers and perform no callback lookup.
++
++Event mode performs callback lookup on successful assertions. It constructs
++public details only when a successful-assertion callback exists. Its cost is
++separate from ordinary diagnostic capture.
++
++Captured references extend object lifetimes and do not freeze mutable state.
++Use ``assertionlib.clear_details(error)`` to detach them from an exception.
++A retained details object still owns its values. The private capture payload
++has no stable serialization contract.
++
++Pytest adapter
++--------------
++
++The experimental adapter keeps pytest's import selection, module registration,
++comparison hooks, and report code. It replaces its source-to-code entry point.
++It enables assertion retention under optimization and partitions caches by
++capture mode. It does not promise exact pytest explanation text.
++
++Add this directory, the pytest source directory, and its dependencies to
++``PYTHONPATH``. Then run::
++
++    ./python -m pytest -p pytest_native path/to/tests
++
++Exercise the adapter and its hooks::
++
++    ./python Tools/assert_details/pytest_smoke.py \
++        --pytest-source /path/to/pytest \
++        --pytest-deps /path/to/site-packages \
++        --output /tmp/assert-pytest
++
++Measurements
++------------
++
++Run the microbenchmarks::
++
++    ./python Tools/assert_details/benchmark.py \
++        --output /tmp/assert-results --iterations 1000 --cpu 17
++
++For a pytest comparison, pass ``--pytest-source`` and ``--pytest-deps``.
++Add ``--events`` to measure the separate event mode.
++The benchmark uses one executable for all modes. It warms each function,
++randomizes mode order, and reports raw samples, medians, and median absolute
++deviations. Runtime includes loop and harness overhead.
++
++Run without ``--iterations`` to measure one assertion per function call.
++This also gives bytecode sizes for the smallest function in each case.
++Record the compiler flags, CPU, and host load with every result.
++Use the same CPU and build options for comparisons between interpreters.
++
++Measure whole-module size and compile latency::
++
++    ./python Tools/assert_details/corpus.py --output /tmp/assert-corpus.json
++
++The corpus includes tracked production library modules with assertions.
++Its bytecode and marshal totals include code without assertions.
++
++Checks
++------
++
++Run the focused checks::
++
++    ./python -m test test_assert_details
++
++Use a debug build for reference-leak checks. Run the compiler, traceback,
++frame, import, generator, coroutine, and marshal suites after changes to
++capture or cleanup. Run the C import checks after cache-tag changes.
+diff --git a/Tools/assert_details/benchmark.py b/Tools/assert_details/benchmark.py
+new file mode 100644
+index 00000000000..0693f4038b7
+--- /dev/null
++++ b/Tools/assert_details/benchmark.py
+@@ -0,0 +1,247 @@
++"""Measure native assertion captures against plain and pytest assertions.
++
++Run with the prototype interpreter. Timed code uses compile() flags directly,
++so all modes share the same executable, library, CPU, and optimization level.
++"""
++
++import argparse
++import ast
++import dis
++import gc
++import io
++import json
++import marshal
++import os
++from pathlib import Path
++import random
++import statistics
++import sys
++import sysconfig
++import time
++import timeit
++import traceback
++import types
++
++
++CASES = {
++    'constant': ('True', ()),
++    'equal_int': ('a == b', (123, 123)),
++    'equal_large_int': ('a == b', (10**50, int(str(10**50)))),
++    'arithmetic_large_int': ('a * 2 + b == expected', (10**50, 10**49, 21 * 10**49)),
++    'arithmetic_float': ('a * 2 + b == expected', (2.25, 5.5, 10.0)),
++    'arithmetic': ('a * 2 + b == expected', (11, 20, 42)),
++    'attribute': ('a.value == b', (types.SimpleNamespace(value=42), 42)),
++    'subscript': ('a["value"] == b', ({'value': 42}, 42)),
++    'call': ('normalize(a) == b', (' ALICE ', 'alice')),
++    'method': ('a.strip().lower() == b', (' ALICE ', 'alice')),
++    'boolean_and': ('a > 0 and b > 0 and expected > 0', (1, 2, 3)),
++    'boolean_or_short': ('a > 0 or b > 0', (1, 2)),
++    'comparison_chain': ('0 < a < b < expected', (1, 2, 3)),
++    'list_equal': ('a == b', (list(range(32)), list(range(32)))),
++    'generator_all': ('all(x >= 0 for x in a)', (list(range(12)),)),
++}
++
++
++def build(expression, mode, rewrite=None, iterations=1):
++    source = ('def normalize(value):\n    return value.strip().lower()\n\n'
++              'def check(a=None, b=None, expected=None):\n'
++              + (f'    assert {expression}\n' if iterations == 1 else
++                 f'    for _ in range({iterations}):\n        assert {expression}\n'))
++    tree = ast.parse(source)
++    if mode == 'pytest':
++        rewrite(tree, source.encode())
++    flags = ast.PyCF_ASSERT_DETAILS if mode.startswith('native') else 0
++    if mode == 'native_events':
++        flags |= ast.PyCF_ASSERT_EVENTS
++    code = compile(tree, '<benchmark>', 'exec', flags=flags, dont_inherit=True)
++    ns = {}
++    exec(code, ns)
++    return ns['check']
++
++
++def sizes(code):
++    codes = [code]
++    for constant in code.co_consts:
++        if isinstance(constant, types.CodeType):
++            codes.extend(walk_codes(constant))
++    return {
++        'bytecode_bytes': sum(len(c.co_code) for c in codes),
++        'instructions': sum(len(list(dis.get_instructions(c))) for c in codes),
++        'cache_units': sum(sum(i.opname == 'CACHE'
++                              for i in dis.get_instructions(c, show_caches=True))
++                           for c in codes),
++        'exception_table_bytes': sum(len(c.co_exceptiontable) for c in codes),
++        'location_table_bytes': sum(len(c.co_linetable) for c in codes),
++        'marshal_bytes': len(marshal.dumps(code)),
++        'frame_slots': code.co_nlocals + code.co_stacksize,
++        'locals': code.co_nlocals,
++        'stacksize': code.co_stacksize,
++    }
++
++
++def walk_codes(code):
++    yield code
++    for constant in code.co_consts:
++        if isinstance(constant, types.CodeType):
++            yield from walk_codes(constant)
++
++
++def calibrate(timer, minimum):
++    number = 1000
++    while True:
++        elapsed = timer.timeit(number)
++        if elapsed >= minimum / 3:
++            return max(1000, int(number * minimum / elapsed))
++        number *= 5
++
++
++def pin_idle_cpu():
++    if not hasattr(os, 'sched_getaffinity'):
++        return None
++    allowed = os.sched_getaffinity(0)
++    def counters():
++        result = {}
++        for line in Path('/proc/stat').read_text().splitlines():
++            name, *fields = line.split()
++            if name.startswith('cpu') and name[3:].isdigit():
++                cpu = int(name[3:])
++                values = list(map(int, fields))
++                result[cpu] = (sum(values[:8]), values[3] + values[4])
++        return result
++    first = counters()
++    time.sleep(0.5)
++    second = counters()
++    busy = {cpu: 1 - (second[cpu][1] - first[cpu][1]) /
++            max(1, second[cpu][0] - first[cpu][0]) for cpu in allowed}
++    cpu = min(busy, key=busy.get)
++    os.sched_setaffinity(0, {cpu})
++    return cpu
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument('--output', type=Path, required=True)
++    parser.add_argument('--pytest-source', type=Path)
++    parser.add_argument('--pytest-deps', type=Path)
++    parser.add_argument('--iterations', type=int, default=1)
++    parser.add_argument('--cpu', type=int)
++    parser.add_argument('--events', action='store_true')
++    parser.add_argument('--cases', nargs='+', choices=CASES)
++    parser.add_argument('--rounds', type=int, default=9)
++    parser.add_argument('--sample-seconds', type=float, default=0.15)
++    args = parser.parse_args()
++    args.output.mkdir(parents=True, exist_ok=True)
++    modes = ['plain', 'native']
++    if args.events:
++        import assertionlib
++        modes.append('native_events')
++    rewrite = None
++    if args.pytest_source:
++        sys.path.insert(0, str(args.pytest_source / 'src'))
++        if args.pytest_deps:
++            sys.path.append(str(args.pytest_deps))
++        from _pytest.assertion.rewrite import rewrite_asserts
++        rewrite = rewrite_asserts
++        modes.append('pytest')
++    if args.cpu is None:
++        cpu = pin_idle_cpu()
++    else:
++        cpu = args.cpu
++        os.sched_setaffinity(0, {cpu})
++    results = {
++        'python': sys.version,
++        'executable': sys.executable,
++        'config_args': sysconfig.get_config_var('CONFIG_ARGS'),
++        'cflags': sysconfig.get_config_var('CFLAGS'),
++        'cpu': cpu,
++        'loadavg': os.getloadavg(),
++        'rounds': args.rounds,
++        'iterations_per_call': args.iterations,
++        'sample_seconds': args.sample_seconds,
++        'cases': {},
++    }
++    disassembly = io.StringIO()
++    rng = random.Random(20261018)
++    for name, (expression, call_args) in CASES.items():
++        if args.cases and name not in args.cases:
++            continue
++        case = results['cases'][name] = {'expression': expression, 'modes': {}}
++        timers = {}
++        for mode in modes:
++            fn = build(expression, mode, rewrite, args.iterations)
++            for _ in range(max(5, 5000 // args.iterations)):
++                fn(*call_args)
++            timer = timeit.Timer('fn(*call_args)', globals={'fn': fn, 'call_args': call_args})
++            count = calibrate(timer, args.sample_seconds)
++            timers[mode] = (timer, count)
++            case['modes'][mode] = {'sizes': sizes(fn.__code__), 'samples_ns': [], 'loops': count}
++            print(f'\n{name} / {mode}\n', file=disassembly)
++            dis.dis(fn, file=disassembly, show_caches=True)
++        for _ in range(args.rounds):
++            order = modes.copy()
++            rng.shuffle(order)
++            for mode in order:
++                timer, count = timers[mode]
++                elapsed = timer.timeit(count)
++                case['modes'][mode]['samples_ns'].append(elapsed * 1e9 / count / args.iterations)
++        for mode, data in case['modes'].items():
++            data['median_ns'] = statistics.median(data['samples_ns'])
++            data['mad_ns'] = statistics.median(abs(s - data['median_ns']) for s in data['samples_ns'])
++        plain = case['modes']['plain']['median_ns']
++        for data in case['modes'].values():
++            data['relative_time'] = data['median_ns'] / plain
++        print(name, {mode: round(data['relative_time'], 3)
++                     for mode, data in case['modes'].items()}, flush=True)
++        (args.output / 'benchmark.json').write_text(json.dumps(results, indent=2))
++    (args.output / 'disassembly.txt').write_text(disassembly.getvalue())
++    # Separate exception creation/capture from traceback formatting.
++    failure = results['failure'] = {}
++    for mode in modes:
++        fn = build('a == b', mode, rewrite)
++        def catch():
++            try:
++                fn(1, 2)
++            except AssertionError:
++                pass
++        def display():
++            try:
++                fn(1, 2)
++            except AssertionError as exc:
++                traceback.format_exception(exc)
++        failure[mode] = {}
++        for label, action in [('raise_catch', catch), ('raise_format', display)]:
++            timer = timeit.Timer(action)
++            loops = calibrate(timer, args.sample_seconds)
++            samples = [timer.timeit(loops) * 1e9 / loops for _ in range(args.rounds)]
++            failure[mode][label] = {'samples_ns': samples, 'median_ns': statistics.median(samples)}
++    if args.events:
++        callback_results = results['callbacks'] = {}
++        passed_fn = build('a == b', 'native_events')
++        failed_fn = build('a == b', 'native')
++        def passed():
++            passed_fn(1, 1)
++        def failed():
++            try:
++                failed_fn(1, 2)
++            except AssertionError:
++                pass
++        cases = [
++            ('pass_no_handler', passed, {}),
++            ('pass_handler', passed, {'on_pass': lambda details: None}),
++            ('failure_handler', failed, {'on_failure': lambda error, details: None}),
++            ('failure_format_handler', failed,
++             {'on_failure': lambda error, details: assertionlib.format_details(details)}),
++        ]
++        for name, action, handlers in cases:
++            with assertionlib.handlers(**handlers):
++                timer = timeit.Timer(action)
++                count = calibrate(timer, args.sample_seconds)
++                samples = [timer.timeit(count) * 1e9 / count for _ in range(args.rounds)]
++            callback_results[name] = {
++                'samples_ns': samples, 'median_ns': statistics.median(samples),
++            }
++    (args.output / 'benchmark.json').write_text(json.dumps(results, indent=2))
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/Tools/assert_details/check_plain.py b/Tools/assert_details/check_plain.py
+new file mode 100644
+index 00000000000..424fa3287d7
+--- /dev/null
++++ b/Tools/assert_details/check_plain.py
+@@ -0,0 +1,39 @@
++"""Emit stable code signatures for plain assertions on two interpreter builds."""
++import ast
++import dis
++import hashlib
++import json
++from pathlib import Path
++import subprocess
++import types
++
++
++def signature(code):
++    return {
++        'bytecode': [(i.opname, i.arg) for i in dis.get_instructions(code, show_caches=True)],
++        'exceptions': code.co_exceptiontable.hex(),
++        'locations': code.co_linetable.hex(),
++        'locals': code.co_varnames,
++        'names': code.co_names,
++        'cells': code.co_cellvars,
++        'free': code.co_freevars,
++        'flags': code.co_flags,
++        'stack': code.co_stacksize,
++        'consts': [signature(c) if isinstance(c, types.CodeType)
++                   else (type(c).__name__, repr(c)) for c in code.co_consts],
++    }
++
++
++paths = subprocess.check_output(['git', 'ls-files', 'Lib'], text=True).splitlines()
++results = {}
++for name in paths:
++    path = Path(name)
++    if path.suffix != '.py' or any(p.startswith('test') or p.endswith('_test') for p in path.parts[1:-1]):
++        continue
++    source = path.read_bytes()
++    if not any(isinstance(n, ast.Assert) for n in ast.walk(ast.parse(source, name))):
++        continue
++    code = compile(source, name, 'exec', dont_inherit=True)
++    data = json.dumps(signature(code), sort_keys=True).encode()
++    results[name] = hashlib.sha256(data).hexdigest()
++print(json.dumps(results, indent=2, sort_keys=True))
+diff --git a/Tools/assert_details/corpus.py b/Tools/assert_details/corpus.py
+new file mode 100644
+index 00000000000..9ff8feecd55
+--- /dev/null
++++ b/Tools/assert_details/corpus.py
+@@ -0,0 +1,70 @@
++"""Compare code size and compile time on assertion-bearing library modules."""
++import argparse
++import ast
++import json
++import marshal
++from pathlib import Path
++import statistics
++import subprocess
++import time
++import types
++
++
++def code_totals(code):
++    result = dict(code_objects=1, bytecode_bytes=len(code.co_code),
++                  exception_table_bytes=len(code.co_exceptiontable),
++                  location_table_bytes=len(code.co_linetable),
++                  locals=code.co_nlocals, stacksize=code.co_stacksize)
++    for value in code.co_consts:
++        if isinstance(value, types.CodeType):
++            for key, count in code_totals(value).items():
++                result[key] += count
++    return result
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument('--output', type=Path, required=True)
++    args = parser.parse_args()
++    paths = subprocess.check_output(['git', 'ls-files', 'Lib'], text=True).splitlines()
++    sources = []
++    for name in paths:
++        path = Path(name)
++        if path.suffix != '.py' or any(p.startswith('test') or p.endswith('_test') for p in path.parts[1:-1]):
++            continue
++        source = path.read_bytes()
++        tree = ast.parse(source, name)
++        count = sum(isinstance(node, ast.Assert) for node in ast.walk(tree))
++        if count:
++            sources.append((name, source, count))
++    rows = []
++    totals = {mode: {} for mode in ('plain', 'native')}
++    for name, source, count in sources:
++        row = {'file': name, 'assertions': count}
++        for mode, flags in [('plain', 0), ('native', ast.PyCF_ASSERT_DETAILS)]:
++            code = compile(source, name, 'exec', flags=flags, dont_inherit=True)
++            sizes = code_totals(code)
++            sizes['marshal_bytes'] = len(marshal.dumps(code))
++            row[mode] = sizes
++            for key, value in sizes.items():
++                totals[mode][key] = totals[mode].get(key, 0) + value
++        rows.append(row)
++    times = {'plain': [], 'native': []}
++    for trial in range(8):
++        order = [('plain', 0), ('native', ast.PyCF_ASSERT_DETAILS)]
++        if trial % 2:
++            order.reverse()
++        for mode, flags in order:
++            start = time.perf_counter()
++            for name, source, _ in sources:
++                compile(source, name, 'exec', flags=flags, dont_inherit=True)
++            times[mode].append(time.perf_counter() - start)
++    result = dict(files=len(rows), assertions=sum(r['assertions'] for r in rows),
++                  totals=totals, compile_seconds=times,
++                  compile_median={k: statistics.median(v) for k,v in times.items()}, rows=rows)
++    args.output.write_text(json.dumps(result, indent=2))
++    print(json.dumps({k: v for k,v in result.items() if k != 'rows'}, indent=2))
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/Tools/assert_details/demo.py b/Tools/assert_details/demo.py
+new file mode 100644
+index 00000000000..910a56176fe
+--- /dev/null
++++ b/Tools/assert_details/demo.py
+@@ -0,0 +1,14 @@
++from types import SimpleNamespace
++
++
++def normalize(name):
++    return name.strip().lower()
++
++
++def valid(user):
++    raise RuntimeError('the assertion must skip this call')
++
++
++user = SimpleNamespace(name=' ALICE ')
++expected = 'bob'
++assert normalize(user.name) == expected and valid(user)
+diff --git a/Tools/assert_details/pytest_native.py b/Tools/assert_details/pytest_native.py
+new file mode 100644
+index 00000000000..5ab12246e62
+--- /dev/null
++++ b/Tools/assert_details/pytest_native.py
+@@ -0,0 +1,89 @@
++"""Experimental pytest adapter. Load with ``-p pytest_native``.
++
++This adapter replaces pytest's compiler entry point. Its import selection,
++plugin hooks, and report machinery remain in pytest. It requires this CPython
++prototype and uses private pytest interfaces only at the loader boundary.
++"""
++
++import ast
++import importlib.util
++import sys
++
++import assertionlib
++import pytest
++from _pytest.assertion import rewrite, truncate
++
++_original_compile = rewrite._rewrite_test
++_original_tail = rewrite.PYC_TAIL
++
++
++def _compile_test(path, config):
++    source = path.read_bytes()
++    flags = ast.PyCF_ASSERT_DETAILS | ast.PyCF_KEEP_ASSERTS
++    if config.getini('enable_assertion_pass_hook'):
++        flags |= ast.PyCF_ASSERT_EVENTS
++    code = compile(source, str(path), 'exec', flags=flags, dont_inherit=True)
++    return importlib.util.source_hash(source), code
++
++
++@pytest.hookimpl(tryfirst=True)
++def pytest_load_initial_conftests(early_config):
++    events = early_config.getini('enable_assertion_pass_hook')
++    mode = 'events' if events else 'details'
++    rewrite._rewrite_test = _compile_test
++    rewrite.PYC_TAIL = (
++        f'.{sys.implementation.cache_tag}-pytest-native-v1-{mode}'
++        f'-opt{sys.flags.optimize}{rewrite.PYC_EXT}'
++    )
++
++
++def pytest_unconfigure(config):
++    rewrite._rewrite_test = _original_compile
++    rewrite.PYC_TAIL = _original_tail
++
++
++def _message(error, details, compare=None):
++    explanation = ''.join(assertionlib.format_details(details, compare=compare)).strip()
++    if error.args:
++        explanation = f'{str(error)}\n{explanation}'
++    error.args = (explanation,)
++    # Pytest displays this explanation through format_exception_only().
++    # Keep captures for plugins, but omit a second, default explanation.
++    error._assertion_explained = True
++
++
++@pytest.hookimpl(wrapper=True)
++def pytest_collection(session):
++    with assertionlib.handlers(on_failure=_message):
++        return (yield)
++
++
++@pytest.hookimpl(wrapper=True)
++def pytest_runtest_protocol(item):
++    def compare(op, left, right):
++        results = item.ihook.pytest_assertrepr_compare(
++            config=item.config, op=op, left=left, right=right,
++        )
++        for result in results:
++            if result:
++                lines = truncate.materialize_with_truncation(result, item.config)
++                if lines:
++                    return [line.replace('\n', '\\n') for line in lines]
++        return None
++
++    def failure(error, details):
++        _message(error, details, compare)
++
++    def passed(details):
++        explanation = ''.join(assertionlib.format_details(details, compare=compare)).strip()
++        item.ihook.pytest_assertion_pass(
++            item=item, lineno=details.location.lineno,
++            orig=details.expression, expl=explanation,
++        )
++
++    on_pass = None
++    if (item.config.getini('enable_assertion_pass_hook') and
++            item.ihook.pytest_assertion_pass.get_hookimpls()):
++        on_pass = passed
++    with assertionlib.handlers(on_failure=failure, on_pass=on_pass):
++        return (yield)
+diff --git a/Tools/assert_details/pytest_smoke.py b/Tools/assert_details/pytest_smoke.py
+new file mode 100644
+index 00000000000..313200e5b8d
+--- /dev/null
++++ b/Tools/assert_details/pytest_smoke.py
+@@ -0,0 +1,119 @@
++"""Exercise the optional pytest adapter in isolated subprocesses."""
++
++import argparse
++import os
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++
++
++HELPER = '''
++class Box:
++    def __init__(self, value): self.value = value
++    def __eq__(self, other): return self.value == other.value
++
++def check(left, right):
++    "helper docstring"
++    assert left == right
++'''
++
++CONFTEST = '''
++import pytest
++pytest.register_assert_rewrite('native_helper')
++from native_helper import Box
++passes = []
++
++def pytest_assertrepr_compare(config, op, left, right):
++    if isinstance(left, Box) and isinstance(right, Box):
++        return [f'custom boxes: {left.value} {op} {right.value}']
++
++def pytest_assertion_pass(item, lineno, orig, expl):
++    passes.append((orig, expl))
++
++def pytest_sessionfinish(session):
++    enabled = session.config.getini('enable_assertion_pass_hook')
++    if enabled and not any(orig == '2 == 2' for orig, expl in passes):
++        raise RuntimeError('native pass callback did not run')
++    if not enabled and passes:
++        raise RuntimeError('pass callbacks ran without opt-in')
++'''
++
++TESTS = '''
++import dis
++import sys
++import pytest
++import assertionlib
++from native_helper import Box, check
++
++def test_caught_message():
++    with pytest.raises(AssertionError, match='custom boxes: 1 == 2') as caught:
++        assert Box(1) == Box(2)
++    assert assertionlib.get_details(caught.value) is not None
++
++def test_registered_helper():
++    with pytest.raises(AssertionError, match='custom boxes: 3 == 4'):
++        check(Box(3), Box(4))
++
++def test_compiler_backend():
++    names = {i.opname for i in dis.get_instructions(check)}
++    assert 'STORE_FAST_BORROW' in names
++    assert check.__doc__ == ('helper docstring' if sys.flags.optimize < 2 else None)
++    assert not any(name.startswith('@pytest') for name in check.__globals__)
++
++def test_pass_and_debug():
++    assert 2 == 2
++    assert __debug__ == (sys.flags.optimize == 0)
++
++def test_evaluation_once():
++    events = []
++    class Flag:
++        def __bool__(self):
++            events.append('bool')
++            return False
++    with pytest.raises(AssertionError):
++        assert Flag() and events.append('skipped')
++    assert events == ['bool']
++
++def test_report():
++    assert Box(10) == Box(20)
++'''
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument('--pytest-source', type=Path, required=True)
++    parser.add_argument('--pytest-deps', type=Path, required=True)
++    parser.add_argument('--output', type=Path, required=True)
++    args = parser.parse_args()
++    args.output.mkdir(parents=True, exist_ok=True)
++    env = os.environ.copy()
++    env['PYTEST_DISABLE_PLUGIN_AUTOLOAD'] = '1'
++    env['PYTHONPATH'] = os.pathsep.join(map(str, (
++        Path(__file__).resolve().parent, args.pytest_source / 'src', args.pytest_deps,
++    )))
++    with tempfile.TemporaryDirectory() as directory:
++        directory = Path(directory)
++        for name, source in [('native_helper.py', HELPER), ('conftest.py', CONFTEST),
++                             ('test_native.py', TESTS)]:
++            (directory / name).write_text(source)
++        for index, (optimize, events) in enumerate([('', False), ('', True),
++                                                  ('-O', True), ('-OO', True), ('', False)]):
++            command = [sys.executable]
++            if optimize:
++                command.append(optimize)
++            command += ['-m', 'pytest', '-p', 'pytest_native', '-q',
++                        '-o', f'enable_assertion_pass_hook={events}']
++            result = subprocess.run(command, cwd=directory, env=env,
++                                    text=True, stdout=subprocess.PIPE,
++                                    stderr=subprocess.STDOUT)
++            (args.output / f'pytest-{index}.log').write_text(result.stdout)
++            if (result.returncode != 1 or '1 failed, 5 passed' not in result.stdout or
++                    'custom boxes: 10 == 20' not in result.stdout or
++                    '<native_helper.Box object' in result.stdout):
++                raise RuntimeError(f'pytest integration failed: {command}\n{result.stdout}')
++            print(f'{optimize or "normal"}, events={events}: expected report and hooks passed', flush=True)
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/Tools/assert_details/run.py b/Tools/assert_details/run.py
+new file mode 100644
+index 00000000000..985a03f3a91
+--- /dev/null
++++ b/Tools/assert_details/run.py
+@@ -0,0 +1,28 @@
++"""Run one source file with native assertion diagnostics enabled."""
++import argparse
++import ast
++from pathlib import Path
++import sys
++import types
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('file', type=Path)
++    parser.add_argument('args', nargs=argparse.REMAINDER)
++    args = parser.parse_args()
++    path = args.file.resolve()
++    code = compile(path.read_bytes(), str(path), 'exec',
++                   flags=ast.PyCF_ASSERT_DETAILS, dont_inherit=True)
++    sys.argv = [str(path), *args.args]
++    sys.path[0] = str(path.parent)
++    module = types.ModuleType('__main__')
++    module.__file__ = str(path)
++    module.__package__ = None
++    module.__spec__ = None
++    sys.modules['__main__'] = module
++    exec(code, module.__dict__)
++
++
++if __name__ == '__main__':
++    main()

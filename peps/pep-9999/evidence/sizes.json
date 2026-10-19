@@ -1,0 +1,362 @@
+{
+  "constant": {
+    "plain": {
+      "bytecode_bytes": 8,
+      "instructions": 3,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 5,
+      "marshal_bytes": 109,
+      "frame_slots": 4,
+      "locals": 3,
+      "stacksize": 1
+    },
+    "native": {
+      "bytecode_bytes": 8,
+      "instructions": 3,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 5,
+      "marshal_bytes": 109,
+      "frame_slots": 4,
+      "locals": 3,
+      "stacksize": 1
+    }
+  },
+  "equal_int": {
+    "plain": {
+      "bytecode_bytes": 24,
+      "instructions": 9,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 11,
+      "marshal_bytes": 131,
+      "frame_slots": 5,
+      "locals": 3,
+      "stacksize": 2
+    },
+    "native": {
+      "bytecode_bytes": 74,
+      "instructions": 28,
+      "cache_units": 0,
+      "exception_table_bytes": 8,
+      "location_table_bytes": 16,
+      "marshal_bytes": 572,
+      "frame_slots": 9,
+      "locals": 7,
+      "stacksize": 2
+    }
+  },
+  "equal_large_int": {
+    "plain": {
+      "bytecode_bytes": 24,
+      "instructions": 9,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 11,
+      "marshal_bytes": 131,
+      "frame_slots": 5,
+      "locals": 3,
+      "stacksize": 2
+    },
+    "native": {
+      "bytecode_bytes": 74,
+      "instructions": 28,
+      "cache_units": 0,
+      "exception_table_bytes": 8,
+      "location_table_bytes": 16,
+      "marshal_bytes": 572,
+      "frame_slots": 9,
+      "locals": 7,
+      "stacksize": 2
+    }
+  },
+  "arithmetic_large_int": {
+    "plain": {
+      "bytecode_bytes": 54,
+      "instructions": 14,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 24,
+      "marshal_bytes": 178,
+      "frame_slots": 5,
+      "locals": 3,
+      "stacksize": 2
+    },
+    "native": {
+      "bytecode_bytes": 126,
+      "instructions": 44,
+      "cache_units": 0,
+      "exception_table_bytes": 8,
+      "location_table_bytes": 32,
+      "marshal_bytes": 1016,
+      "frame_slots": 13,
+      "locals": 11,
+      "stacksize": 2
+    }
+  },
+  "arithmetic_float": {
+    "plain": {
+      "bytecode_bytes": 54,
+      "instructions": 14,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 24,
+      "marshal_bytes": 178,
+      "frame_slots": 5,
+      "locals": 3,
+      "stacksize": 2
+    },
+    "native": {
+      "bytecode_bytes": 126,
+      "instructions": 44,
+      "cache_units": 0,
+      "exception_table_bytes": 8,
+      "location_table_bytes": 32,
+      "marshal_bytes": 1016,
+      "frame_slots": 13,
+      "locals": 11,
+      "stacksize": 2
+    }
+  },
+  "arithmetic": {
+    "plain": {
+      "bytecode_bytes": 54,
+      "instructions": 14,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 24,
+      "marshal_bytes": 178,
+      "frame_slots": 5,
+      "locals": 3,
+      "stacksize": 2
+    },
+    "native": {
+      "bytecode_bytes": 126,
+      "instructions": 44,
+      "cache_units": 0,
+      "exception_table_bytes": 8,
+      "location_table_bytes": 32,
+      "marshal_bytes": 1016,
+      "frame_slots": 13,
+      "locals": 11,
+      "stacksize": 2
+    }
+  },
+  "attribute": {
+    "plain": {
+      "bytecode_bytes": 46,
+      "instructions": 11,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 18,
+      "marshal_bytes": 167,
+      "frame_slots": 5,
+      "locals": 3,
+      "stacksize": 2
+    },
+    "native": {
+      "bytecode_bytes": 100,
+      "instructions": 32,
+      "cache_units": 0,
+      "exception_table_bytes": 8,
+      "location_table_bytes": 21,
+      "marshal_bytes": 705,
+      "frame_slots": 10,
+      "locals": 8,
+      "stacksize": 2
+    }
+  },
+  "subscript": {
+    "plain": {
+      "bytecode_bytes": 40,
+      "instructions": 12,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 18,
+      "marshal_bytes": 160,
+      "frame_slots": 5,
+      "locals": 3,
+      "stacksize": 2
+    },
+    "native": {
+      "bytecode_bytes": 100,
+      "instructions": 36,
+      "cache_units": 0,
+      "exception_table_bytes": 8,
+      "location_table_bytes": 23,
+      "marshal_bytes": 812,
+      "frame_slots": 11,
+      "locals": 9,
+      "stacksize": 2
+    }
+  },
+  "call": {
+    "plain": {
+      "bytecode_bytes": 44,
+      "instructions": 12,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 20,
+      "marshal_bytes": 171,
+      "frame_slots": 6,
+      "locals": 3,
+      "stacksize": 3
+    },
+    "native": {
+      "bytecode_bytes": 106,
+      "instructions": 37,
+      "cache_units": 0,
+      "exception_table_bytes": 8,
+      "location_table_bytes": 27,
+      "marshal_bytes": 815,
+      "frame_slots": 12,
+      "locals": 9,
+      "stacksize": 3
+    }
+  },
+  "method": {
+    "plain": {
+      "bytecode_bytes": 82,
+      "instructions": 14,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 29,
+      "marshal_bytes": 221,
+      "frame_slots": 5,
+      "locals": 3,
+      "stacksize": 2
+    },
+    "native": {
+      "bytecode_bytes": 158,
+      "instructions": 46,
+      "cache_units": 0,
+      "exception_table_bytes": 10,
+      "location_table_bytes": 37,
+      "marshal_bytes": 1085,
+      "frame_slots": 13,
+      "locals": 11,
+      "stacksize": 2
+    }
+  },
+  "boolean_and": {
+    "plain": {
+      "bytecode_bytes": 54,
+      "instructions": 20,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 29,
+      "marshal_bytes": 183,
+      "frame_slots": 5,
+      "locals": 3,
+      "stacksize": 2
+    },
+    "native": {
+      "bytecode_bytes": 166,
+      "instructions": 64,
+      "cache_units": 0,
+      "exception_table_bytes": 20,
+      "location_table_bytes": 39,
+      "marshal_bytes": 1498,
+      "frame_slots": 17,
+      "locals": 15,
+      "stacksize": 2
+    }
+  },
+  "boolean_or_short": {
+    "plain": {
+      "bytecode_bytes": 44,
+      "instructions": 17,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 24,
+      "marshal_bytes": 168,
+      "frame_slots": 5,
+      "locals": 3,
+      "stacksize": 2
+    },
+    "native": {
+      "bytecode_bytes": 140,
+      "instructions": 56,
+      "cache_units": 0,
+      "exception_table_bytes": 12,
+      "location_table_bytes": 34,
+      "marshal_bytes": 1074,
+      "frame_slots": 13,
+      "locals": 11,
+      "stacksize": 2
+    }
+  },
+  "comparison_chain": {
+    "plain": {
+      "bytecode_bytes": 64,
+      "instructions": 25,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 32,
+      "marshal_bytes": 196,
+      "frame_slots": 6,
+      "locals": 3,
+      "stacksize": 3
+    },
+    "native": {
+      "bytecode_bytes": 162,
+      "instructions": 62,
+      "cache_units": 0,
+      "exception_table_bytes": 20,
+      "location_table_bytes": 40,
+      "marshal_bytes": 1112,
+      "frame_slots": 16,
+      "locals": 13,
+      "stacksize": 3
+    }
+  },
+  "list_equal": {
+    "plain": {
+      "bytecode_bytes": 24,
+      "instructions": 9,
+      "cache_units": 0,
+      "exception_table_bytes": 0,
+      "location_table_bytes": 11,
+      "marshal_bytes": 131,
+      "frame_slots": 5,
+      "locals": 3,
+      "stacksize": 2
+    },
+    "native": {
+      "bytecode_bytes": 74,
+      "instructions": 28,
+      "cache_units": 0,
+      "exception_table_bytes": 8,
+      "location_table_bytes": 16,
+      "marshal_bytes": 572,
+      "frame_slots": 9,
+      "locals": 7,
+      "stacksize": 2
+    }
+  },
+  "generator_all": {
+    "plain": {
+      "bytecode_bytes": 180,
+      "instructions": 58,
+      "cache_units": 0,
+      "exception_table_bytes": 4,
+      "location_table_bytes": 59,
+      "marshal_bytes": 450,
+      "frame_slots": 7,
+      "locals": 3,
+      "stacksize": 4
+    },
+    "native": {
+      "bytecode_bytes": 154,
+      "instructions": 52,
+      "cache_units": 0,
+      "exception_table_bytes": 12,
+      "location_table_bytes": 44,
+      "marshal_bytes": 772,
+      "frame_slots": 11,
+      "locals": 7,
+      "stacksize": 4
+    }
+  }
+}

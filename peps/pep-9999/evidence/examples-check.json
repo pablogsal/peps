@@ -1,0 +1,16 @@
+{
+  "python": "3.16.0a1+dev (heads/native-assert-prototype-20261018-dirty:b00a1401817, Oct 18 2026, 17:58:41) [GCC 15.2.0]",
+  "checks": [
+    "Arithmetic output, captured values, truth, unchanged args, graph cache",
+    "Function-call and list explanations",
+    "Short circuit: right() is skipped and value access raises",
+    "Custom comparison: raw object and one truth conversion",
+    "Compile API to runtime to failure callback: 54 == 60",
+    "Exception inspection and capture cleanup without a handler",
+    "Custom comparison formatter and failure message callback",
+    "Success-event callback",
+    "Frame slots and actual bytecode for the worked example",
+    "All command-line combinations from the table, plus -OO",
+    "Captured None differs from skipped values; detach is idempotent"
+  ]
+}

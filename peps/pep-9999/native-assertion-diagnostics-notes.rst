@@ -1,0 +1,900 @@
+:orphan:
+
+Assertion diagnostics: technical notes
+======================================
+
+These notes accompany the PEP draft. They retain the detailed API contract,
+prototype layout, and measurements from the longer version. Proposed behavior
+and incomplete prototype behavior remain distinct throughout the notes.
+The prototype also has earlier experiments for success callbacks and
+assertion retention. Those experiments are outside this proposal.
+
+The pickle policy and exception chaining for internal diagnostic failures
+need further implementation. Free-threaded builds, the machine-code JIT,
+and callback isolation across subinterpreters still require verification.
+
+Specification
+=============
+
+Compile Control
+---------------
+
+Capture is off by default. ``python -X assert_details`` enables it for
+source compilation throughout the process. Libraries select the same
+feature with ``ast.PyCF_ASSERT_DETAILS``. The C API accepts
+``PyCF_ASSERT_DETAILS`` in ``PyCompilerFlags.cf_flags``.
+
+.. code-block:: python
+
+    import ast
+
+    source = "assert price * quantity == expected"
+    code = compile(
+        source, "invoice.py", "exec",
+        flags=ast.PyCF_ASSERT_DETAILS,
+        dont_inherit=True,
+    )
+
+The flag applies to source or AST input and to nested functions and classes
+in that compilation. It does not apply to modules imported by that code
+or to later ``compile()`` calls. AST-only requests return an ordinary AST.
+
+The command-line option also applies to ``compile()`` calls with
+``dont_inherit=True``. It does not change code objects that already exist,
+frozen modules, or bytecode supplied by a loader. There is no separate
+disable option or per-compilation override for the process option.
+
+``-O`` and ``-OO`` still remove assertions. The ``optimize`` argument to
+``compile()`` follows its ordinary rules. A loader can select ``optimize=0``
+for test modules that need assertions, even under ``-O``.
+
+Import caches must distinguish code with capture from code without it.
+The prototype appends ``-assert`` to the ordinary cache tag. The optimization
+suffix from `PEP 488`_ remains separate. Custom loaders must include the
+capture choice in their cache keys. ``py_compile`` and ``compileall`` use
+the active interpreter option.
+
+``sys._xoptions`` exposes the command-line option. The proposal adds no
+environment variable or ``sys.flags`` attribute. CPython's interpreter-flag
+helper forwards the option to child interpreters, including the standard
+``multiprocessing`` spawn path. An independently constructed subprocess
+command must include the option itself.
+
+Capture Semantics
+-----------------
+
+An instrumented assertion evaluates its test with ordinary Python order
+and short circuit behavior. Capture does not repeat expression evaluation,
+comparison operations, or truth conversion. It does not call ``repr()``.
+
+For example:
+
+.. code-block:: python
+
+    calls = []
+
+    def left():
+        calls.append("left")
+        return 0
+
+    def right():
+        calls.append("right")
+        return 1
+
+    assert left() and right()
+
+Only ``left()`` runs. The capture contains its result, ``0``.
+The graph also identifies ``right()`` as an expression without a captured
+result. No callback or formatter evaluates that expression later.
+
+Comparisons can return objects other than ``bool``. Capture keeps the raw
+comparison result and the truth result that the assertion actually uses.
+The ``value`` and ``truth`` properties expose these separately:
+
+.. code-block:: python
+
+    calls = []
+
+    class Verdict:
+        def __bool__(self):
+            calls.append("bool")
+            return False
+
+    class Item:
+        def __eq__(self, other):
+            calls.append("eq")
+            return Verdict()
+
+    assert Item() == Item()
+
+After this failure, ``calls`` contains ``["eq", "bool"]``.
+The comparison's ``value`` is the ``Verdict`` instance.
+Its ``truth`` is ``False``. Access to either property adds no calls.
+
+For a chain such as ``a < b < c``, each link has a separate comparison
+record. The middle operand evaluates once. A skipped link has no captured
+result. An evaluated link can have a raw result without a separate truth
+conversion when its parent expression does not require that conversion.
+
+If the condition fails, Python evaluates the optional assertion message
+once, then constructs the exception. A failure callback runs after those
+steps. If the test or message raises an exception, that exception propagates
+normally. It does not become an assertion failure event.
+
+Only an instrumented ``assert`` statement creates native diagnostic data.
+An explicit ``raise AssertionError(...)`` does not create such data.
+
+Capture retains references, not snapshots. If later expression evaluation
+or the assertion message mutates an object, a report can show its changed
+state. Retained references can delay ``__del__`` calls and weak-reference
+callbacks. Additional allocations can fail. These are observable effects
+of the optional mode.
+
+If diagnostic support raises after the assertion exception exists, the
+new exception must retain the assertion exception as its context.
+This rule also applies to internal dispatcher errors, not just user callbacks.
+
+Capture Scope
+-------------
+
+The graph describes expressions in the assertion test. It does not include
+the assertion message or the internal execution of a called function.
+A comprehension or generator expression exposes its result object.
+It does not expose a record for each iteration.
+
+The compiler can fold constants before capture instrumentation.
+Consequently, the graph need not contain every node from the original AST.
+Expression text is normalized source text, not an exact source-file slice.
+Comments, quote choices, and spaces need not remain intact.
+
+The API reports capture availability. A graph node can describe syntax
+without a runtime value, such as a store target in an assignment expression.
+Consumers must check ``evaluated`` before they access ``value``.
+They must not infer a complete execution trace from the node list.
+The generic kind ``expression`` means that no more specific kind applies.
+A later Python version can assign a more specific kind to that syntax.
+
+The proposal does not restrict ``await`` or ``yield`` within assertions.
+A suspended frame retains its temporary captures until the assertion
+completes or frame cleanup releases them. A callback uses the execution
+context in which the assertion reaches the callback point.
+
+Library API
+-----------
+
+The new standard library module is ``assertionlib``.
+Its public operations are:
+
+.. code-block:: python
+
+    get_details(error) -> AssertionDetails | None
+    clear_details(error) -> None
+    format_details(details, *, compare=None) -> list[str]
+    handlers(*, on_failure=None)  # context manager
+
+``get_details(error)`` returns the native data for an ``AssertionError``,
+or ``None`` if the exception has no such data. Other exceptions and
+non-exception objects return ``None``. Sequential calls return the same
+details object while the exception
+retains the same capture payload.
+
+A caller can inspect a failure without a handler:
+
+.. code-block:: python
+
+    import ast
+    import assertionlib
+
+    code = compile("assert price * quantity == expected", "invoice.py", "exec",
+                   flags=ast.PyCF_ASSERT_DETAILS, dont_inherit=True)
+    try:
+        exec(code, {"price": 18, "quantity": 3, "expected": 60})
+    except AssertionError as error:
+        details = assertionlib.get_details(error)
+        print(details.comparisons[0].left.value)  # 54
+        print(details.root.truth)                # False
+        assertionlib.clear_details(error)
+
+``clear_details(error)`` removes native data and its cached public graph
+from an exception instance. Repeated calls are permitted.
+This operation does not clear the exception's traceback.
+Other references to a details object or
+its nodes still retain their captured objects.
+
+``format_details(details, *, compare=None)`` returns explanation lines,
+each with a terminal newline. It performs no output operation.
+An argument of the wrong details type raises ``TypeError``.
+It does not reevaluate the assertion. It can call user ``__repr__`` methods,
+so the formatter can execute user code. Default representations and built-in
+container differences have size limits.
+
+Default structural differences apply only to supported exact built-in
+containers with supported exact built-in elements. They do not invoke
+custom comparison, truth, hash, or iteration methods.
+
+The optional ``compare(op, left, right)`` function receives an operator
+string and the two captured operand objects. The formatter calls it for
+each evaluated comparison. This includes successful links in a failed
+chain. It does not call it for skipped links.
+Its return value has these meanings:
+
+* ``None`` requests the default comparison explanation.
+* A nonempty iterable of strings supplies custom lines without terminal
+  newlines. The first line replaces the comparison summary.
+* An empty iterable keeps the summary and suppresses the default difference.
+
+Errors from a custom comparison formatter propagate to its caller.
+The formatter can use the objects directly without an import hook:
+
+.. code-block:: python
+
+    def explain_total(op, left, right):
+        if op == "==" and type(left) is int and type(right) is int:
+            return [f"total differs by {right - left}"]
+        return None
+
+    lines = assertionlib.format_details(details, compare=explain_total)
+
+Data Objects
+------------
+
+The public objects have immutable attributes. Their captured operand
+objects can still be mutable. The tables below define attributes that
+consumers can read. They do not define a serialized representation or
+require a particular implementation of these classes.
+The classes are return types for this API. Public construction, dataclass
+helpers, and positional pattern-match fields are outside this contract.
+
+.. list-table:: ``AssertionDetails``
+    :header-rows: 1
+    :widths: 28 72
+
+    * - Attribute
+      - Description
+    * - ``expression``
+      - Normalized text for the assertion test.
+    * - ``location``
+      - A ``SourceLocation`` for that test.
+    * - ``root``
+      - The top-level ``Expression`` node.
+    * - ``nodes``
+      - A tuple of all expression nodes in this graph.
+    * - ``comparisons``
+      - A tuple of comparison records. Links within a chain follow
+        source order.
+
+.. list-table:: ``Expression``
+    :header-rows: 1
+    :widths: 28 72
+
+    * - Attribute
+      - Description
+    * - ``id``
+      - An integer unique within this graph.
+    * - ``text``, ``kind``
+      - Normalized expression text and a structural kind.
+    * - ``location``
+      - The expression's ``SourceLocation``.
+    * - ``children``
+      - A tuple of child ``Expression`` nodes in evaluation order.
+    * - ``evaluated``
+      - Whether a captured result is available.
+    * - ``value``
+      - The original result object. Raises ``ValueError`` if unavailable.
+    * - ``truth``
+      - A truth result from execution, or ``None`` if unavailable.
+
+Kinds include ``name``, ``constant``, ``binary``, ``unary``, ``not``,
+``and``, ``or``, ``conditional``, ``call``, ``attribute``, ``subscript``,
+``compare``, and the general kind ``expression``.
+Consumers must tolerate additional kinds in future Python versions.
+
+The graph also retains alternatives that do not execute.
+For a conditional expression, children are the condition, body, and
+alternative, in that order. Comparison records from distinct expressions
+have no specified global order.
+Node IDs do not identify variables or persist across separate failures.
+Two occurrences of the same source expression have distinct nodes.
+
+An available ``value`` of ``None`` differs from an unavailable value.
+The ``truth`` property never calls ``bool(value)`` to fill a gap.
+It can derive a result from captured truth results without user calls.
+For example, ``not`` inverts its operand's captured truth result.
+For ``and`` and ``or``, the node's value can come from the operand that
+the expression selects.
+The compiler need not create an extra runtime object for that purpose.
+
+.. list-table:: ``Comparison``
+    :header-rows: 1
+    :widths: 28 72
+
+    * - Attribute
+      - Description
+    * - ``operator``
+      - One of Python's comparison operator strings.
+    * - ``left``, ``right``
+      - The operand ``Expression`` nodes.
+    * - ``expression``
+      - The parent comparison expression node.
+    * - ``text``
+      - Normalized text for this comparison link.
+    * - ``evaluated``, ``value``, ``truth``
+      - Availability, raw result, and recorded truth for this link.
+
+``Comparison.value`` raises ``ValueError`` when no result is available.
+A chain has one record per link. This includes skipped links.
+
+``SourceLocation`` has ``filename``, ``lineno``, ``col_offset``,
+``end_lineno``, and ``end_col_offset`` attributes. Line numbers start at 1.
+Columns use zero-based UTF-8 byte offsets, as AST locations do.
+End offsets are exclusive.
+
+For AST input, locations reflect the supplied
+AST positions. They need not refer to an actual source file.
+Capture locations remain available with ``-X no_debug_ranges``.
+
+Callbacks
+---------
+
+``handlers()`` installs a synchronous failure callback in the current
+execution context. Its argument must be callable or ``None``. An invalid argument
+raises ``TypeError`` when the context manager enters its scope.
+
+.. code-block:: python
+
+    import ast
+    import assertionlib
+
+    source = "assert price * quantity == expected"
+    code = compile(source, "invoice.py", "exec",
+                   flags=ast.PyCF_ASSERT_DETAILS, dont_inherit=True)
+
+    def report_failure(error, details):
+        comparison = details.comparisons[0]
+        print(comparison.left.value, comparison.operator,
+              comparison.right.value)
+
+    with assertionlib.handlers(on_failure=report_failure):
+        exec(code, {"price": 18, "quantity": 3, "expected": 60})
+
+The callback prints ``54 == 60``. The ``AssertionError`` then propagates
+from ``exec()``.
+The context manager registers handlers. It does not enable compiler capture
+or change code objects that already exist.
+
+``on_failure(error, details)`` runs before the assertion exception reaches
+its caller. Its return value has no effect. A normal return does not
+suppress the assertion failure. A callback can change ``error.args``:
+
+.. code-block:: python
+
+    def set_message(error, details):
+        explanation = "".join(assertionlib.format_details(details)).rstrip()
+        error.args = (explanation,)
+
+If the callback raises, its exception propagates. The original assertion
+error becomes its ``__context__``. The assertion error retains any earlier
+exception context.
+
+During the failure callback, ``sys.exception()`` returns
+that assertion error. It has no traceback yet because the assertion has
+not raised it. If the callback raises, that context error still has no
+traceback.
+
+A recursive assertion within an active callback does
+not invoke another assertion callback. It can still fail and retain data.
+The recursion guard also applies to handler scopes inside the callback.
+Suppression ends when the active callback returns or raises.
+
+Successful assertions clear their temporary captures without callback lookup.
+
+The dispatcher does not await callback results. Callbacks must perform
+their work synchronously. An ``async def`` callback returns a coroutine
+that the dispatcher discards. It can produce an unawaited-coroutine warning.
+
+An inner ``handlers()`` scope replaces the failure handler. An omitted
+argument disables the handler in that scope. Exit restores the previous
+handler. Context copies and new asyncio tasks inherit it.
+Threads follow ``sys.flags.thread_inherit_context`` and any explicit
+context supplied to the thread, as for ``ContextVar``.
+See the `contextvars documentation`_.
+
+Data Lifetime and Serialization
+-------------------------------
+
+CPython clears temporary captures when an assertion completes or exits
+through an exception. On failure, it first attaches references to the
+assertion exception. The exception and any retained details objects can
+keep the captured objects alive after temporary cleanup.
+
+Details can retain large objects or secrets. A consumer can call
+``clear_details(error)`` when it no longer needs those references.
+This does not guarantee that the objects become unreachable.
+
+The proposed exception pickle protocol omits native capture data and its
+cached public graph. It preserves ordinary exception arguments and user
+attributes. An exception restored from that pickle has no native details.
+Copies that use the exception's reduction protocol follow the same rule.
+The API does not define a portable format for a separate details object.
+
+The prototype does not yet implement this policy. Its private exception
+attributes enter the ordinary pickle state. A captured generator, lock,
+or local class can make transport through ``ProcessPoolExecutor`` fail.
+It can also transmit large objects that the program did not intend to send.
+A prototype consumer must detach captures before exception serialization.
+A remote reporter can send formatted text or an explicit data schema.
+
+Traceback Output
+----------------
+
+The standard traceback API includes explanations in ``format_exception``,
+``format_exception_only``, ``print_exception``, and ``TracebackException``.
+The normal interpreter exception hook uses the same output.
+Consumers such as the default ``logging`` formatter inherit that behavior when
+they delegate to the traceback module. Custom exception hooks control their
+own output.
+
+The explanation follows the exception's type and message, before its notes.
+Exception groups apply the same rule to each contained assertion error.
+``TracebackException`` formats the explanation when it constructs its
+summary. It retains the explanation strings, not the captured operands.
+Consequently, its constructor can execute object representation methods.
+
+If the diagnostic formatter raises an ``Exception``, the standard traceback
+path keeps the ordinary exception report and adds an unavailable-data line.
+It does not suppress ``KeyboardInterrupt`` or ``SystemExit``.
+The explicit ``format_details()`` API still propagates formatter errors.
+A separate display-suppression API remains an open issue.
+
+
+CPython Implementation
+======================
+
+This section describes the prototype and its internal data layout.
+The public API does not require other implementations to use these
+instructions, temporary names, or tuple layouts.
+
+From Source to Capture Instructions
+-----------------------------------
+
+The parser still creates an ordinary ``Assert`` AST node.
+No grammar change or parser-level source rewrite is necessary.
+The normal AST and symbol-table passes precede bytecode generation.
+After code generation, the control-flow optimizer processes the instruction
+graph. The assembler produces the code object and its exception tables.
+Capture instructions and metadata pass through those stages with ordinary
+instructions.
+
+Consider this complete function:
+
+.. code-block:: python
+
+    def check(price, quantity, expected):
+        assert price * quantity == expected
+
+The assertion test contains these relevant nodes:
+
+.. code-block:: text
+
+    Compare: price * quantity == expected
+      BinOp: price * quantity
+        Name: price
+        Name: quantity
+      Name: expected
+
+``codegen_assert()`` first applies the assertion-removal rule.
+For an assertion that remains, the diagnostic flag selects capture code.
+The compiler then creates an assertion context with a node graph, capture
+records, and temporary slot assignments.
+
+The expression visitor adds a node descriptor before it emits the normal
+instructions for that node. After the instructions produce a result, the
+visitor emits an instruction that retains the result in a hidden local.
+The result remains available on the operand stack for its normal consumer.
+
+For straight-line expressions, the rule is conceptually:
+
+.. code-block:: text
+
+    save the current parent node
+    enter the expression node in the diagnostic graph
+    emit its normal evaluation, with capture active for child expressions
+    assign a hidden local slot to this result
+    emit a capture instruction for that slot
+    leave the result on the operand stack
+    restore the saved parent node
+
+This rule alone does not implement short circuit expressions.
+The branch compiler also records the truth results that select each branch.
+It emits captures within the branch that actually evaluates an expression.
+A jump over that branch also jumps over its capture instructions.
+The compiler records each comparison link separately for chains.
+
+Temporary Storage and Metadata
+------------------------------
+
+For the example function, the first three frame slots hold the arguments.
+The compiler assigns six more slots:
+
+.. list-table::
+    :header-rows: 1
+
+    * - Frame slot
+      - Internal name
+      - Captured result for ``check(18, 3, 60)``
+    * - 3
+      - ``.assertion.0``
+      - ``price``: ``18``
+    * - 4
+      - ``.assertion.1``
+      - ``quantity``: ``3``
+    * - 5
+      - ``.assertion.2``
+      - ``price * quantity``: ``54``
+    * - 6
+      - ``.assertion.3``
+      - ``expected``: ``60``
+    * - 7
+      - ``.assertion.4``
+      - Raw comparison result: ``False``
+    * - 8
+      - ``.assertion.5``
+      - Truth result: ``False``
+
+These are entries in the current frame's ``localsplus`` array.
+They are not module globals or Python dictionaries. Each entry retains
+an object reference. An internal local marker hides them from ``locals()``.
+Their internal names appear in ``co_varnames``, and ``co_nlocals`` grows.
+The compiler reuses temporary slots for later assertions in the same scope.
+
+Slot 7 supplies both the single comparison record and its expression value.
+Two metadata records therefore share that slot.
+
+The code object's ``co_consts`` contains a constant capture plan.
+The plan associates slots with expression text, source spans, node IDs,
+and record kinds. For example, one record connects slot 5 to
+``price * quantity`` and its binary-expression node.
+The runtime uses this record to interpret slot 5. The actual record is:
+
+.. code-block:: python
+
+    (5, "price * quantity", "value", (2, 11, 2, 27), None, 1)
+
+Its fields are the frame slot, text, record kind, source span, optional
+comparison metadata, and node ID. Node 1 describes the multiplication.
+
+The plan itself is ``(test_text, records, nodes)``.
+Each node entry is ``(text, kind, span, child_ids)``. Its ID is its index.
+Record kinds are ``value``, ``comparison``, and ``truth``.
+A comparison record's extra data identifies both operand slots, the
+operator, and both operand node IDs.
+
+A slot starts with CPython's null stack reference. An unexecuted capture
+leaves it null. The null reference differs from the Python object ``None``.
+The failure payload uses ``()`` for an unavailable value and ``(value,)``
+for an available value. Thus, ``(None,)`` represents an available ``None``.
+
+The prototype's plan contains only marshal-compatible constants.
+It contains no callback objects or imported modules.
+Compilation creates the plan once. Each function invocation supplies its
+own captured values in its own frame.
+
+New Bytecode
+------------
+
+The prototype adds these instructions:
+
+.. list-table::
+    :header-rows: 1
+    :widths: 25 25 50
+
+    * - Instruction
+      - Stack effect
+      - Operation
+    * - ``STORE_FAST_BORROW slot``
+      - ``value -> borrowed``
+      - Retain an owned reference in the local slot and leave a borrowed
+        reference on the stack.
+    * - ``COPY_TO_FAST slot``
+      - ``value -> value``
+      - Retain an additional reference in the local slot and preserve
+        the original stack reference.
+    * - ``CLEAR_FAST slot``
+      - No stack change
+      - Clear the local slot and release its previous reference, if any.
+
+``STORE_FAST_BORROW`` combines capture with a borrowed stack result.
+It can transfer an owned reference or promote a borrowed reference to an
+owned local reference. The slot keeps the object alive for its stack user.
+A borrowed stack reference must not outlive that slot's owned reference.
+An operation that retains it elsewhere must first obtain an owned reference.
+
+``COPY_TO_FAST`` preserves stack ownership when the subsequent bytecode
+requires it. The prototype uses it within assignment-expression subtrees.
+``CLEAR_FAST`` accepts both initialized and null slots.
+All three instructions require consistent reference-ownership rules in the
+tier-2 optimizer.
+
+A ``COPY`` followed by ``STORE_FAST`` can implement the extra reference
+for ``COPY_TO_FAST``. The combined instruction reduces dispatch work.
+``STORE_FAST_BORROW`` also avoids an extra owned stack reference when the
+local slot can supply ownership. ``CLEAR_FAST`` avoids the error that
+``DELETE_FAST`` raises for an uninitialized local.
+
+The excerpt below omits offsets, caches, and exception-table details.
+It shows the central sequence for the example:
+
+.. code-block:: text
+
+    LOAD_FAST_BORROW    price
+    STORE_FAST_BORROW   3
+    LOAD_FAST_BORROW    quantity
+    STORE_FAST_BORROW   4
+    BINARY_OP          *
+    STORE_FAST_BORROW   5
+    LOAD_FAST_BORROW    expected
+    STORE_FAST_BORROW   6
+    COMPARE_OP         ==
+    STORE_FAST_BORROW   7
+    TO_BOOL
+    STORE_FAST_BORROW   8
+    POP_JUMP_IF_TRUE    success
+
+    LOAD_COMMON_CONSTANT AssertionError
+    PUSH_NULL
+    CALL               0
+    LOAD_CONST         capture_plan
+    CALL_INTRINSIC_2   INTRINSIC_ASSERT_DETAILS
+    RAISE_VARARGS      1
+
+    success:
+    CLEAR_FAST         3
+    ...
+    CLEAR_FAST         8
+    LOAD_COMMON_CONSTANT None
+    RETURN_VALUE
+
+    exception_cleanup:
+    CLEAR_FAST         3
+    ...
+    CLEAR_FAST         8
+    RERAISE            0
+
+The ``CALL 0`` instruction constructs the exception instance before the
+intrinsic call. Exception cleanup also clears all capture slots before
+it reraises an error. This includes errors during operand evaluation.
+
+``CALL_INTRINSIC_2`` already exists. ``INTRINSIC_ASSERT_DETAILS`` is a new
+operation for that instruction, not a fourth new bytecode instruction.
+The intrinsic receives the exception and the plan. It returns the same
+exception for ``RAISE_VARARGS``.
+
+On failure, it reads the slots named in the plan and attaches a private
+payload to the exception. A consumer constructs the public graph lazily.
+An ordinary successful assertion creates no Python diagnostic containers
+and performs no callback lookup. It still executes capture and cleanup
+instructions and retains temporary references.
+
+How the Callback Runs
+---------------------
+
+The compiler does not emit the name of a user's callback.
+The user imports ``assertionlib`` and passes a callable to ``handlers()``.
+The module stores that callable in a ``ContextVar``.
+
+The runtime path is:
+
+.. code-block:: text
+
+    assert executes capture instructions
+        -> assertion fails
+        -> INTRINSIC_ASSERT_DETAILS finds the imported assertionlib module
+        -> it checks the applicable handler in the current context
+        -> it reads the frame slots
+        -> it attaches the payload to the exception
+        -> it establishes the assertion exception context
+        -> assertionlib._dispatch(error, payload)
+        -> on_failure(error, get_details(error))
+        -> the assertion raises the exception
+
+The C code uses ``PyImport_GetModule()`` to find an imported module in
+``sys.modules``. This lookup does not import ``assertionlib`` from disk.
+Without that module or an applicable handler, the intrinsic keeps the
+failure data and skips the Python callback call.
+
+If a handler exists, C calls the module's dispatcher with
+``PyObject_CallFunctionObjArgs()``. Before the call, the intrinsic establishes
+the assertion's exception context and temporarily sets the handled exception.
+The dispatcher calls the actual Python
+callable object. It does not import a function by name or evaluate source
+code. A closure, bound method, or callable instance therefore works.
+
+This module lookup is a prototype constraint. Reload of ``assertionlib``
+replaces its handler variable. Removal from ``sys.modules`` disables dispatch.
+Malformed private dispatcher state can raise before the payload exists.
+
+The implementation must preserve the original assertion as exception context
+for failures in diagnostic support. These lookup-error paths still need that
+change. A per-interpreter dispatcher registry is one possible replacement.
+
+The standard traceback path can later import formatter support lazily.
+That import is separate from callback dispatch. Failure capture itself
+does not require an application to import ``assertionlib``.
+
+The prototype formatter reparses compiler-generated node text for the
+expression kinds that it expands. Its private node layout must agree with
+that parse. Library consumers must use the public graph instead of this
+private formatter convention.
+
+
+Performance and Code Size
+=========================
+
+The PEP summarizes assertion-loop cost and the comparison with pytest on
+SymPy test sources. The :doc:`research notes <native-assertion-diagnostics-research>` contain the library workloads,
+source corpora, methods, and raw records. This section retains the detailed
+microbenchmarks.
+
+Capture costs time even when an assertion succeeds. The prototype adds
+reference operations, hidden local slots, cleanup, and metadata.
+Some expressions also lose compiler shortcuts that omit intermediate
+objects. A method call is one example.
+
+The measurements below use a GCC 15.2.0 release build with ``-O3``.
+The build does not use PGO, LTO, or the machine-code JIT.
+The loop harness pins execution to CPU 17 on a shared host.
+It uses nine samples, a target of 150 milliseconds per sample, and 1,000
+assertions per function call. Mode order varies after warmup.
+
+Each ratio compares native capture with ordinary assertions in the same
+executable. It includes loop and harness costs. The byte counts come from
+separate functions with one assertion and include inline cache bytes.
+They exclude capture plans and exception tables. The corpus measurements
+below include serialized metadata.
+
+The worked ``check(price, quantity, expected)`` example uses 38 bytecode
+bytes in ordinary mode and 100 with capture. Its local-slot count increases
+from 3 to 9. The table uses the expressions from the benchmark harness:
+
+.. list-table:: Selected successful-assertion measurements
+    :header-rows: 1
+
+    * - Case
+      - Native / ordinary time
+      - Ordinary bytecode
+      - Native bytecode
+    * - ``a == b`` (integers)
+      - 2.16x
+      - 24 bytes
+      - 74 bytes
+    * - ``a * 2 + b == expected``
+      - 2.11x
+      - 54 bytes
+      - 126 bytes
+    * - ``normalize(a) == b``
+      - 1.25x
+      - 44 bytes
+      - 106 bytes
+    * - ``a.strip().lower() == b``
+      - 2.63x
+      - 82 bytes
+      - 158 bytes
+    * - ``a > 0 and b > 0 and expected > 0``
+      - 2.59x
+      - 54 bytes
+      - 166 bytes
+    * - ``0 < a < b < expected``
+      - 2.21x
+      - 64 bytes
+      - 162 bytes
+    * - ``all(x >= 0 for x in a)``
+      - 1.17x
+      - 180 bytes
+      - 154 bytes
+
+The generator case has smaller bytecode because capture disables a fast
+path for ``all()``. Ordinary code contains both a specialized loop and a
+fallback call. Capture uses the ordinary call alone. Both byte counts
+include the unchanged generator code object.
+
+The geometric mean across eleven nonconstant cases is 1.86x.
+The same cases give 1.67x for pytest's rewrite, relative to ordinary asserts.
+The additional cases are attribute access, subscript access, short circuit
+``or``, and list equality.
+These results do not estimate whole-application slowdown or establish
+superiority over pytest. The host's load average was approximately 20 to 24.
+Controlled measurements remain necessary before release decisions.
+
+The earlier corpus selected 162 library files that contain assertions.
+It has 543 assertions and excludes library files without assertions.
+Totals include 11,543 code objects. Some contain no assertions.
+Capture increases bytecode from 2,868,200 to 2,897,402 bytes, or 1.02%.
+Marshal size increases from 7,423,551 to 7,700,592 bytes, or 3.73%.
+
+Median compile time increases from 0.462 to 0.481 seconds, or 4.07%.
+The compile benchmark uses eight samples with alternate mode order.
+
+The current compact formatter has these warm latencies:
+
+.. list-table:: Formatting an existing failure payload
+    :header-rows: 1
+
+    * - Case
+      - Median time
+    * - Arithmetic comparison
+      - 18.21 microseconds
+    * - Function call comparison
+      - 34.85 microseconds
+    * - List comparison
+      - 14.61 microseconds
+
+Each result uses seven samples with 5,000 calls per sample on CPU 17.
+These numbers exclude exception capture, cold imports, and traceback output.
+Current end-to-end failure latency still needs a separate measurement.
+
+
+Backwards Compatibility
+=======================
+
+Without the new controls, compilation retains ordinary assertion behavior.
+
+The ordinary-mode signature check compares the initial and optimized
+prototypes. All 162 files match. These signatures compare opcode names and
+arguments, constants, local names, flags, and exception and location tables.
+They also compare stack size and nested code. They ignore numeric opcode IDs.
+That check does not establish zero runtime overhead across all workloads.
+
+The optional capture mode preserves operand order, short circuit behavior, and
+normal assertion messages. It adds reference retention, possible
+allocation failures, and any effects of explicit callbacks or formatters.
+Programs that inspect reference counts or weak references can observe a
+different assertion result. For example, a temporary object can remain alive
+through ``weakref.ref(make())()`` under capture. Ordinary execution can
+release it before the weak reference call.
+
+The prototype's cleanup handler also affects monitoring events.
+A failed assertion emits ``RAISE``, ``EXCEPTION_HANDLED``, and ``RERAISE``
+where ordinary compilation emits ``RAISE``. Tools must account for these
+internal cleanup events. Capture also consumes one compiler block.
+Code near the static block limit can reach that limit sooner.
+
+The additional traceback lines also affect exact exception-output checks.
+For example, ``doctest`` currently rejects an expected bare ``AssertionError``
+when capture adds an explanation. Its integration needs a display policy.
+The prototype's exception-serialization difference also requires the change
+specified under Data Lifetime and Serialization.
+
+The new flag occupies an unused compiler-flag bit in CPython.
+The new instructions require a bytecode magic-number change.
+Bytecode numbers, hidden names, and private capture payloads are not stable
+APIs. Other Python implementations can provide the public contract through
+different mechanisms.
+
+
+References
+==========
+
+.. _pytest assertion documentation:
+   https://docs.pytest.org/en/stable/how-to/assert.html
+
+.. _PEP 657:
+   https://peps.python.org/pep-0657/
+
+.. _PEP 678:
+   https://peps.python.org/pep-0678/
+
+.. _contextvars documentation:
+   https://docs.python.org/3/library/contextvars.html
+
+The `assert statement reference`_ defines the current evaluation and
+optimization rules. `PEP 1`_ and `PEP 12`_ define the PEP process and format.
+
+.. _assert statement reference:
+   https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement
+
+.. _PEP 488: https://peps.python.org/pep-0488/
+.. _PEP 669: https://peps.python.org/pep-0669/
+.. _AssertionLib package: https://pypi.org/project/AssertionLib/
+
+.. _PEP 1: https://peps.python.org/pep-0001/
+.. _PEP 12: https://peps.python.org/pep-0012/

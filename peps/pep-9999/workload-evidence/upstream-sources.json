@@ -1,0 +1,30 @@
+{
+  "pyperformance_commit": "ccc0aeb7ad46d65b6dcd4160e0fdda4d885852dd",
+  "files": [
+    {
+      "path": "upstream/bm_django_template/run_benchmark.py",
+      "url": "https://raw.githubusercontent.com/python/pyperformance/ccc0aeb7ad46d65b6dcd4160e0fdda4d885852dd/pyperformance/data-files/benchmarks/bm_django_template/run_benchmark.py",
+      "sha256": "1d47ac8be6a26e14349b2d276d8ddd8dfdcd446e786fd350cd5105e74348e46e"
+    },
+    {
+      "path": "upstream/bm_html5lib/run_benchmark.py",
+      "url": "https://raw.githubusercontent.com/python/pyperformance/ccc0aeb7ad46d65b6dcd4160e0fdda4d885852dd/pyperformance/data-files/benchmarks/bm_html5lib/run_benchmark.py",
+      "sha256": "9816679b5fb6061ea717c7076786a74de1a598310d415877e325d809672d0537"
+    },
+    {
+      "path": "upstream/bm_html5lib/data/w3_tr_html5.html",
+      "url": "https://raw.githubusercontent.com/python/pyperformance/ccc0aeb7ad46d65b6dcd4160e0fdda4d885852dd/pyperformance/data-files/benchmarks/bm_html5lib/data/w3_tr_html5.html",
+      "sha256": "5bca0c2423d053bb1d2802584fcdf10377cf88f23136e4c959fd187bdf39437e"
+    },
+    {
+      "path": "upstream/bm_sympy/run_benchmark.py",
+      "url": "https://raw.githubusercontent.com/python/pyperformance/ccc0aeb7ad46d65b6dcd4160e0fdda4d885852dd/pyperformance/data-files/benchmarks/bm_sympy/run_benchmark.py",
+      "sha256": "d3f867f30df82e6fcaeffdc0a80cde0927e3d58e130740e849dc773a5deb3e51"
+    },
+    {
+      "path": "upstream/COPYING",
+      "url": "https://raw.githubusercontent.com/python/pyperformance/ccc0aeb7ad46d65b6dcd4160e0fdda4d885852dd/COPYING",
+      "sha256": "6eb6aa6a2f338578b10f3bd929857690ad257284dfcd21c9d5e279d0b30b102b"
+    }
+  ]
+}

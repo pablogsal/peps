@@ -1,0 +1,528 @@
+PEP: 9999
+Title: Snazzy Asserts
+Author: Pablo Galindo Salgado
+Status: Draft
+Type: Standards Track
+Created: 18-Oct-2026
+Python-Version: 3.16
+
+
+Abstract
+========
+
+This PEP proposes optional compiler support for assertion diagnostics.
+The compiler emits code that retains subexpression values during execution.
+On failure, the exception receives those values. The traceback can show
+them. A new standard library API exposes the same data
+to test frameworks and other tools.
+
+The feature is off by default. One compiler flag or command-line option
+enables it. Ordinary assertion removal under ``-O`` and ``-OO`` still applies.
+
+
+Motivation
+==========
+
+When an assertion fails, the traceback shows its source but can omit the
+values needed to explain the failure. A developer with only a CI log or a
+user report often needs another run with additional diagnostic code.
+
+Consider a check of an invoice total:
+
+.. code-block:: python
+
+    def check(price, quantity, expected):
+        assert price * quantity == expected
+
+For ``check(18, 3, 60)``, the ordinary traceback omits the operand values.
+With ``python -X assert_details``, it includes values from that execution:
+
+.. code-block:: text
+
+    AssertionError
+      assert (18 * 3) == 60
+
+For a function call, the explanation can also identify the return value:
+
+.. code-block:: python
+
+    def normalize(name):
+        return name.strip().lower()
+
+    assert normalize(" ALICE ") == "bob"
+
+.. code-block:: text
+
+    AssertionError
+      assert 'alice' == 'bob'
+        + where 'alice' = normalize(' ALICE ')
+        - bob
+        + alice
+
+Current tools obtain diagnostic values in different ways:
+
+.. list-table:: Assertion diagnostics in current tools and this proposal
+    :header-rows: 1
+    :widths: 23 40 37
+
+    * - Approach
+      - Information available
+      - Required work
+    * - Plain ``assert``
+      - Source line and an optional message.
+      - The author selects values for each message.
+    * - ``TestCase.assertEqual``
+      - Both arguments and type-specific differences.
+      - Use an assertion method. Intermediate results inside arguments
+        are not available to that method.
+    * - pytest rewrite
+      - Values of common subexpressions and custom comparisons.
+      - Rewrite selected modules before compilation.
+    * - Compiler capture
+      - Captured values and source locations through a public API.
+      - Enable a compiler flag or command-line option.
+
+The `unittest documentation`_ and pytest's `assertion documentation`_
+describe these approaches. This proposal lets frameworks share the compiler's
+capture implementation. Diagnostic tools can use the same data outside a
+test runner.
+
+Barry Warsaw reported this problem in a `2016 issue`_, after he had to
+edit installed code to obtain the missing values. A `2025 discussion`_
+proposed annotated assertions and considered runtime cost, bytecode size,
+and output quality.
+
+There is a maintenance cost to a separate rewrite. The `Python 3.11.0b3
+release report`_ records an expedited release after AST validation changes
+broke compatibility with pytest. For failure explanations, a framework can
+use compiler capture instead of replacement AST nodes.
+
+
+Rationale
+=========
+
+The values must come from the original execution. For example:
+
+.. code-block:: python
+
+    assert read_total() == invoice.total
+
+A second call to ``read_total()`` can consume more input. Another access to
+``invoice.total`` can run a property with side effects. Frame locals do not
+necessarily contain either result. The compiler must retain them before
+the comparison consumes them.
+
+:pep:`657` provides source positions, but those positions do not retain
+operand values. :pep:`678` provides exception notes and explicitly excludes
+structured data from their purpose. A library needs the original objects
+for operations such as an array difference, so formatted text alone is
+insufficient.
+
+Capture extends object lifetimes and adds work to successful assertions.
+The assertion-loop measurements below show a 1.86x geometric mean cost.
+These costs require an explicit opt-in. Successful assertions release
+the captured values without a callback.
+
+
+Specification
+=============
+
+Opt-in
+------
+
+Capture is off by default. ``python -X assert_details`` enables capture
+and failure explanations. There is no separate disable option.
+
+Libraries select the same feature with ``ast.PyCF_ASSERT_DETAILS``:
+
+.. code-block:: python
+
+    import ast
+
+    code = compile(
+        "assert price * quantity == expected", "invoice.py", "exec",
+        flags=ast.PyCF_ASSERT_DETAILS, dont_inherit=True,
+    )
+
+The flag applies to source or AST input and to nested code in that
+compilation. Imported modules and later ``compile()`` calls do not inherit
+it. AST-only compilation returns an ordinary AST without capture state.
+The C API accepts ``PyCF_ASSERT_DETAILS`` in ``PyCompilerFlags.cf_flags``.
+The command-line option applies to source compilation throughout the
+process, also for calls with ``dont_inherit=True``. It cannot change
+code objects that already exist, frozen modules, or bytecode-only imports.
+
+``-O`` and ``-OO`` still remove assertions with ``-X assert_details``.
+The ``optimize`` argument to ``compile()`` follows
+the ordinary `assert statement rules`_. Import caches must distinguish code
+with capture from code without it.
+
+Captured values
+---------------
+
+The API represents an assertion as a graph of expression nodes. Each node
+describes a subexpression, links to its children, and exposes its captured
+result when available.
+
+Capture preserves evaluation order and short circuit behavior. It does not
+repeat calls, comparisons, or truth conversion, and does not call ``repr()``.
+For ``assert left() and right()``, if ``left()`` is false, the graph records
+its result and marks ``right()`` as unavailable. A formatter must not
+evaluate the skipped call.
+
+Captured values are references to the original objects. Later mutation can
+change what a report shows. Capture also extends object lifetimes and can
+change the assertion's result. After failure, the exception and any retained
+details objects can keep the captured objects alive.
+
+Suppose ``make()`` returns a weak-referenceable object with no other
+references. CPython normally destroys the temporary before the last call in
+``assert weakref.ref(make())() is None``, so that assertion passes.
+A capture slot keeps it alive, so the assertion fails.
+
+A comparison can return an object other than ``bool``. The API exposes the
+raw result as ``value`` and the truth result used by execution as ``truth``.
+For ``a < b < c``, each link has a separate record and ``b`` evaluates once.
+An available value of ``None`` differs from an unavailable value.
+
+The graph describes the assertion test. It does not trace called functions
+or individual iterations within comprehensions. Constant folding can remove
+nodes before capture. Expression text is normalized and need not preserve
+spaces or quotes. ``await`` and ``yield`` remain permitted, with captures
+in the suspended frame until execution resumes or cleanup releases them.
+
+The optional assertion message evaluates once, after the condition fails.
+If the condition or message raises, that exception propagates without a
+failure callback. An explicit ``raise AssertionError(...)`` creates no
+capture data.
+
+Library API
+-----------
+
+The proposed module name is ``assertionlib``, subject to the name conflict
+under Open Issues. Its operations are:
+
+.. code-block:: python
+
+    get_details(error) -> AssertionDetails | None
+    clear_details(error) -> None
+    format_details(details, *, compare=None) -> list[str]
+    handlers(*, on_failure=None)  # context manager
+
+``get_details()`` builds and caches the details object on its first call.
+Later calls return the same object. It returns ``None`` if capture data is
+absent. ``clear_details()`` detaches that data and the cached graph.
+It does not clear the traceback or other references to the
+graph. Graph attributes are immutable.
+
+An ``AssertionDetails`` object exposes ``expression``, ``location``,
+``root``, ``nodes``, and ``comparisons``. Each expression node
+has an ID, text, kind, location, children, and capture data. Check its
+``evaluated`` attribute before access to ``value``, which otherwise raises
+``ValueError``. ``truth`` is ``None`` when unavailable and never calls
+``bool()`` to reconstruct a result.
+
+Node IDs identify expression occurrences within one graph, independently of
+frame-slot numbers. A comparison record exposes ``operator``, ``left``,
+``right``, ``expression``, ``text``, and the same capture attributes.
+A source location gives the filename, start and end lines, and zero-based
+UTF-8 column offsets. End offsets are
+exclusive. The :doc:`technical notes <pep-9999/native-assertion-diagnostics-notes>` give the full attribute and error contracts.
+
+``format_details()`` returns lines with terminal newlines and performs no
+output. It can call user ``__repr__`` methods.
+
+The optional ``compare(op, left, right)`` callback receives captured operands
+for each evaluated comparison. Return ``None`` for the default explanation,
+lines for a custom explanation, or an empty iterable to suppress the default
+difference. The first custom line replaces the comparison summary. Later
+lines supply detail. Custom lines have no terminal newlines. Formatter
+errors propagate to the caller.
+
+For the earlier compilation, a failure callback can inspect the values:
+
+.. code-block:: python
+
+    import assertionlib
+
+    def report_failure(error, details):
+        comparison = details.comparisons[0]
+        print(comparison.left.value, comparison.operator,
+              comparison.right.value)
+
+    with assertionlib.handlers(on_failure=report_failure):
+        exec(code, {"price": 18, "quantity": 3, "expected": 60})
+
+This prints ``54 == 60`` before the ``AssertionError`` propagates.
+A callback can change ``error.args``, but its return value cannot suppress
+the failure. If it raises, its exception retains the assertion error as
+``__context__``. This rule also applies to failures in diagnostic support.
+During the callback, ``sys.exception()`` is the assertion error, which
+has no traceback yet.
+
+``handlers()`` registers a synchronous failure callback in the current
+execution context. It does not enable capture. A nested ``handlers()`` block
+replaces the handler. An omitted argument means no handler inside that block.
+Exit restores the previous handler.
+
+Context copies and new asyncio tasks inherit the handler, under the normal
+`contextvars rules`_. Recursive assertions inside
+a callback do not dispatch another callback.
+
+Tracebacks and serialization
+----------------------------
+
+Capture alone leaves ``AssertionError.args`` and ``str(error)`` unchanged.
+The standard traceback formatter adds the explanation after the exception
+message and before its notes. This also applies within exception groups.
+Exact whitespace and difference layout are not API guarantees.
+``TracebackException`` retains formatted lines rather than captured objects.
+
+The automatic traceback path catches ``Exception`` from the explanation
+formatter. It keeps the ordinary report and adds an unavailable-data line.
+
+The proposed exception pickle protocol omits capture data and the cached
+graph, while it preserves ordinary arguments and user attributes.
+
+
+Implementation
+==============
+
+The parser produces an ordinary ``Assert`` node. Capture takes place during
+bytecode generation, after the AST and symbol-table passes.
+``ast.unparse()`` still shows the original assertion. The Python below is
+pseudocode. Its names represent hidden slots and internal operations.
+
+From source to captured values
+------------------------------
+
+The assertion in ``check()`` starts as:
+
+.. code-block:: python
+
+    assert price * quantity == expected
+
+The compiler retains each result before the next operation consumes it:
+
+.. code-block:: python
+
+    try:
+        price_value = price                     # slot 3
+        quantity_value = quantity               # slot 4
+        product = price_value * quantity_value  # slot 5
+        expected_value = expected               # slot 6
+        comparison = product == expected_value  # slot 7
+        passed = bool(comparison)               # slot 8
+        if not passed:
+            error = AssertionError()
+            attach_and_dispatch(error, capture_plan)
+            raise error
+    finally:
+        clear_capture_slots()
+
+``bool()`` denotes the interpreter's truth conversion, without a name lookup.
+Cleanup releases every capture on success or an exception.
+Empty slots are valid when evaluation stops early.
+
+The temporaries occupy hidden slots in the frame's ``localsplus`` array,
+after the three arguments. A constant plan in ``co_consts`` maps each slot
+to its expression node, text, and location. Slot 5 maps to
+``price * quantity``. The compiler obtains normalized text from its AST
+unparser. Internal slot names appear in ``co_varnames``, but remain hidden
+from ``locals()``.
+
+For short circuit expressions, the compiler places captures inside each
+branch. In ``assert left() and right()``, a false result
+from ``left()`` skips both ``right()`` and its captures. Comparison chains
+retain a separate result for each evaluated link.
+
+From captured values to a callback
+----------------------------------
+
+On failure, ``attach_and_dispatch()`` attaches the plan and captured
+references to the exception before cleanup. With the earlier handler
+installed, its dispatcher makes this ordinary Python call:
+
+.. code-block:: python
+
+    details = assertionlib.get_details(error)
+    report_failure(error, details)  # prints: 54 == 60
+
+``get_details()`` builds the graph from the plan and saved values.
+The comparison's ``left.value`` comes from slot 5 (``54``),
+and its ``right.value`` comes from slot 6 (``60``).
+
+``handlers()`` stores the callback in a ``ContextVar``. The prototype finds
+an already imported ``assertionlib`` module with `PyImport_GetModule()`_,
+then calls its dispatcher if a handler is active. The dispatcher prevents
+recursive callbacks. The plan contains no functions or imports.
+
+Without a handler, failures still retain capture data. Successful assertions
+create no diagnostic containers and perform no callback lookup.
+
+Module lookup is a prototype detail. Removal of ``assertionlib`` from
+``sys.modules`` disables dispatch. The traceback formatter can import support
+when it first needs an explanation.
+
+Bytecode support
+----------------
+
+The prototype implements capture assignments and cleanup with three new
+instructions:
+
+* ``STORE_FAST_BORROW slot`` retains an owned local reference and leaves a
+  borrowed reference on the operand stack for the next operation.
+* ``COPY_TO_FAST slot`` combines ``COPY`` and ``STORE_FAST`` without a change
+  to stack ownership. Assignment-expression subtrees require this form.
+* ``CLEAR_FAST slot`` releases a captured reference. Unlike ``DELETE_FAST``,
+  it accepts an empty slot, as cleanup after a skipped branch requires.
+
+The pseudocode's ``attach_and_dispatch()`` is the C helper
+``INTRINSIC_ASSERT_DETAILS``. CPython's `CALL_INTRINSIC_2`_ instruction calls
+it with the exception and plan. It returns the exception for
+``RAISE_VARARGS``. No new call instruction is necessary.
+
+The instructions pass through the control-flow optimizer and assembler.
+Other Python implementations can use a different internal representation.
+The :doc:`technical notes <pep-9999/native-assertion-diagnostics-notes>` retain the bytecode sequence and internal layout.
+
+
+Performance
+===========
+
+Capture adds work even when assertions pass. Across eleven assertion-loop
+benchmarks, its geometric mean execution time is 1.86x that of ordinary
+assertions, compared with 1.67x for pytest's rewrite.
+
+The table compares compilation of 612 SymPy 1.14.0 test files in the same
+interpreter. Times are medians. Serialized size includes diagnostic metadata.
+
+.. container:: table-block
+
+    .. list-table:: Compilation of SymPy test sources
+        :header-rows: 1
+        :widths: 31 21 23 25
+        :class: measurement-table
+
+        * - Mode
+          - Compile, s
+          - Bytecode, MiB
+          - Serialized, MiB
+        * - Ordinary asserts
+          - 1.24
+          - 12.08
+          - 20.57
+        * - pytest rewrite
+          - 48.57
+          - 89.33
+          - 131.90
+        * - Compiler capture
+          - 14.10
+          - 20.71
+          - 116.22
+
+For this corpus, capture uses 71% less compile time than pytest.
+It still takes 11.4x the compile time of ordinary assertions and produces
+5.65x the serialized size.
+
+Runs of 205 selected SymPy tests on a shared host did not establish a
+stable runtime advantage over pytest. The :doc:`research notes <pep-9999/native-assertion-diagnostics-research>` contain the
+full results, measurement method, and reproduction scripts.
+
+
+Backwards Compatibility
+=======================
+
+Without the new controls, assertions retain their ordinary compile mode.
+The prototype's cost in that mode, relative to unmodified CPython, remains
+unmeasured.
+
+Opt-in capture changes object lifetimes and can fail to allocate memory.
+Callbacks and formatters can execute user code. Extra traceback lines affect
+exact output checks such as ``doctest``. The prototype cleanup handler
+also adds ``EXCEPTION_HANDLED`` and ``RERAISE`` monitoring events after a
+failed assertion. It consumes one compiler block and can reach the static
+block limit sooner.
+
+New bytecode requires a magic-number change. Opcode numbers and private
+capture layouts remain implementation details.
+
+
+Security Implications
+=====================
+
+Captured values can contain credentials or other private data. Reports need
+the same redaction policy as other application diagnostics. A representation
+length limit does not limit execution time in ``__repr__``. Assertions
+remain unsuitable for checks that must execute under every optimization mode.
+
+
+Rejected Ideas
+==============
+
+A new assertion function receives arguments after their evaluation and
+cannot inspect their intermediate results. The assertion syntax
+already identifies the expression that needs capture.
+
+:pep:`669` monitoring events offer another callback mechanism, but an event
+cannot recover operands after their consumption. Compiler capture is still
+necessary. The proposed callbacks use context-local scopes, so separate
+tasks can install different handlers.
+
+
+How to Teach This
+=================
+
+Start with the two traceback examples and ``python -X assert_details``.
+For library authors, show the compile flag followed by the callback example.
+Explain that a handler does not enable capture and that values are live
+references.
+
+
+Reference Implementation
+========================
+
+`Prototype implementation`_.
+
+
+Open Issues
+===========
+
+* Select a module name. The `AssertionLib package`_ already uses
+  ``assertionlib``.
+* Define public suppression of the automatic traceback explanation when a
+  framework already places one in ``error.args``. Include rules for
+  ``doctest`` output and framework reports.
+* Specify minimum graph coverage across compiler optimizations.
+* Reduce compile time and serialized size for code with many assertions.
+* Measure cold imports, peak memory, end-to-end failures, and representative
+  applications on a controlled host.
+
+
+.. _assertion documentation:
+   https://docs.pytest.org/en/stable/how-to/assert.html
+.. _unittest documentation:
+   https://docs.python.org/3/library/unittest.html#
+   unittest.TestCase.assertEqual
+.. _2016 issue: https://bugs.python.org/issue26702
+.. _2025 discussion:
+   https://discuss.python.org/t/97921
+.. _Python 3.11.0b3 release report:
+   https://discuss.python.org/t/16175
+.. _assert statement rules:
+   https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement
+.. _contextvars rules: https://docs.python.org/3/library/contextvars.html
+.. _CALL_INTRINSIC_2:
+   https://docs.python.org/3/library/dis.html#opcode-CALL_INTRINSIC_2
+.. _PyImport_GetModule():
+   https://docs.python.org/3/c-api/import.html#c.PyImport_GetModule
+.. _AssertionLib package: https://pypi.org/project/AssertionLib/
+.. _prototype implementation:
+   https://github.com/pablogsal/cpython/tree/96d1d0a09d052dddcb9d026f93094ccca3a0db9d
+
+
+Copyright
+=========
+
+This document is placed in the public domain or under the
+CC0-1.0-Universal license, whichever is more permissive.

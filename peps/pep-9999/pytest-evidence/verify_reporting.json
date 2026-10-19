@@ -1,0 +1,18 @@
+{
+  "harness_sha256": "843be110be9cfbab0254af8defafcb64ab01e1063580b1f204980d3c8ea81009",
+  "executable_sha256": "b131b0d9e0851b897f6b8d77cb786be4d4cfbd7cdd0dc7f197dd1f3e0b52282f",
+  "modes": {
+    "plain": {
+      "exit_code": 1,
+      "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n_________________________________ test_invoice _________________________________\n\n    def test_invoice():\n        price, quantity, expected = 18, 3, 60\n>       assert price * quantity == expected\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError\n\npytest-evidence/report-probe/test_invoice.py:3: AssertionError\n=========================== short test summary info ============================\nFAILED workload-evidence/vendor/sympy::test_invoice - AssertionError\n1 failed in 0.01s\n"
+    },
+    "pytest": {
+      "exit_code": 1,
+      "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n_________________________________ test_invoice _________________________________\n\n    def test_invoice():\n        price, quantity, expected = 18, 3, 60\n>       assert price * quantity == expected\nE       assert (18 * 3) == 60\n\npytest-evidence/report-probe/test_invoice.py:3: AssertionError\n=========================== short test summary info ============================\nFAILED workload-evidence/vendor/sympy::test_invoice - assert (18 * 3) == 60\n1 failed in 0.01s\n"
+    },
+    "capture": {
+      "exit_code": 1,
+      "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n_________________________________ test_invoice _________________________________\n\n    def test_invoice():\n        price, quantity, expected = 18, 3, 60\n>       assert price * quantity == expected\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError\nE         assert (18 * 3) == 60\n\npytest-evidence/report-probe/test_invoice.py:3: AssertionError\n=========================== short test summary info ============================\nFAILED workload-evidence/vendor/sympy::test_invoice - AssertionError\n1 failed in 0.01s\n"
+    }
+  }
+}

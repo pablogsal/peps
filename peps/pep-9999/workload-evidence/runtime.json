@@ -1,0 +1,2533 @@
+{
+  "start_utc": "2026-10-19T00:13:20.985656+00:00",
+  "python": "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+  "python_sha256": "b131b0d9e0851b897f6b8d77cb786be4d4cfbd7cdd0dc7f197dd1f3e0b52282f",
+  "harness_sha256": "27e66b1e374f92d28ee6745264c9328b4b051f1a5151d5d11e089c008e75632d",
+  "version": "3.16.0a1+dev (heads/native-assert-prototype-20261018-dirty:b00a1401817, Oct 18 2026, 17:58:41) [GCC 15.2.0]",
+  "configure": "'--without-ensurepip'",
+  "cflags": "-fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall",
+  "cpu": 25,
+  "platform": "linux-x86_64",
+  "load_start": [
+    22.77880859375,
+    20.78662109375,
+    21.017578125
+  ],
+  "cpuinfo": "processor\t: 0\nvendor_id\t: AuthenticAMD\ncpu family\t: 26\nmodel\t\t: 112\nmodel name\t: AMD RYZEN AI MAX+ 395 w/ Radeon 8060S\nstepping\t: 0\nmicrocode\t: 0xb700037\ncpu MHz\t\t: 4543.830\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 32\ncore id\t\t: 0\ncpu cores\t: 16\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpuid_fault cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx_vnni avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid bus_lock_detect movdiri movdir64b overflow_recov succor smca fsrm avx512_vp2intersect flush_l1d amd_lbr_pmc_freeze\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user vmscape\nbogomips\t: 5988.62\nTLB size\t: 192 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management: ts ttp tm hwpstate cpb eff_freq_ro [13] [14]",
+  "method": "Fresh processes; median of process medians. Paired modes alternate. Imports, compilation and digest checks excluded. GC disabled only for SymPy, as upstream.",
+  "samples_per_process": 5,
+  "pairs": 10,
+  "workloads": {
+    "django_template": {
+      "pairs": [
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "django_template",
+              "capture": false,
+              "samples_seconds": [
+                0.0222379484,
+                0.022896205399999998,
+                0.022319975199999998,
+                0.0223243776,
+                0.0223511258
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                22.39599609375,
+                20.740234375,
+                21.0009765625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "django_template",
+              "capture": true,
+              "samples_seconds": [
+                0.022517219600000003,
+                0.0222388562,
+                0.022169769199999998,
+                0.022371538399999998,
+                0.0221914808
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                22.39599609375,
+                20.740234375,
+                21.0009765625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "django_template",
+              "capture": true,
+              "samples_seconds": [
+                0.0228410974,
+                0.0229080116,
+                0.0230005626,
+                0.0231414568,
+                0.022961667
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                22.39599609375,
+                20.740234375,
+                21.0009765625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "django_template",
+              "capture": false,
+              "samples_seconds": [
+                0.0229707602,
+                0.0230061568,
+                0.023144586600000003,
+                0.022753884399999997,
+                0.0227405594
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                22.39599609375,
+                20.740234375,
+                21.0009765625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "django_template",
+              "capture": false,
+              "samples_seconds": [
+                0.0237653792,
+                0.0226099188,
+                0.0228553442,
+                0.0223942232,
+                0.022446608
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                22.0439453125,
+                20.6943359375,
+                20.984375
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "django_template",
+              "capture": true,
+              "samples_seconds": [
+                0.0227040326,
+                0.0225863582,
+                0.0225242148,
+                0.0223030996,
+                0.02219239
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                22.0439453125,
+                20.6943359375,
+                20.984375
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "django_template",
+              "capture": true,
+              "samples_seconds": [
+                0.0227341114,
+                0.022692162,
+                0.022772372,
+                0.022700217,
+                0.0227293584
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                22.0439453125,
+                20.6943359375,
+                20.984375
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "django_template",
+              "capture": false,
+              "samples_seconds": [
+                0.0216362556,
+                0.0216088404,
+                0.0215761282,
+                0.0215575016,
+                0.0215867902
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.6396484375,
+                20.6328125,
+                20.962890625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "django_template",
+              "capture": false,
+              "samples_seconds": [
+                0.0218621024,
+                0.021985064800000002,
+                0.022237681800000002,
+                0.0218929726,
+                0.0218582492
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.6396484375,
+                20.6328125,
+                20.962890625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "django_template",
+              "capture": true,
+              "samples_seconds": [
+                0.0220631118,
+                0.0220660174,
+                0.022072023,
+                0.0222628332,
+                0.0221455678
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.6396484375,
+                20.6328125,
+                20.962890625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "django_template",
+              "capture": true,
+              "samples_seconds": [
+                0.0216756582,
+                0.0216140698,
+                0.0216580068,
+                0.021782612399999998,
+                0.021931026399999998
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.6396484375,
+                20.6328125,
+                20.962890625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "django_template",
+              "capture": false,
+              "samples_seconds": [
+                0.0221597486,
+                0.0223076782,
+                0.022460203800000002,
+                0.0221429714,
+                0.0219513212
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.34814453125,
+                20.5888671875,
+                20.94677734375
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "django_template",
+              "capture": false,
+              "samples_seconds": [
+                0.021997879,
+                0.021703158,
+                0.0218758124,
+                0.021872778399999997,
+                0.021894900199999998
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.34814453125,
+                20.5888671875,
+                20.94677734375
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "django_template",
+              "capture": true,
+              "samples_seconds": [
+                0.0221710196,
+                0.0221726028,
+                0.0232668254,
+                0.0224134216,
+                0.0225920814
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.34814453125,
+                20.5888671875,
+                20.94677734375
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "django_template",
+              "capture": true,
+              "samples_seconds": [
+                0.021844904,
+                0.021774591,
+                0.021793775600000002,
+                0.021748842600000002,
+                0.0217780258
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.34814453125,
+                20.5888671875,
+                20.94677734375
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "django_template",
+              "capture": false,
+              "samples_seconds": [
+                0.021970879800000002,
+                0.021898110399999997,
+                0.021918593,
+                0.021867723,
+                0.0219137298
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.07958984375,
+                20.54541015625,
+                20.9306640625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "django_template",
+              "capture": false,
+              "samples_seconds": [
+                0.021829543,
+                0.021732962600000003,
+                0.021734136600000002,
+                0.021749155,
+                0.02168624
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.07958984375,
+                20.54541015625,
+                20.9306640625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "django_template",
+              "capture": true,
+              "samples_seconds": [
+                0.0216095054,
+                0.0215450496,
+                0.0216557648,
+                0.021643475199999998,
+                0.0219356694
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.07958984375,
+                20.54541015625,
+                20.9306640625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "django_template",
+              "capture": true,
+              "samples_seconds": [
+                0.021803365600000003,
+                0.021659926399999998,
+                0.0217503834,
+                0.0218387102,
+                0.021712059199999998
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                21.07958984375,
+                20.54541015625,
+                20.9306640625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "django_template",
+              "capture": false,
+              "samples_seconds": [
+                0.022170906,
+                0.0222308588,
+                0.0223007668,
+                0.022219212600000003,
+                0.0223769888
+              ],
+              "loops": 5,
+              "warmups": 2,
+              "digest": "d6e44ec011cfe967e0563fbdadfd0325ef6e7d813c8efa9f4f314381ed110c63",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.83251953125,
+                20.5029296875,
+                20.91455078125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "django_template",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        }
+      ],
+      "process_medians": {
+        "plain": [
+          0.0223243776,
+          0.0229707602,
+          0.0226099188,
+          0.0215867902,
+          0.0218929726,
+          0.0221597486,
+          0.0218758124,
+          0.0219137298,
+          0.021734136600000002,
+          0.0222308588
+        ],
+        "capture": [
+          0.0222388562,
+          0.022961667,
+          0.0225242148,
+          0.0227293584,
+          0.022072023,
+          0.0216756582,
+          0.0224134216,
+          0.0217780258,
+          0.021643475199999998,
+          0.0217503834
+        ]
+      },
+      "median_seconds": {
+        "plain": 0.022036739200000002,
+        "capture": 0.0221554396
+      },
+      "paired_ratios": [
+        0.9961691473987611,
+        0.9996041402234482,
+        0.9962094512254507,
+        1.0529290454678157,
+        1.008178441697771,
+        0.9781545175110876,
+        1.0245755078791954,
+        0.993807352685347,
+        0.9958286173649978,
+        0.9783870068033539
+      ],
+      "paired_ratio_range": [
+        0.9781545175110876,
+        1.0529290454678157
+      ],
+      "ratio": 1.00538647750571,
+      "bootstrap_ratio_95": [
+        0.9799543044774827,
+        1.026705137005745
+      ]
+    },
+    "html5lib": {
+      "pairs": [
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "html5lib",
+              "capture": false,
+              "samples_seconds": [
+                0.03239158033333333,
+                0.03263878433333333,
+                0.033460172,
+                0.034183708666666666,
+                0.050134164
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.83251953125,
+                20.5029296875,
+                20.91455078125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "html5lib",
+              "capture": true,
+              "samples_seconds": [
+                0.032678589333333334,
+                0.032479433333333335,
+                0.03265027933333333,
+                0.03305673,
+                0.05467114233333334
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.83251953125,
+                20.5029296875,
+                20.91455078125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "html5lib",
+              "capture": true,
+              "samples_seconds": [
+                0.03273201666666667,
+                0.033311882,
+                0.032499718,
+                0.032827434,
+                0.04430792
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.83251953125,
+                20.5029296875,
+                20.91455078125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "html5lib",
+              "capture": false,
+              "samples_seconds": [
+                0.03208929,
+                0.032287049666666665,
+                0.032215608,
+                0.03221409833333333,
+                0.043235635
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.83251953125,
+                20.5029296875,
+                20.91455078125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "html5lib",
+              "capture": false,
+              "samples_seconds": [
+                0.03186922366666667,
+                0.03201002633333333,
+                0.03186449166666667,
+                0.032869119,
+                0.046492523
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.83251953125,
+                20.5029296875,
+                20.91455078125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "html5lib",
+              "capture": true,
+              "samples_seconds": [
+                0.034049979333333334,
+                0.032710609333333335,
+                0.03244935633333333,
+                0.032937371,
+                0.04426074433333334
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.525390625,
+                20.4443359375,
+                20.89306640625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "html5lib",
+              "capture": true,
+              "samples_seconds": [
+                0.032797857666666666,
+                0.033489941333333335,
+                0.033555138,
+                0.032817264666666665,
+                0.04463241266666666
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.525390625,
+                20.4443359375,
+                20.89306640625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "html5lib",
+              "capture": false,
+              "samples_seconds": [
+                0.032014959,
+                0.032916715666666665,
+                0.032645373,
+                0.032623993,
+                0.044197618
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.525390625,
+                20.4443359375,
+                20.89306640625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "html5lib",
+              "capture": false,
+              "samples_seconds": [
+                0.031769068,
+                0.03209765533333333,
+                0.03222866,
+                0.03178334466666667,
+                0.043117685333333336
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.525390625,
+                20.4443359375,
+                20.89306640625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "html5lib",
+              "capture": true,
+              "samples_seconds": [
+                0.03270658233333333,
+                0.03264146566666667,
+                0.032619164,
+                0.03273614133333333,
+                0.04438378666666666
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.525390625,
+                20.4443359375,
+                20.89306640625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "html5lib",
+              "capture": true,
+              "samples_seconds": [
+                0.032791686333333334,
+                0.03305843966666667,
+                0.03261178666666667,
+                0.03237695966666667,
+                0.044607816333333335
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.525390625,
+                20.4443359375,
+                20.89306640625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "html5lib",
+              "capture": false,
+              "samples_seconds": [
+                0.033572297333333334,
+                0.034156721333333334,
+                0.03368816266666667,
+                0.032459155,
+                0.049311252666666666
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.24267578125,
+                20.38671875,
+                20.8720703125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "html5lib",
+              "capture": false,
+              "samples_seconds": [
+                0.032111010333333335,
+                0.03220152166666667,
+                0.032444203,
+                0.03225190333333333,
+                0.045915011666666665
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.24267578125,
+                20.38671875,
+                20.8720703125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "html5lib",
+              "capture": true,
+              "samples_seconds": [
+                0.03250852433333333,
+                0.03252843566666667,
+                0.032518997333333334,
+                0.032643503,
+                0.04343251966666666
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.24267578125,
+                20.38671875,
+                20.8720703125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "html5lib",
+              "capture": true,
+              "samples_seconds": [
+                0.032618689666666666,
+                0.03236627266666667,
+                0.03334369866666667,
+                0.032657329,
+                0.04466701133333333
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.24267578125,
+                20.38671875,
+                20.8720703125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "html5lib",
+              "capture": false,
+              "samples_seconds": [
+                0.032093144,
+                0.032127608333333335,
+                0.031915591,
+                0.031722433333333334,
+                0.04360377033333333
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.24267578125,
+                20.38671875,
+                20.8720703125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "html5lib",
+              "capture": false,
+              "samples_seconds": [
+                0.032121257,
+                0.031932924333333335,
+                0.032074277666666665,
+                0.031818181,
+                0.04250262
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                20.24267578125,
+                20.38671875,
+                20.8720703125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "html5lib",
+              "capture": true,
+              "samples_seconds": [
+                0.03227695033333333,
+                0.03236040166666667,
+                0.03269163733333333,
+                0.03253172866666667,
+                0.04344663966666666
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.98291015625,
+                20.330078125,
+                20.85107421875
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "html5lib",
+              "capture": true,
+              "samples_seconds": [
+                0.03239251533333333,
+                0.032035741666666666,
+                0.032522675,
+                0.03276137566666667,
+                0.043544825333333335
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.98291015625,
+                20.330078125,
+                20.85107421875
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "html5lib",
+              "capture": false,
+              "samples_seconds": [
+                0.031673681333333335,
+                0.03169508833333333,
+                0.031756211,
+                0.03176809266666667,
+                0.04378140233333334
+              ],
+              "loops": 3,
+              "warmups": 2,
+              "digest": "5aca096cd5f573184c9325837173c8e124fd42231163a0607621ff7fba9a2d3a",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.98291015625,
+                20.330078125,
+                20.85107421875
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "html5lib",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        }
+      ],
+      "process_medians": {
+        "plain": [
+          0.033460172,
+          0.032215608,
+          0.03201002633333333,
+          0.032645373,
+          0.03209765533333333,
+          0.03368816266666667,
+          0.03225190333333333,
+          0.032093144,
+          0.032074277666666665,
+          0.031756211
+        ],
+        "capture": [
+          0.032678589333333334,
+          0.032827434,
+          0.032937371,
+          0.033489941333333335,
+          0.03270658233333333,
+          0.032791686333333334,
+          0.03252843566666667,
+          0.032657329,
+          0.03253172866666667,
+          0.032522675
+        ]
+      },
+      "median_seconds": {
+        "plain": 0.032156631666666664,
+        "capture": 0.03269258583333333
+      },
+      "paired_ratios": [
+        0.9766414031982062,
+        1.018991601834738,
+        1.028970443729407,
+        1.025870996582987,
+        1.0189710741696336,
+        0.973388981102838,
+        1.0085741399654864,
+        1.0175796113961288,
+        1.0142622385686775,
+        1.0241358769155426
+      ],
+      "paired_ratio_range": [
+        0.973388981102838,
+        1.028970443729407
+      ],
+      "ratio": 1.0166669871466119,
+      "bootstrap_ratio_95": [
+        0.9951488762930059,
+        1.0226219564362178
+      ]
+    },
+    "sympy_expand": {
+      "pairs": [
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "sympy_expand",
+              "capture": false,
+              "samples_seconds": [
+                0.226901203,
+                0.219960574,
+                0.21521968,
+                0.215289211,
+                0.214307627
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.82373046875,
+                20.291015625,
+                20.83544921875
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "sympy_expand",
+              "capture": true,
+              "samples_seconds": [
+                0.216372567,
+                0.218421126,
+                0.220529117,
+                0.22185404,
+                0.216975176
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.82373046875,
+                20.291015625,
+                20.83544921875
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "sympy_expand",
+              "capture": true,
+              "samples_seconds": [
+                0.214926877,
+                0.227172825,
+                0.226165753,
+                0.226160423,
+                0.229808243
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.59716796875,
+                20.236328125,
+                20.814453125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "sympy_expand",
+              "capture": false,
+              "samples_seconds": [
+                0.221196949,
+                0.221337003,
+                0.220667579,
+                0.222665402,
+                0.224154415
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.59716796875,
+                20.236328125,
+                20.814453125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "sympy_expand",
+              "capture": false,
+              "samples_seconds": [
+                0.220490435,
+                0.223161109,
+                0.222998241,
+                0.219100079,
+                0.216886598
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.54931640625,
+                20.21533203125,
+                20.8046875
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "sympy_expand",
+              "capture": true,
+              "samples_seconds": [
+                0.223110012,
+                0.219004157,
+                0.217938314,
+                0.218625072,
+                0.217894592
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.5048828125,
+                20.19482421875,
+                20.794921875
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "sympy_expand",
+              "capture": true,
+              "samples_seconds": [
+                0.238260276,
+                0.224373989,
+                0.230363302,
+                0.26771156,
+                0.214536329
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.5048828125,
+                20.19482421875,
+                20.794921875
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "sympy_expand",
+              "capture": false,
+              "samples_seconds": [
+                0.218315477,
+                0.226429431,
+                0.222910686,
+                0.21481215,
+                0.21382729
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.30419921875,
+                20.1416015625,
+                20.7744140625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "sympy_expand",
+              "capture": false,
+              "samples_seconds": [
+                0.215962102,
+                0.216704193,
+                0.2153783,
+                0.217522339,
+                0.218759716
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.30419921875,
+                20.1416015625,
+                20.7744140625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "sympy_expand",
+              "capture": true,
+              "samples_seconds": [
+                0.212776005,
+                0.215617491,
+                0.217304166,
+                0.217925741,
+                0.214396074
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.11962890625,
+                20.08935546875,
+                20.75390625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "sympy_expand",
+              "capture": true,
+              "samples_seconds": [
+                0.221211857,
+                0.226951388,
+                0.225970896,
+                0.221416234,
+                0.22008031
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.02978515625,
+                20.05419921875,
+                20.73876953125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "sympy_expand",
+              "capture": false,
+              "samples_seconds": [
+                0.218012234,
+                0.216492714,
+                0.218684975,
+                0.2169142,
+                0.216711548
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.02978515625,
+                20.05419921875,
+                20.73876953125
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "sympy_expand",
+              "capture": false,
+              "samples_seconds": [
+                0.224584677,
+                0.228159569,
+                0.221826377,
+                0.224344494,
+                0.22641276
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.02734375,
+                20.03662109375,
+                20.72900390625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "sympy_expand",
+              "capture": true,
+              "samples_seconds": [
+                0.22035042,
+                0.225206993,
+                0.225256726,
+                0.224822367,
+                0.222348123
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.02734375,
+                20.03662109375,
+                20.72900390625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "sympy_expand",
+              "capture": true,
+              "samples_seconds": [
+                0.354523129,
+                0.235071955,
+                0.236081722,
+                0.234467563,
+                0.278014138
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.10546875,
+                20.03564453125,
+                20.724609375
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "sympy_expand",
+              "capture": false,
+              "samples_seconds": [
+                0.230512483,
+                0.22823926,
+                0.227598599,
+                0.226431735,
+                0.222799786
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.25732421875,
+                20.0517578125,
+                20.7265625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "plain",
+            "capture"
+          ],
+          "modes": {
+            "plain": {
+              "name": "sympy_expand",
+              "capture": false,
+              "samples_seconds": [
+                0.22147273,
+                0.21239792,
+                0.217038886,
+                0.220216988,
+                0.218709681
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.25732421875,
+                20.0517578125,
+                20.7265625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            },
+            "capture": {
+              "name": "sympy_expand",
+              "capture": true,
+              "samples_seconds": [
+                0.278776939,
+                0.232908999,
+                0.294188366,
+                0.231218797,
+                0.22830275
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.15625,
+                20.017578125,
+                20.7119140625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        },
+        {
+          "order": [
+            "capture",
+            "plain"
+          ],
+          "modes": {
+            "capture": {
+              "name": "sympy_expand",
+              "capture": true,
+              "samples_seconds": [
+                0.216763465,
+                0.217807477,
+                0.22096976,
+                0.220405925,
+                0.217568566
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.0634765625,
+                19.98388671875,
+                20.697265625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/capture",
+                "-X",
+                "assert_details",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            },
+            "plain": {
+              "name": "sympy_expand",
+              "capture": false,
+              "samples_seconds": [
+                0.226567492,
+                0.223136562,
+                0.224964405,
+                0.224773193,
+                0.224268911
+              ],
+              "loops": 1,
+              "warmups": 2,
+              "digest": "03a5af87ff27b36cfbd3f46ad4d74242a69b9b948569acc15e1c8d2379969643",
+              "affinity": [
+                25
+              ],
+              "load": [
+                19.0634765625,
+                19.98388671875,
+                20.697265625
+              ],
+              "command": [
+                "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+                "-S",
+                "-B",
+                "-X",
+                "pycache_prefix=/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/empty-cache/plain",
+                "/home/pablogsal/github/cpython/native-assert-results-20261018/pep-draft/workload-evidence/measure_workloads.py",
+                "--worker",
+                "sympy_expand",
+                "--samples",
+                "5"
+              ]
+            }
+          }
+        }
+      ],
+      "process_medians": {
+        "plain": [
+          0.215289211,
+          0.221337003,
+          0.220490435,
+          0.218315477,
+          0.216704193,
+          0.2169142,
+          0.224584677,
+          0.227598599,
+          0.218709681,
+          0.224773193
+        ],
+        "capture": [
+          0.218421126,
+          0.226165753,
+          0.218625072,
+          0.230363302,
+          0.215617491,
+          0.221416234,
+          0.224822367,
+          0.236081722,
+          0.232908999,
+          0.217807477
+        ]
+      },
+      "median_seconds": {
+        "plain": 0.219600058,
+        "capture": 0.2231193005
+      },
+      "paired_ratios": [
+        1.0145474777182402,
+        1.0218162798562878,
+        0.9915399368684632,
+        1.0551853911850693,
+        0.9949853208424075,
+        1.0207549067788093,
+        1.0010583535937316,
+        1.0372722988510135,
+        1.0649231343353294,
+        0.9690100233616381
+      ],
+      "paired_ratio_range": [
+        0.9690100233616381,
+        1.0649231343353294
+      ],
+      "ratio": 1.0160256902117941,
+      "bootstrap_ratio_95": [
+        0.9868129892226815,
+        1.053283516974267
+      ]
+    }
+  },
+  "end_utc": "2026-10-19T00:15:05.404601+00:00",
+  "load_end": [
+    19.0634765625,
+    19.98388671875,
+    20.697265625
+  ]
+}

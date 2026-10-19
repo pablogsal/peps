@@ -1,0 +1,185 @@
+{
+  "runtime": {
+    "django_template": {
+      "median_seconds": {
+        "plain": 0.022036739200000002,
+        "capture": 0.0221554396
+      },
+      "ratio": 1.00538647750571,
+      "bootstrap_ratio_95": [
+        0.9799543044774827,
+        1.026705137005745
+      ]
+    },
+    "html5lib": {
+      "median_seconds": {
+        "plain": 0.032156631666666664,
+        "capture": 0.03269258583333333
+      },
+      "ratio": 1.0166669871466119,
+      "bootstrap_ratio_95": [
+        0.9951488762930059,
+        1.0226219564362178
+      ]
+    },
+    "sympy_expand": {
+      "median_seconds": {
+        "plain": 0.219600058,
+        "capture": 0.2231193005
+      },
+      "ratio": 1.0160256902117941,
+      "bootstrap_ratio_95": [
+        0.9868129892226815,
+        1.053283516974267
+      ]
+    }
+  },
+  "corpora": {
+    "stdlib": {
+      "files": 702,
+      "files_with_assertions": 162,
+      "assertions": 543,
+      "totals": {
+        "plain": {
+          "code_objects": 22166,
+          "bytecode_bytes": 5022032,
+          "location_table_bytes": 2351487,
+          "exception_table_bytes": 135536,
+          "local_slots": 63982,
+          "marshal_bytes": 14215345
+        },
+        "capture": {
+          "code_objects": 22166,
+          "bytecode_bytes": 5051234,
+          "location_table_bytes": 2354390,
+          "exception_table_bytes": 141852,
+          "local_slots": 66058,
+          "marshal_bytes": 14492386
+        }
+      },
+      "compile_median_seconds": {
+        "plain": 1.1160116419196129,
+        "capture": 1.1264734156429768
+      }
+    },
+    "django": {
+      "files": 875,
+      "files_with_assertions": 21,
+      "assertions": 36,
+      "totals": {
+        "plain": {
+          "code_objects": 12213,
+          "bytecode_bytes": 2490938,
+          "location_table_bytes": 1122442,
+          "exception_table_bytes": 57816,
+          "local_slots": 34229,
+          "marshal_bytes": 6801473
+        },
+        "capture": {
+          "code_objects": 12213,
+          "bytecode_bytes": 2493010,
+          "location_table_bytes": 1122729,
+          "exception_table_bytes": 58246,
+          "local_slots": 34413,
+          "marshal_bytes": 6823320
+        }
+      },
+      "compile_median_seconds": {
+        "plain": 0.5565354847349226,
+        "capture": 0.5577246593311429
+      }
+    },
+    "html5lib": {
+      "files": 33,
+      "files_with_assertions": 15,
+      "assertions": 95,
+      "totals": {
+        "plain": {
+          "code_objects": 788,
+          "bytecode_bytes": 249268,
+          "location_table_bytes": 139678,
+          "exception_table_bytes": 1996,
+          "local_slots": 1919,
+          "marshal_bytes": 633897
+        },
+        "capture": {
+          "code_objects": 788,
+          "bytecode_bytes": 254538,
+          "location_table_bytes": 140179,
+          "exception_table_bytes": 3106,
+          "local_slots": 2261,
+          "marshal_bytes": 681294
+        }
+      },
+      "compile_median_seconds": {
+        "plain": 0.05002152360975742,
+        "capture": 0.05373306851834059
+      }
+    },
+    "sympy": {
+      "files": 801,
+      "files_with_assertions": 83,
+      "assertions": 216,
+      "totals": {
+        "plain": {
+          "code_objects": 29162,
+          "bytecode_bytes": 8161310,
+          "location_table_bytes": 3849337,
+          "exception_table_bytes": 86548,
+          "local_slots": 105087,
+          "marshal_bytes": 22222695
+        },
+        "capture": {
+          "code_objects": 29162,
+          "bytecode_bytes": 8172574,
+          "location_table_bytes": 3850365,
+          "exception_table_bytes": 89115,
+          "local_slots": 106017,
+          "marshal_bytes": 22342970
+        }
+      },
+      "compile_median_seconds": {
+        "plain": 1.6257975506596267,
+        "capture": 1.633107271976769
+      }
+    },
+    "sympy_tests": {
+      "files": 612,
+      "assertions": 71205,
+      "totals": {
+        "plain": {
+          "code_objects": 19703,
+          "bytecode_bytes": 12664866,
+          "location_table_bytes": 4849292,
+          "exception_table_bytes": 28742,
+          "local_slots": 43207,
+          "marshal_bytes": 21566850
+        },
+        "capture": {
+          "code_objects": 19703,
+          "bytecode_bytes": 21719464,
+          "location_table_bytes": 5850919,
+          "exception_table_bytes": 959038,
+          "local_slots": 291540,
+          "marshal_bytes": 121870093
+        }
+      },
+      "compile_median_seconds": {
+        "plain": 1.2846199069172144,
+        "capture": 17.228127546142787
+      }
+    }
+  },
+  "captured_assertions_per_operation": {
+    "django_template": 0,
+    "html5lib": 7792,
+    "sympy_expand": 228
+  },
+  "checks": {
+    "runtime_processes": 60,
+    "runtime_output_digests_match": true,
+    "source_files": 3023,
+    "raw_arithmetic_matches": true,
+    "harness_hashes_match": true
+  }
+}
