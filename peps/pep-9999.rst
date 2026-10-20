@@ -193,81 +193,95 @@ in the suspended frame until execution resumes or cleanup releases them.
 
 The optional assertion message evaluates once, after the condition fails.
 If the condition or message raises, that exception propagates without a
-failure callback. An explicit ``raise AssertionError(...)`` creates no
+formatter. An explicit ``raise AssertionError(...)`` creates no
 capture data.
 
-The assertionlib module
------------------------
+Reading assertion details
+-------------------------
 
-The proposed module name is ``assertionlib``, subject to the name conflict
-under Open Issues. Its operations are:
+Ordinary code needs no import or callback. The standard traceback shows the
+explanation. A caller that catches the exception can read ``error.details``:
 
 .. code-block:: python
 
-    get_details(error) -> AssertionDetails | None
-    clear_details(error) -> None
-    format_details(details, *, compare=None) -> list[str]
-    handlers(*, on_failure=None)  # context manager
+    try:
+        exec(code, {"price": 18, "quantity": 3, "expected": 60})
+    except AssertionError as error:
+        if error.details is not None:
+            print(error.details.format())  # assert (18 * 3) == 60
+            print(error.details.comparisons[0].left.value)  # 54
 
-``get_details()`` builds and caches the details object on its first call.
-Later calls return the same object. It returns ``None`` if capture data is
-absent. ``clear_details()`` detaches that data and the cached graph.
-It does not clear the traceback or other references to the
-graph. Graph attributes are immutable.
+``AssertionError.details`` returns ``None`` when capture data is absent.
+The first access builds and caches an ``AssertionDetails`` object.
+Later accesses return the same object. Its attributes are ``expression``,
+``location``, ``root``, ``nodes``, and ``comparisons``.
 
-An ``AssertionDetails`` object exposes ``expression``, ``location``,
-``root``, ``nodes``, and ``comparisons``. Each expression node
-has an ID, text, kind, location, children, and capture data. Check its
-``evaluated`` attribute before access to ``value``, which otherwise raises
-``ValueError``. ``truth`` is ``None`` when unavailable and never calls
-``bool()`` to reconstruct a result.
+An expression node has an ID, text, kind, location, children, and capture
+data. Check ``evaluated`` before access to ``value``, which otherwise raises
+``ValueError``. ``truth`` is ``None`` when unavailable. It never calls
+``bool()`` to reconstruct a result. Node IDs identify source occurrences
+within one graph, independently of frame slots.
 
-Node IDs identify expression occurrences within one graph, independently of
-frame-slot numbers. A comparison record exposes ``operator``, ``left``,
-``right``, ``expression``, ``text``, and the same capture attributes.
-A source location gives the filename, start and end lines, and zero-based
-UTF-8 column offsets. End offsets are
-exclusive. The :doc:`technical notes <pep-9999/native-assertion-diagnostics-notes>` give the full attribute and error contracts.
+A comparison record exposes ``operator``, ``left``, ``right``, ``expression``,
+``text``, and the same capture attributes. Locations give the filename,
+start and end lines, and zero-based UTF-8 column offsets. End offsets are
+exclusive. Graph attributes are immutable.
 
-``format_details()`` returns lines with terminal newlines and performs no
-output. It can call user ``__repr__`` methods.
+``details.format(*, compare=None)`` returns a string without a terminal
+newline. It performs no output and does not invoke a scoped formatter.
+It can call user ``__repr__`` methods.
 
-The optional ``compare(op, left, right)`` callback receives captured operands
-for each evaluated comparison. Return ``None`` for the default explanation,
-lines for a custom explanation, or an empty iterable to suppress the default
-difference. The first custom line replaces the comparison summary. Later
-lines supply detail. Custom lines have no terminal newlines. Formatter
-errors propagate to the caller.
+The optional comparison callback,
+``compare(op, left, right)``, receives operands for each evaluated comparison.
+Return ``None`` for the default explanation, or a string for custom text.
+The first line replaces the comparison summary. Later lines supply detail.
 
-For the earlier compilation, a failure callback can inspect the values:
+An empty string keeps the summary and suppresses the default difference.
+Other return types raise ``TypeError``. Formatter errors propagate.
+
+Normal use needs no explicit cleanup. A consumer that retains an exception
+can set ``error.details = None`` to detach its captures and cached graph.
+Other details objects and traceback frames can still retain operands.
+
+Custom explanations
+-------------------
+
+The ``assertionlib`` module provides one scoped formatter:
 
 .. code-block:: python
 
     import assertionlib
 
-    def report_failure(error, details):
-        comparison = details.comparisons[0]
-        print(comparison.left.value, comparison.operator,
-              comparison.right.value)
+    def explain(details):
+        return "Order mismatch:\n" + details.format()
 
-    with assertionlib.handlers(on_failure=report_failure):
+    with assertionlib.formatter(explain):
         exec(code, {"price": 18, "quantity": 3, "expected": 60})
 
-This prints ``54 == 60`` before the ``AssertionError`` propagates.
-A callback can change ``error.args``, but its return value cannot suppress
-the failure. If it raises, its exception retains the assertion error as
-``__context__``. This rule also applies to failures in diagnostic support.
-During the callback, ``sys.exception()`` is the assertion error, which
-has no traceback yet.
+The callback receives the captured details and returns ``str`` or ``None``.
+A string supplies the explanation. Python prefixes the original assertion
+message, if present, and stores the combined text in ``error.args``.
+The traceback displays it once.
 
-``handlers()`` registers a synchronous failure callback in the current
-execution context. It does not enable capture. A nested ``handlers()`` block
-replaces the handler. An omitted argument means no handler inside that block.
-Exit restores the previous handler.
+An empty string omits the explanation.
+``None`` preserves the original arguments and default traceback behavior.
+Any other return type raises ``TypeError``.
 
-Context copies and new asyncio tasks inherit the handler, under the normal
-`contextvars rules`_. Recursive assertions inside
-a callback do not dispatch another callback.
+The callback runs after assertion message evaluation and before the exception
+reaches its caller. It cannot suppress the assertion. If it raises, its error
+retains the assertion as ``__context__``. This also applies to diagnostic
+support errors. During the callback, ``sys.exception()`` is the assertion,
+which has no traceback yet.
+
+``formatter(callback)`` changes the explanation. It does not enable capture.
+Nested scopes replace the formatter. ``formatter(None)`` suspends it.
+Exit restores the previous formatter.
+
+Context copies and new asyncio tasks
+inherit it under the normal `contextvars rules`_. Recursive assertions within
+a formatter do not invoke another formatter. Callbacks must be synchronous.
+
+The module name remains subject to the conflict under Open Issues.
 
 Traceback output and exception serialization
 --------------------------------------------
@@ -281,7 +295,7 @@ Exact whitespace and difference layout are not API guarantees.
 The automatic traceback path catches ``Exception`` from the explanation
 formatter. It keeps the ordinary report and adds an unavailable-data line.
 
-The proposed exception pickle protocol omits capture data and the cached
+The exception pickle protocol omits capture data and the cached
 graph, while it preserves ordinary arguments and user attributes.
 
 
@@ -340,33 +354,31 @@ branch. In ``assert left() and right()``, a false result
 from ``left()`` skips both ``right()`` and its captures. Comparison chains
 retain a separate result for each evaluated link.
 
-Failure callbacks
------------------
+Formatter execution
+-------------------
 
-On failure, ``attach_and_dispatch()`` attaches the plan and captured
-references to the exception before cleanup. With the earlier handler
-installed, its dispatcher makes this ordinary Python call:
+On failure, ``attach_and_dispatch()`` attaches the plan and saved references
+to the exception before cleanup. With the earlier formatter installed,
+the dispatcher calls:
 
 .. code-block:: python
 
-    details = assertionlib.get_details(error)
-    report_failure(error, details)  # prints: 54 == 60
+    text = explain(error.details)
 
-``get_details()`` builds the graph from the plan and saved values.
-The comparison's ``left.value`` comes from slot 5 (``54``),
-and its ``right.value`` comes from slot 6 (``60``).
+Access to ``error.details`` builds the graph from the plan and saved values.
+The comparison's ``left.value`` comes from slot 5 (``54``), and its
+``right.value`` comes from slot 6 (``60``). The dispatcher combines the
+returned text with the original message and prevents duplicate output.
 
-``handlers()`` stores the callback in a ``ContextVar``. The prototype finds
+``formatter()`` stores the callable in a ``ContextVar``. The prototype finds
 an already imported ``assertionlib`` module with `PyImport_GetModule()`_,
-then calls its dispatcher. The dispatcher checks the current handler and
-prevents recursive callbacks. The plan contains no functions or imports.
+then calls its dispatcher. The plan contains no functions or imports.
 
-Without a handler, failures still retain capture data. Successful assertions
+Without a formatter, failures still retain capture data. Successful assertions
 create no diagnostic containers and perform no callback lookup.
-
 Module lookup is a prototype detail. Removal of ``assertionlib`` from
-``sys.modules`` disables dispatch. The traceback formatter can import support
-when it first needs an explanation.
+``sys.modules`` disables dispatch. The details property imports support
+when a caller first requests a captured graph.
 
 Bytecode and runtime support
 ----------------------------
@@ -440,7 +452,7 @@ The prototype's cost in that mode, relative to unmodified CPython, remains
 unmeasured.
 
 Opt-in capture changes object lifetimes and can fail to allocate memory.
-Callbacks and formatters can execute user code. Extra traceback lines affect
+Formatters can execute user code. Extra traceback lines affect
 exact output checks such as ``doctest``. The prototype cleanup handler
 also adds ``EXCEPTION_HANDLED`` and ``RERAISE`` monitoring events after a
 failed assertion. It consumes one compiler block and can reach the static
@@ -470,16 +482,16 @@ already identifies the expression that needs capture.
 :pep:`669` monitoring events offer another callback mechanism, but an event
 cannot recover operands after their consumption. Compiler capture is still
 necessary. The proposed callbacks use context-local scopes, so separate
-tasks can install different handlers.
+tasks can install different formatters.
 
 
 How to Teach This
 =================
 
 Start with the two traceback examples and ``python -X assert_details``.
-For library authors, show the compile flag followed by the callback example.
-Explain that a handler does not enable capture and that values are live
-references.
+Then show ``error.details`` for a caught assertion. For library authors,
+show the scoped formatter and the compile flag. Explain that the formatter
+does not enable capture and that values are live references.
 
 
 Reference Implementation
@@ -493,9 +505,7 @@ Open Issues
 
 * Select a module name. The `AssertionLib package`_ already uses
   ``assertionlib``.
-* Define public suppression of the automatic traceback explanation when a
-  framework already places one in ``error.args``. Include rules for
-  ``doctest`` output and framework reports.
+* Specify ``doctest`` behavior for automatic explanations.
 * Specify minimum graph coverage across compiler optimizations.
 * Reduce compile time and serialized size for code with many assertions.
 * Measure cold imports, peak memory, end-to-end failures, and representative
@@ -521,7 +531,7 @@ Open Issues
    https://docs.python.org/3/c-api/import.html#c.PyImport_GetModule
 .. _AssertionLib package: https://pypi.org/project/AssertionLib/
 .. _prototype implementation:
-   https://github.com/pablogsal/cpython/tree/d944fbc4015388d800d872614bc9c4ab565897a0
+   https://github.com/pablogsal/cpython/tree/4f33d89a5501d4409972f1702c393b3cce17889a
 
 
 Copyright

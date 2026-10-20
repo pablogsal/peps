@@ -7,6 +7,11 @@ Research date: 19 October 2026. These notes accompany the shorter PEP.
 Public sources establish prior work and existing contracts. Local records
 support the prototype measurements. The proposal remains a draft.
 
+The API revision on 20 October 2026 introduces ``error.details``,
+``details.format()``, and ``assertionlib.formatter()``. The records below
+retain their original source revisions and APIs. This API revision does
+not change compiler capture or the bytecode in the measured workloads.
+
 Public evidence
 ---------------
 
