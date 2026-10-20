@@ -127,8 +127,8 @@ the captured values without a callback.
 Specification
 =============
 
-Opt-in
-------
+Enabling assertion diagnostics
+------------------------------
 
 Capture is off by default. ``python -X assert_details`` enables capture
 and failure explanations. There is no separate disable option.
@@ -157,8 +157,8 @@ The ``optimize`` argument to ``compile()`` follows
 the ordinary `assert statement rules`_. Import caches must distinguish code
 with capture from code without it.
 
-Captured values
----------------
+Capture semantics
+-----------------
 
 The API represents an assertion as a graph of expression nodes. Each node
 describes a subexpression, links to its children, and exposes its captured
@@ -196,8 +196,8 @@ If the condition or message raises, that exception propagates without a
 failure callback. An explicit ``raise AssertionError(...)`` creates no
 capture data.
 
-Library API
------------
+The assertionlib module
+-----------------------
 
 The proposed module name is ``assertionlib``, subject to the name conflict
 under Open Issues. Its operations are:
@@ -269,8 +269,8 @@ Context copies and new asyncio tasks inherit the handler, under the normal
 `contextvars rules`_. Recursive assertions inside
 a callback do not dispatch another callback.
 
-Tracebacks and serialization
-----------------------------
+Traceback output and exception serialization
+--------------------------------------------
 
 Capture alone leaves ``AssertionError.args`` and ``str(error)`` unchanged.
 The standard traceback formatter adds the explanation after the exception
@@ -285,16 +285,16 @@ The proposed exception pickle protocol omits capture data and the cached
 graph, while it preserves ordinary arguments and user attributes.
 
 
-Implementation
-==============
+CPython implementation
+======================
 
 The parser produces an ordinary ``Assert`` node. Capture takes place during
 bytecode generation, after the AST and symbol-table passes.
 ``ast.unparse()`` still shows the original assertion. The Python below is
 pseudocode. Its names represent hidden slots and internal operations.
 
-From source to captured values
-------------------------------
+Compiler transformation
+-----------------------
 
 The assertion in ``check()`` starts as:
 
@@ -336,8 +336,8 @@ branch. In ``assert left() and right()``, a false result
 from ``left()`` skips both ``right()`` and its captures. Comparison chains
 retain a separate result for each evaluated link.
 
-From captured values to a callback
-----------------------------------
+Failure callbacks
+-----------------
 
 On failure, ``attach_and_dispatch()`` attaches the plan and captured
 references to the exception before cleanup. With the earlier handler
@@ -364,8 +364,8 @@ Module lookup is a prototype detail. Removal of ``assertionlib`` from
 ``sys.modules`` disables dispatch. The traceback formatter can import support
 when it first needs an explanation.
 
-Bytecode support
-----------------
+New bytecode instructions
+-------------------------
 
 The prototype implements capture assignments and cleanup with three new
 instructions:
