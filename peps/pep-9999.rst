@@ -531,7 +531,7 @@ Open Issues
    https://docs.python.org/3/c-api/import.html#c.PyImport_GetModule
 .. _AssertionLib package: https://pypi.org/project/AssertionLib/
 .. _prototype implementation:
-   https://github.com/pablogsal/cpython/tree/4f33d89a5501d4409972f1702c393b3cce17889a
+   https://github.com/pablogsal/cpython/tree/02af93a355bb38564d5df3b44450cb1a5502db65
 
 
 Copyright

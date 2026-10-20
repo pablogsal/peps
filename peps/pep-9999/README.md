@@ -5,7 +5,7 @@
 9999 is a temporary number for this branch. No PEP number is assigned.
 The PDF retains the unnumbered draft header. A discussion URL is still pending.
 
-[Prototype implementation](https://github.com/pablogsal/cpython/tree/4f33d89a5501d4409972f1702c393b3cce17889a)
+[Prototype implementation](https://github.com/pablogsal/cpython/tree/02af93a355bb38564d5df3b44450cb1a5502db65)
 
 The technical notes contain the detailed API contract. The research notes
 contain the methods, sources, and results. Local download links refer to
