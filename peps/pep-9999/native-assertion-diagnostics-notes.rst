@@ -6,11 +6,10 @@ Assertion diagnostics: technical notes
 These notes accompany the PEP draft. They retain the detailed API contract,
 prototype layout, and measurements from the longer version. Proposed behavior
 and incomplete prototype behavior remain distinct throughout the notes.
-The prototype also has earlier experiments for success callbacks and
-assertion retention. Those experiments are outside this proposal.
+The prototype now uses existing instructions and supports failure callbacks
+only. Optimization still removes assertions.
 
-The pickle policy and exception chaining for internal diagnostic failures
-need further implementation. Free-threaded builds, the machine-code JIT,
+The pickle policy needs further implementation. Free-threaded builds, the machine-code JIT,
 and callback isolation across subinterpreters still require verification.
 
 Specification
@@ -489,7 +488,7 @@ records, and temporary slot assignments.
 
 The expression visitor adds a node descriptor before it emits the normal
 instructions for that node. After the instructions produce a result, the
-visitor emits an instruction that retains the result in a hidden local.
+visitor emits ``STORE_FAST slot; LOAD_FAST slot`` to retain the result in a hidden local.
 The result remains available on the operand stack for its normal consumer.
 
 For straight-line expressions, the rule is conceptually:
@@ -500,7 +499,7 @@ For straight-line expressions, the rule is conceptually:
     enter the expression node in the diagnostic graph
     emit its normal evaluation, with capture active for child expressions
     assign a hidden local slot to this result
-    emit a capture instruction for that slot
+    emit STORE_FAST followed by LOAD_FAST for that slot
     leave the result on the operand stack
     restore the saved parent node
 
@@ -547,8 +546,8 @@ an object reference. An internal local marker hides them from ``locals()``.
 Their internal names appear in ``co_varnames``, and ``co_nlocals`` grows.
 The compiler reuses temporary slots for later assertions in the same scope.
 
-Slot 7 supplies both the single comparison record and its expression value.
-Two metadata records therefore share that slot.
+Slot 7 supplies the comparison result. The graph uses the last evaluated
+link as the comparison expression's value. It needs no duplicate capture.
 
 The code object's ``co_consts`` contains a constant capture plan.
 The plan associates slots with expression text, source spans, node IDs,
@@ -558,16 +557,17 @@ The runtime uses this record to interpret slot 5. The actual record is:
 
 .. code-block:: python
 
-    (5, "price * quantity", "value", (2, 11, 2, 27), None, 1)
+    (5, "value", 1, None)
 
-Its fields are the frame slot, text, record kind, source span, optional
-comparison metadata, and node ID. Node 1 describes the multiplication.
+Its fields are the frame slot, record kind, node ID, and optional comparison
+metadata. Node 1 describes the multiplication and stores its text and span.
 
-The plan itself is ``(test_text, records, nodes)``.
+The plan itself is ``(records, nodes)``.
 Each node entry is ``(text, kind, span, child_ids)``. Its ID is its index.
 Record kinds are ``value``, ``comparison``, and ``truth``.
-A comparison record's extra data identifies both operand slots, the
-operator, and both operand node IDs.
+A comparison record's extra data contains ``(operator, left_id, right_id)``.
+Operand node IDs identify the captured operands. There is no separate map
+from expressions to slots.
 
 A slot starts with CPython's null stack reference. An unexecuted capture
 leaves it null. The null reference differs from the Python object ``None``.
@@ -579,47 +579,14 @@ It contains no callback objects or imported modules.
 Compilation creates the plan once. Each function invocation supplies its
 own captured values in its own frame.
 
-New Bytecode
-------------
+Existing Bytecode
+-----------------
 
-The prototype adds these instructions:
-
-.. list-table::
-    :header-rows: 1
-    :widths: 25 25 50
-
-    * - Instruction
-      - Stack effect
-      - Operation
-    * - ``STORE_FAST_BORROW slot``
-      - ``value -> borrowed``
-      - Retain an owned reference in the local slot and leave a borrowed
-        reference on the stack.
-    * - ``COPY_TO_FAST slot``
-      - ``value -> value``
-      - Retain an additional reference in the local slot and preserve
-        the original stack reference.
-    * - ``CLEAR_FAST slot``
-      - No stack change
-      - Clear the local slot and release its previous reference, if any.
-
-``STORE_FAST_BORROW`` combines capture with a borrowed stack result.
-It can transfer an owned reference or promote a borrowed reference to an
-owned local reference. The slot keeps the object alive for its stack user.
-A borrowed stack reference must not outlive that slot's owned reference.
-An operation that retains it elsewhere must first obtain an owned reference.
-
-``COPY_TO_FAST`` preserves stack ownership when the subsequent bytecode
-requires it. The prototype uses it within assignment-expression subtrees.
-``CLEAR_FAST`` accepts both initialized and null slots.
-All three instructions require consistent reference-ownership rules in the
-tier-2 optimizer.
-
-A ``COPY`` followed by ``STORE_FAST`` can implement the extra reference
-for ``COPY_TO_FAST``. The combined instruction reduces dispatch work.
-``STORE_FAST_BORROW`` also avoids an extra owned stack reference when the
-local slot can supply ownership. ``CLEAR_FAST`` avoids the error that
-``DELETE_FAST`` raises for an uninitialized local.
+Capture uses ``STORE_FAST slot; LOAD_FAST slot``. Cleanup uses
+``LOAD_FAST_AND_CLEAR slot; POP_TOP``. ``POP_TOP`` accepts a null reference,
+so the same cleanup sequence handles evaluated and skipped expressions.
+Both sequences use the existing optimizer and reference-ownership rules.
+The implementation adds no opcodes.
 
 The excerpt below omits offsets, caches, and exception-table details.
 It shows the central sequence for the example:
@@ -627,17 +594,23 @@ It shows the central sequence for the example:
 .. code-block:: text
 
     LOAD_FAST_BORROW    price
-    STORE_FAST_BORROW   3
+    STORE_FAST         3
+    LOAD_FAST          3
     LOAD_FAST_BORROW    quantity
-    STORE_FAST_BORROW   4
+    STORE_FAST         4
+    LOAD_FAST          4
     BINARY_OP          *
-    STORE_FAST_BORROW   5
+    STORE_FAST         5
+    LOAD_FAST          5
     LOAD_FAST_BORROW    expected
-    STORE_FAST_BORROW   6
+    STORE_FAST         6
+    LOAD_FAST          6
     COMPARE_OP         ==
-    STORE_FAST_BORROW   7
+    STORE_FAST         7
+    LOAD_FAST          7
     TO_BOOL
-    STORE_FAST_BORROW   8
+    STORE_FAST         8
+    LOAD_FAST          8
     POP_JUMP_IF_TRUE    success
 
     LOAD_COMMON_CONSTANT AssertionError
@@ -648,16 +621,20 @@ It shows the central sequence for the example:
     RAISE_VARARGS      1
 
     success:
-    CLEAR_FAST         3
+    LOAD_FAST_AND_CLEAR 3
+    POP_TOP
     ...
-    CLEAR_FAST         8
+    LOAD_FAST_AND_CLEAR 8
+    POP_TOP
     LOAD_COMMON_CONSTANT None
     RETURN_VALUE
 
     exception_cleanup:
-    CLEAR_FAST         3
+    LOAD_FAST_AND_CLEAR 3
+    POP_TOP
     ...
-    CLEAR_FAST         8
+    LOAD_FAST_AND_CLEAR 8
+    POP_TOP
     RERAISE            0
 
 The ``CALL 0`` instruction constructs the exception instance before the
@@ -665,7 +642,7 @@ intrinsic call. Exception cleanup also clears all capture slots before
 it reraises an error. This includes errors during operand evaluation.
 
 ``CALL_INTRINSIC_2`` already exists. ``INTRINSIC_ASSERT_DETAILS`` is a new
-operation for that instruction, not a fourth new bytecode instruction.
+operation for that instruction.
 The intrinsic receives the exception and the plan. It returns the same
 exception for ``RAISE_VARARGS``.
 
@@ -688,34 +665,26 @@ The runtime path is:
 
     assert executes capture instructions
         -> assertion fails
-        -> INTRINSIC_ASSERT_DETAILS finds the imported assertionlib module
-        -> it checks the applicable handler in the current context
-        -> it reads the frame slots
-        -> it attaches the payload to the exception
-        -> it establishes the assertion exception context
-        -> assertionlib._dispatch(error, payload)
+        -> INTRINSIC_ASSERT_DETAILS establishes the exception context
+        -> it reads the frame slots and attaches the payload
+        -> it finds an already imported assertionlib module
+        -> assertionlib._dispatch(error) reads the current handler
         -> on_failure(error, get_details(error))
         -> the assertion raises the exception
 
 The C code uses ``PyImport_GetModule()`` to find an imported module in
 ``sys.modules``. This lookup does not import ``assertionlib`` from disk.
-Without that module or an applicable handler, the intrinsic keeps the
-failure data and skips the Python callback call.
+If the module exists, C calls its dispatcher with ``PyObject_CallOneArg()``.
+The dispatcher checks the current handler. Without a handler, it returns.
+The failure retains its capture data in both cases.
 
-If a handler exists, C calls the module's dispatcher with
-``PyObject_CallFunctionObjArgs()``. Before the call, the intrinsic establishes
-the assertion's exception context and temporarily sets the handled exception.
-The dispatcher calls the actual Python
-callable object. It does not import a function by name or evaluate source
-code. A closure, bound method, or callable instance therefore works.
+The dispatcher calls the callable object. A closure, bound method, or
+callable instance works. No function-name lookup or source evaluation is
+necessary. All diagnostic support runs with the assertion as the handled
+exception. A support error retains the assertion as its exception context.
 
-This module lookup is a prototype constraint. Reload of ``assertionlib``
-replaces its handler variable. Removal from ``sys.modules`` disables dispatch.
-Malformed private dispatcher state can raise before the payload exists.
-
-The implementation must preserve the original assertion as exception context
-for failures in diagnostic support. These lookup-error paths still need that
-change. A per-interpreter dispatcher registry is one possible replacement.
+Module lookup is a prototype constraint. Reload of ``assertionlib`` replaces
+its handler variable. Removal from ``sys.modules`` disables dispatch.
 
 The standard traceback path can later import formatter support lazily.
 That import is separate from callback dispatch. Failure capture itself
@@ -727,8 +696,12 @@ that parse. Library consumers must use the public graph instead of this
 private formatter convention.
 
 
-Performance and Code Size
-=========================
+Earlier Performance Measurements
+================================
+
+The measurements below describe the prototype before the simplification
+on 20 October 2026. They retain the earlier baseline, including its custom
+opcodes. The research notes contain the current results.
 
 The PEP summarizes assertion-loop cost and the comparison with pytest on
 SymPy test sources. The :doc:`research notes <native-assertion-diagnostics-research>` contain the library workloads,
@@ -838,8 +811,8 @@ Backwards Compatibility
 
 Without the new controls, compilation retains ordinary assertion behavior.
 
-The ordinary-mode signature check compares the initial and optimized
-prototypes. All 162 files match. These signatures compare opcode names and
+The ordinary-mode signature check compares the simplified prototype with
+unmodified CPython at the same base commit. All 162 files match. These signatures compare opcode names and
 arguments, constants, local names, flags, and exception and location tables.
 They also compare stack size and nested code. They ignore numeric opcode IDs.
 That check does not establish zero runtime overhead across all workloads.
@@ -865,7 +838,7 @@ The prototype's exception-serialization difference also requires the change
 specified under Data Lifetime and Serialization.
 
 The new flag occupies an unused compiler-flag bit in CPython.
-The new instructions require a bytecode magic-number change.
+The new intrinsic and private plan layout require a bytecode magic-number change.
 Bytecode numbers, hidden names, and private capture payloads are not stable
 APIs. Other Python implementations can provide the public contract through
 different mechanisms.

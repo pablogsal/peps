@@ -1,0 +1,4 @@
+normal: expected report and hooks passed
+-O: expected report and hooks passed
+-OO: expected report and hooks passed
+normal: expected report and hooks passed

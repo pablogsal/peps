@@ -1,0 +1,3616 @@
+{
+  "files": 162,
+  "assertions": 543,
+  "totals": {
+    "plain": {
+      "code_objects": 11543,
+      "bytecode_bytes": 2868252,
+      "exception_table_bytes": 86509,
+      "location_table_bytes": 1250184,
+      "locals": 36604,
+      "stacksize": 54168,
+      "marshal_bytes": 7423665
+    },
+    "native": {
+      "code_objects": 11543,
+      "bytecode_bytes": 2897454,
+      "exception_table_bytes": 92825,
+      "location_table_bytes": 1253087,
+      "locals": 38680,
+      "stacksize": 54168,
+      "marshal_bytes": 7700706
+    }
+  },
+  "compile_seconds": {
+    "plain": [
+      0.458019538782537,
+      0.4465546179562807,
+      0.4376403512433171,
+      0.4562660790979862,
+      0.43537222128361464,
+      0.4475610079243779,
+      0.44045794010162354,
+      0.4471883047372103
+    ],
+    "native": [
+      0.48053817451000214,
+      0.4741378240287304,
+      0.4593557920306921,
+      0.45617135148495436,
+      0.464527933858335,
+      0.47400397155433893,
+      0.4607374593615532,
+      0.47688602190464735
+    ]
+  },
+  "compile_median": {
+    "plain": 0.4468714613467455,
+    "native": 0.469265952706337
+  },
+  "rows": [
+    {
+      "file": "Lib/_ast_unparse.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 144,
+        "bytecode_bytes": 36808,
+        "exception_table_bytes": 1200,
+        "location_table_bytes": 13170,
+        "locals": 331,
+        "stacksize": 735,
+        "marshal_bytes": 75260
+      },
+      "native": {
+        "code_objects": 144,
+        "bytecode_bytes": 36950,
+        "exception_table_bytes": 1236,
+        "location_table_bytes": 13181,
+        "locals": 344,
+        "stacksize": 735,
+        "marshal_bytes": 76734
+      }
+    },
+    {
+      "file": "Lib/_compat_pickle.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 3,
+        "bytecode_bytes": 1250,
+        "exception_table_bytes": 32,
+        "location_table_bytes": 1532,
+        "locals": 6,
+        "stacksize": 34,
+        "marshal_bytes": 7323
+      },
+      "native": {
+        "code_objects": 3,
+        "bytecode_bytes": 1394,
+        "exception_table_bytes": 56,
+        "location_table_bytes": 1546,
+        "locals": 14,
+        "stacksize": 34,
+        "marshal_bytes": 8927
+      }
+    },
+    {
+      "file": "Lib/_markupbase.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 16,
+        "bytecode_bytes": 6004,
+        "exception_table_bytes": 0,
+        "location_table_bytes": 2817,
+        "locals": 82,
+        "stacksize": 63,
+        "marshal_bytes": 13042
+      },
+      "native": {
+        "code_objects": 16,
+        "bytecode_bytes": 6170,
+        "exception_table_bytes": 20,
+        "location_table_bytes": 2841,
+        "locals": 100,
+        "stacksize": 63,
+        "marshal_bytes": 14846
+      }
+    },
+    {
+      "file": "Lib/_py_abc.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 11,
+        "bytecode_bytes": 2938,
+        "exception_table_bytes": 38,
+        "location_table_bytes": 1215,
+        "locals": 28,
+        "stacksize": 49,
+        "marshal_bytes": 7545
+      },
+      "native": {
+        "code_objects": 11,
+        "bytecode_bytes": 2988,
+        "exception_table_bytes": 50,
+        "location_table_bytes": 1216,
+        "locals": 33,
+        "stacksize": 49,
+        "marshal_bytes": 8022
+      }
+    },
+    {
+      "file": "Lib/_py_warnings.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 59,
+        "bytecode_bytes": 16172,
+        "exception_table_bytes": 765,
+        "location_table_bytes": 7047,
+        "locals": 186,
+        "stacksize": 322,
+        "marshal_bytes": 39947
+      },
+      "native": {
+        "code_objects": 59,
+        "bytecode_bytes": 16228,
+        "exception_table_bytes": 783,
+        "location_table_bytes": 7049,
+        "locals": 190,
+        "stacksize": 322,
+        "marshal_bytes": 40275
+      }
+    },
+    {
+      "file": "Lib/_pydatetime.py",
+      "assertions": 45,
+      "plain": {
+        "code_objects": 199,
+        "bytecode_bytes": 43382,
+        "exception_table_bytes": 200,
+        "location_table_bytes": 20093,
+        "locals": 656,
+        "stacksize": 954,
+        "marshal_bytes": 102721
+      },
+      "native": {
+        "code_objects": 199,
+        "bytecode_bytes": 46396,
+        "exception_table_bytes": 772,
+        "location_table_bytes": 20324,
+        "locals": 763,
+        "stacksize": 954,
+        "marshal_bytes": 127870
+      }
+    },
+    {
+      "file": "Lib/_pydecimal.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 266,
+        "bytecode_bytes": 82406,
+        "exception_table_bytes": 187,
+        "location_table_bytes": 35098,
+        "locals": 981,
+        "stacksize": 1296,
+        "marshal_bytes": 228846
+      },
+      "native": {
+        "code_objects": 266,
+        "bytecode_bytes": 82586,
+        "exception_table_bytes": 235,
+        "location_table_bytes": 35109,
+        "locals": 987,
+        "stacksize": 1296,
+        "marshal_bytes": 230620
+      }
+    },
+    {
+      "file": "Lib/_pyio.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 216,
+        "bytecode_bytes": 44620,
+        "exception_table_bytes": 1628,
+        "location_table_bytes": 18796,
+        "locals": 506,
+        "stacksize": 803,
+        "marshal_bytes": 119762
+      },
+      "native": {
+        "code_objects": 216,
+        "bytecode_bytes": 44758,
+        "exception_table_bytes": 1658,
+        "location_table_bytes": 18818,
+        "locals": 520,
+        "stacksize": 803,
+        "marshal_bytes": 121236
+      }
+    },
+    {
+      "file": "Lib/_pylong.py",
+      "assertions": 7,
+      "plain": {
+        "code_objects": 20,
+        "bytecode_bytes": 6888,
+        "exception_table_bytes": 71,
+        "location_table_bytes": 2980,
+        "locals": 114,
+        "stacksize": 119,
+        "marshal_bytes": 16005
+      },
+      "native": {
+        "code_objects": 20,
+        "bytecode_bytes": 7216,
+        "exception_table_bytes": 147,
+        "location_table_bytes": 3035,
+        "locals": 130,
+        "stacksize": 119,
+        "marshal_bytes": 18724
+      }
+    },
+    {
+      "file": "Lib/_pyrepl/_module_completer.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 91,
+        "bytecode_bytes": 15876,
+        "exception_table_bytes": 436,
+        "location_table_bytes": 6892,
+        "locals": 188,
+        "stacksize": 401,
+        "marshal_bytes": 39725
+      },
+      "native": {
+        "code_objects": 91,
+        "bytecode_bytes": 15932,
+        "exception_table_bytes": 447,
+        "location_table_bytes": 6899,
+        "locals": 192,
+        "stacksize": 401,
+        "marshal_bytes": 40195
+      }
+    },
+    {
+      "file": "Lib/_pyrepl/base_eventqueue.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 12,
+        "bytecode_bytes": 2072,
+        "exception_table_bytes": 24,
+        "location_table_bytes": 815,
+        "locals": 18,
+        "stacksize": 46,
+        "marshal_bytes": 5234
+      },
+      "native": {
+        "code_objects": 12,
+        "bytecode_bytes": 2202,
+        "exception_table_bytes": 46,
+        "location_table_bytes": 820,
+        "locals": 25,
+        "stacksize": 46,
+        "marshal_bytes": 6565
+      }
+    },
+    {
+      "file": "Lib/_pyrepl/pager.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 28,
+        "bytecode_bytes": 5260,
+        "exception_table_bytes": 321,
+        "location_table_bytes": 2065,
+        "locals": 62,
+        "stacksize": 144,
+        "marshal_bytes": 11893
+      },
+      "native": {
+        "code_objects": 28,
+        "bytecode_bytes": 5318,
+        "exception_table_bytes": 333,
+        "location_table_bytes": 2070,
+        "locals": 67,
+        "stacksize": 144,
+        "marshal_bytes": 12470
+      }
+    },
+    {
+      "file": "Lib/_pyrepl/reader.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 159,
+        "bytecode_bytes": 23544,
+        "exception_table_bytes": 201,
+        "location_table_bytes": 11235,
+        "locals": 274,
+        "stacksize": 633,
+        "marshal_bytes": 65039
+      },
+      "native": {
+        "code_objects": 159,
+        "bytecode_bytes": 23760,
+        "exception_table_bytes": 236,
+        "location_table_bytes": 11252,
+        "locals": 301,
+        "stacksize": 633,
+        "marshal_bytes": 67937
+      }
+    },
+    {
+      "file": "Lib/_pyrepl/readline.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 105,
+        "bytecode_bytes": 15826,
+        "exception_table_bytes": 279,
+        "location_table_bytes": 7040,
+        "locals": 206,
+        "stacksize": 420,
+        "marshal_bytes": 41227
+      },
+      "native": {
+        "code_objects": 105,
+        "bytecode_bytes": 15924,
+        "exception_table_bytes": 303,
+        "location_table_bytes": 7050,
+        "locals": 215,
+        "stacksize": 420,
+        "marshal_bytes": 42193
+      }
+    },
+    {
+      "file": "Lib/_pyrepl/render.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 74,
+        "bytecode_bytes": 9116,
+        "exception_table_bytes": 32,
+        "location_table_bytes": 4228,
+        "locals": 117,
+        "stacksize": 340,
+        "marshal_bytes": 26543
+      },
+      "native": {
+        "code_objects": 74,
+        "bytecode_bytes": 9158,
+        "exception_table_bytes": 44,
+        "location_table_bytes": 4231,
+        "locals": 121,
+        "stacksize": 340,
+        "marshal_bytes": 26991
+      }
+    },
+    {
+      "file": "Lib/_pyrepl/simple_interact.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 13,
+        "bytecode_bytes": 3754,
+        "exception_table_bytes": 346,
+        "location_table_bytes": 1610,
+        "locals": 40,
+        "stacksize": 74,
+        "marshal_bytes": 9085
+      },
+      "native": {
+        "code_objects": 13,
+        "bytecode_bytes": 3782,
+        "exception_table_bytes": 358,
+        "location_table_bytes": 1614,
+        "locals": 42,
+        "stacksize": 74,
+        "marshal_bytes": 9313
+      }
+    },
+    {
+      "file": "Lib/_pyrepl/unix_console.py",
+      "assertions": 5,
+      "plain": {
+        "code_objects": 96,
+        "bytecode_bytes": 25284,
+        "exception_table_bytes": 357,
+        "location_table_bytes": 10146,
+        "locals": 234,
+        "stacksize": 457,
+        "marshal_bytes": 56854
+      },
+      "native": {
+        "code_objects": 96,
+        "bytecode_bytes": 25610,
+        "exception_table_bytes": 414,
+        "location_table_bytes": 10183,
+        "locals": 255,
+        "stacksize": 457,
+        "marshal_bytes": 59878
+      }
+    },
+    {
+      "file": "Lib/_pyrepl/utils.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 45,
+        "bytecode_bytes": 13548,
+        "exception_table_bytes": 529,
+        "location_table_bytes": 4937,
+        "locals": 113,
+        "stacksize": 239,
+        "marshal_bytes": 29523
+      },
+      "native": {
+        "code_objects": 45,
+        "bytecode_bytes": 13602,
+        "exception_table_bytes": 541,
+        "location_table_bytes": 4942,
+        "locals": 117,
+        "stacksize": 239,
+        "marshal_bytes": 29992
+      }
+    },
+    {
+      "file": "Lib/annotationlib.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 63,
+        "bytecode_bytes": 21364,
+        "exception_table_bytes": 431,
+        "location_table_bytes": 9249,
+        "locals": 235,
+        "stacksize": 357,
+        "marshal_bytes": 49594
+      },
+      "native": {
+        "code_objects": 63,
+        "bytecode_bytes": 21474,
+        "exception_table_bytes": 453,
+        "location_table_bytes": 9255,
+        "locals": 249,
+        "stacksize": 357,
+        "marshal_bytes": 50868
+      }
+    },
+    {
+      "file": "Lib/argparse.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 189,
+        "bytecode_bytes": 50124,
+        "exception_table_bytes": 660,
+        "location_table_bytes": 22579,
+        "locals": 815,
+        "stacksize": 976,
+        "marshal_bytes": 122242
+      },
+      "native": {
+        "code_objects": 189,
+        "bytecode_bytes": 50336,
+        "exception_table_bytes": 706,
+        "location_table_bytes": 22596,
+        "locals": 836,
+        "stacksize": 976,
+        "marshal_bytes": 124340
+      }
+    },
+    {
+      "file": "Lib/asyncio/base_events.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 120,
+        "bytecode_bytes": 37198,
+        "exception_table_bytes": 3261,
+        "location_table_bytes": 17031,
+        "locals": 529,
+        "stacksize": 610,
+        "marshal_bytes": 94848
+      },
+      "native": {
+        "code_objects": 120,
+        "bytecode_bytes": 37256,
+        "exception_table_bytes": 3271,
+        "location_table_bytes": 17037,
+        "locals": 534,
+        "stacksize": 610,
+        "marshal_bytes": 95432
+      }
+    },
+    {
+      "file": "Lib/asyncio/base_subprocess.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 41,
+        "bytecode_bytes": 7930,
+        "exception_table_bytes": 314,
+        "location_table_bytes": 3186,
+        "locals": 89,
+        "stacksize": 147,
+        "marshal_bytes": 18472
+      },
+      "native": {
+        "code_objects": 41,
+        "bytecode_bytes": 8116,
+        "exception_table_bytes": 362,
+        "location_table_bytes": 3206,
+        "locals": 102,
+        "stacksize": 147,
+        "marshal_bytes": 20245
+      }
+    },
+    {
+      "file": "Lib/asyncio/coroutines.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 6,
+        "bytecode_bytes": 1638,
+        "exception_table_bytes": 40,
+        "location_table_bytes": 723,
+        "locals": 13,
+        "stacksize": 26,
+        "marshal_bytes": 3669
+      },
+      "native": {
+        "code_objects": 6,
+        "bytecode_bytes": 1680,
+        "exception_table_bytes": 50,
+        "location_table_bytes": 724,
+        "locals": 17,
+        "stacksize": 26,
+        "marshal_bytes": 4049
+      }
+    },
+    {
+      "file": "Lib/asyncio/futures.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 33,
+        "bytecode_bytes": 6924,
+        "exception_table_bytes": 65,
+        "location_table_bytes": 2992,
+        "locals": 70,
+        "stacksize": 129,
+        "marshal_bytes": 19347
+      },
+      "native": {
+        "code_objects": 33,
+        "bytecode_bytes": 7090,
+        "exception_table_bytes": 108,
+        "location_table_bytes": 3009,
+        "locals": 85,
+        "stacksize": 129,
+        "marshal_bytes": 20949
+      }
+    },
+    {
+      "file": "Lib/asyncio/proactor_events.py",
+      "assertions": 10,
+      "plain": {
+        "code_objects": 80,
+        "bytecode_bytes": 21390,
+        "exception_table_bytes": 1243,
+        "location_table_bytes": 8464,
+        "locals": 224,
+        "stacksize": 376,
+        "marshal_bytes": 48102
+      },
+      "native": {
+        "code_objects": 80,
+        "bytecode_bytes": 22026,
+        "exception_table_bytes": 1355,
+        "location_table_bytes": 8543,
+        "locals": 269,
+        "stacksize": 376,
+        "marshal_bytes": 54057
+      }
+    },
+    {
+      "file": "Lib/asyncio/selector_events.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 92,
+        "bytecode_bytes": 31332,
+        "exception_table_bytes": 2174,
+        "location_table_bytes": 12775,
+        "locals": 371,
+        "stacksize": 489,
+        "marshal_bytes": 68655
+      },
+      "native": {
+        "code_objects": 92,
+        "bytecode_bytes": 31380,
+        "exception_table_bytes": 2194,
+        "location_table_bytes": 12775,
+        "locals": 377,
+        "stacksize": 489,
+        "marshal_bytes": 69161
+      }
+    },
+    {
+      "file": "Lib/asyncio/sslproto.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 72,
+        "bytecode_bytes": 17642,
+        "exception_table_bytes": 559,
+        "location_table_bytes": 7139,
+        "locals": 146,
+        "stacksize": 256,
+        "marshal_bytes": 43079
+      },
+      "native": {
+        "code_objects": 72,
+        "bytecode_bytes": 17710,
+        "exception_table_bytes": 575,
+        "location_table_bytes": 7144,
+        "locals": 152,
+        "stacksize": 256,
+        "marshal_bytes": 43663
+      }
+    },
+    {
+      "file": "Lib/asyncio/staggered.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 5,
+        "bytecode_bytes": 2120,
+        "exception_table_bytes": 310,
+        "location_table_bytes": 959,
+        "locals": 19,
+        "stacksize": 26,
+        "marshal_bytes": 6951
+      },
+      "native": {
+        "code_objects": 5,
+        "bytecode_bytes": 2246,
+        "exception_table_bytes": 334,
+        "location_table_bytes": 971,
+        "locals": 27,
+        "stacksize": 26,
+        "marshal_bytes": 8209
+      }
+    },
+    {
+      "file": "Lib/asyncio/streams.py",
+      "assertions": 7,
+      "plain": {
+        "code_objects": 61,
+        "bytecode_bytes": 12516,
+        "exception_table_bytes": 671,
+        "location_table_bytes": 5296,
+        "locals": 157,
+        "stacksize": 229,
+        "marshal_bytes": 34990
+      },
+      "native": {
+        "code_objects": 61,
+        "bytecode_bytes": 12814,
+        "exception_table_bytes": 742,
+        "location_table_bytes": 5330,
+        "locals": 188,
+        "stacksize": 229,
+        "marshal_bytes": 38046
+      }
+    },
+    {
+      "file": "Lib/asyncio/subprocess.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 26,
+        "bytecode_bytes": 5804,
+        "exception_table_bytes": 282,
+        "location_table_bytes": 2488,
+        "locals": 70,
+        "stacksize": 108,
+        "marshal_bytes": 13719
+      },
+      "native": {
+        "code_objects": 26,
+        "bytecode_bytes": 5854,
+        "exception_table_bytes": 294,
+        "location_table_bytes": 2498,
+        "locals": 74,
+        "stacksize": 108,
+        "marshal_bytes": 14173
+      }
+    },
+    {
+      "file": "Lib/asyncio/taskgroups.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 13,
+        "bytecode_bytes": 5120,
+        "exception_table_bytes": 372,
+        "location_table_bytes": 2132,
+        "locals": 29,
+        "stacksize": 61,
+        "marshal_bytes": 11927
+      },
+      "native": {
+        "code_objects": 13,
+        "bytecode_bytes": 5204,
+        "exception_table_bytes": 394,
+        "location_table_bytes": 2142,
+        "locals": 37,
+        "stacksize": 61,
+        "marshal_bytes": 12727
+      }
+    },
+    {
+      "file": "Lib/asyncio/tasks.py",
+      "assertions": 5,
+      "plain": {
+        "code_objects": 65,
+        "bytecode_bytes": 16436,
+        "exception_table_bytes": 967,
+        "location_table_bytes": 7109,
+        "locals": 157,
+        "stacksize": 287,
+        "marshal_bytes": 46845
+      },
+      "native": {
+        "code_objects": 65,
+        "bytecode_bytes": 16720,
+        "exception_table_bytes": 1036,
+        "location_table_bytes": 7148,
+        "locals": 177,
+        "stacksize": 287,
+        "marshal_bytes": 48866
+      }
+    },
+    {
+      "file": "Lib/asyncio/timeouts.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 25,
+        "bytecode_bytes": 3676,
+        "exception_table_bytes": 76,
+        "location_table_bytes": 1546,
+        "locals": 35,
+        "stacksize": 86,
+        "marshal_bytes": 10694
+      },
+      "native": {
+        "code_objects": 25,
+        "bytecode_bytes": 3814,
+        "exception_table_bytes": 98,
+        "location_table_bytes": 1557,
+        "locals": 50,
+        "stacksize": 86,
+        "marshal_bytes": 12268
+      }
+    },
+    {
+      "file": "Lib/asyncio/transports.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 40,
+        "bytecode_bytes": 2338,
+        "exception_table_bytes": 70,
+        "location_table_bytes": 1203,
+        "locals": 54,
+        "stacksize": 89,
+        "marshal_bytes": 14017
+      },
+      "native": {
+        "code_objects": 40,
+        "bytecode_bytes": 2390,
+        "exception_table_bytes": 80,
+        "location_table_bytes": 1209,
+        "locals": 58,
+        "stacksize": 89,
+        "marshal_bytes": 14481
+      }
+    },
+    {
+      "file": "Lib/asyncio/unix_events.py",
+      "assertions": 5,
+      "plain": {
+        "code_objects": 70,
+        "bytecode_bytes": 22250,
+        "exception_table_bytes": 1299,
+        "location_table_bytes": 9070,
+        "locals": 249,
+        "stacksize": 349,
+        "marshal_bytes": 50363
+      },
+      "native": {
+        "code_objects": 70,
+        "bytecode_bytes": 22502,
+        "exception_table_bytes": 1352,
+        "location_table_bytes": 9096,
+        "locals": 276,
+        "stacksize": 349,
+        "marshal_bytes": 53005
+      }
+    },
+    {
+      "file": "Lib/asyncio/windows_events.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 81,
+        "bytecode_bytes": 17872,
+        "exception_table_bytes": 812,
+        "location_table_bytes": 7397,
+        "locals": 273,
+        "stacksize": 383,
+        "marshal_bytes": 43159
+      },
+      "native": {
+        "code_objects": 81,
+        "bytecode_bytes": 17930,
+        "exception_table_bytes": 822,
+        "location_table_bytes": 7403,
+        "locals": 278,
+        "stacksize": 383,
+        "marshal_bytes": 43753
+      }
+    },
+    {
+      "file": "Lib/asyncio/windows_utils.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 13,
+        "bytecode_bytes": 3466,
+        "exception_table_bytes": 159,
+        "location_table_bytes": 1487,
+        "locals": 46,
+        "stacksize": 55,
+        "marshal_bytes": 8256
+      },
+      "native": {
+        "code_objects": 13,
+        "bytecode_bytes": 3602,
+        "exception_table_bytes": 180,
+        "location_table_bytes": 1509,
+        "locals": 54,
+        "stacksize": 55,
+        "marshal_bytes": 9647
+      }
+    },
+    {
+      "file": "Lib/concurrent/futures/interpreter.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 15,
+        "bytecode_bytes": 1914,
+        "exception_table_bytes": 140,
+        "location_table_bytes": 882,
+        "locals": 34,
+        "stacksize": 54,
+        "marshal_bytes": 6070
+      },
+      "native": {
+        "code_objects": 15,
+        "bytecode_bytes": 1962,
+        "exception_table_bytes": 151,
+        "location_table_bytes": 887,
+        "locals": 39,
+        "stacksize": 54,
+        "marshal_bytes": 6628
+      }
+    },
+    {
+      "file": "Lib/concurrent/futures/process.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 59,
+        "bytecode_bytes": 15292,
+        "exception_table_bytes": 580,
+        "location_table_bytes": 6559,
+        "locals": 182,
+        "stacksize": 277,
+        "marshal_bytes": 42999
+      },
+      "native": {
+        "code_objects": 59,
+        "bytecode_bytes": 15448,
+        "exception_table_bytes": 628,
+        "location_table_bytes": 6568,
+        "locals": 200,
+        "stacksize": 277,
+        "marshal_bytes": 44903
+      }
+    },
+    {
+      "file": "Lib/concurrent/interpreters/__init__.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 24,
+        "bytecode_bytes": 3248,
+        "exception_table_bytes": 96,
+        "location_table_bytes": 1462,
+        "locals": 50,
+        "stacksize": 113,
+        "marshal_bytes": 10939
+      },
+      "native": {
+        "code_objects": 24,
+        "bytecode_bytes": 3384,
+        "exception_table_bytes": 136,
+        "location_table_bytes": 1472,
+        "locals": 60,
+        "stacksize": 113,
+        "marshal_bytes": 12442
+      }
+    },
+    {
+      "file": "Lib/concurrent/interpreters/_queues.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 25,
+        "bytecode_bytes": 3800,
+        "exception_table_bytes": 196,
+        "location_table_bytes": 1733,
+        "locals": 56,
+        "stacksize": 89,
+        "marshal_bytes": 12012
+      },
+      "native": {
+        "code_objects": 25,
+        "bytecode_bytes": 4004,
+        "exception_table_bytes": 240,
+        "location_table_bytes": 1756,
+        "locals": 76,
+        "stacksize": 89,
+        "marshal_bytes": 14075
+      }
+    },
+    {
+      "file": "Lib/contextlib.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 89,
+        "bytecode_bytes": 10812,
+        "exception_table_bytes": 1479,
+        "location_table_bytes": 4889,
+        "locals": 208,
+        "stacksize": 315,
+        "marshal_bytes": 35252
+      },
+      "native": {
+        "code_objects": 89,
+        "bytecode_bytes": 10840,
+        "exception_table_bytes": 1491,
+        "location_table_bytes": 4891,
+        "locals": 210,
+        "stacksize": 315,
+        "marshal_bytes": 35432
+      }
+    },
+    {
+      "file": "Lib/copyreg.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 14,
+        "bytecode_bytes": 3090,
+        "exception_table_bytes": 72,
+        "location_table_bytes": 1451,
+        "locals": 41,
+        "stacksize": 65,
+        "marshal_bytes": 7937
+      },
+      "native": {
+        "code_objects": 14,
+        "bytecode_bytes": 3138,
+        "exception_table_bytes": 82,
+        "location_table_bytes": 1453,
+        "locals": 45,
+        "stacksize": 65,
+        "marshal_bytes": 8380
+      }
+    },
+    {
+      "file": "Lib/ctypes/_layout.py",
+      "assertions": 12,
+      "plain": {
+        "code_objects": 8,
+        "bytecode_bytes": 3706,
+        "exception_table_bytes": 100,
+        "location_table_bytes": 1911,
+        "locals": 53,
+        "stacksize": 33,
+        "marshal_bytes": 8624
+      },
+      "native": {
+        "code_objects": 8,
+        "bytecode_bytes": 4342,
+        "exception_table_bytes": 236,
+        "location_table_bytes": 1973,
+        "locals": 67,
+        "stacksize": 33,
+        "marshal_bytes": 13757
+      }
+    },
+    {
+      "file": "Lib/dataclasses.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 78,
+        "bytecode_bytes": 22926,
+        "exception_table_bytes": 558,
+        "location_table_bytes": 10893,
+        "locals": 353,
+        "stacksize": 492,
+        "marshal_bytes": 55480
+      },
+      "native": {
+        "code_objects": 78,
+        "bytecode_bytes": 22982,
+        "exception_table_bytes": 570,
+        "location_table_bytes": 10902,
+        "locals": 358,
+        "stacksize": 492,
+        "marshal_bytes": 56055
+      }
+    },
+    {
+      "file": "Lib/difflib.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 57,
+        "bytecode_bytes": 20526,
+        "exception_table_bytes": 925,
+        "location_table_bytes": 9552,
+        "locals": 422,
+        "stacksize": 347,
+        "marshal_bytes": 76868
+      },
+      "native": {
+        "code_objects": 57,
+        "bytecode_bytes": 20612,
+        "exception_table_bytes": 936,
+        "location_table_bytes": 9566,
+        "locals": 430,
+        "stacksize": 347,
+        "marshal_bytes": 77780
+      }
+    },
+    {
+      "file": "Lib/dis.py",
+      "assertions": 5,
+      "plain": {
+        "code_objects": 70,
+        "bytecode_bytes": 22854,
+        "exception_table_bytes": 394,
+        "location_table_bytes": 10380,
+        "locals": 369,
+        "stacksize": 461,
+        "marshal_bytes": 55427
+      },
+      "native": {
+        "code_objects": 70,
+        "bytecode_bytes": 23190,
+        "exception_table_bytes": 458,
+        "location_table_bytes": 10419,
+        "locals": 395,
+        "stacksize": 461,
+        "marshal_bytes": 58560
+      }
+    },
+    {
+      "file": "Lib/doctest.py",
+      "assertions": 5,
+      "plain": {
+        "code_objects": 133,
+        "bytecode_bytes": 38122,
+        "exception_table_bytes": 345,
+        "location_table_bytes": 16453,
+        "locals": 560,
+        "stacksize": 691,
+        "marshal_bytes": 116240
+      },
+      "native": {
+        "code_objects": 133,
+        "bytecode_bytes": 38344,
+        "exception_table_bytes": 402,
+        "location_table_bytes": 16491,
+        "locals": 579,
+        "stacksize": 691,
+        "marshal_bytes": 118124
+      }
+    },
+    {
+      "file": "Lib/email/_header_value_parser.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 217,
+        "bytecode_bytes": 64616,
+        "exception_table_bytes": 1448,
+        "location_table_bytes": 27841,
+        "locals": 463,
+        "stacksize": 867,
+        "marshal_bytes": 147456
+      },
+      "native": {
+        "code_objects": 217,
+        "bytecode_bytes": 64656,
+        "exception_table_bytes": 1472,
+        "location_table_bytes": 27850,
+        "locals": 465,
+        "stacksize": 867,
+        "marshal_bytes": 147857
+      }
+    },
+    {
+      "file": "Lib/email/charset.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 15,
+        "bytecode_bytes": 4170,
+        "exception_table_bytes": 51,
+        "location_table_bytes": 2603,
+        "locals": 48,
+        "stacksize": 63,
+        "marshal_bytes": 16642
+      },
+      "native": {
+        "code_objects": 15,
+        "bytecode_bytes": 4224,
+        "exception_table_bytes": 61,
+        "location_table_bytes": 2607,
+        "locals": 53,
+        "stacksize": 63,
+        "marshal_bytes": 17219
+      }
+    },
+    {
+      "file": "Lib/email/feedparser.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 25,
+        "bytecode_bytes": 10118,
+        "exception_table_bytes": 312,
+        "location_table_bytes": 3941,
+        "locals": 65,
+        "stacksize": 93,
+        "marshal_bytes": 21220
+      },
+      "native": {
+        "code_objects": 25,
+        "bytecode_bytes": 10270,
+        "exception_table_bytes": 355,
+        "location_table_bytes": 3968,
+        "locals": 78,
+        "stacksize": 93,
+        "marshal_bytes": 22550
+      }
+    },
+    {
+      "file": "Lib/email/headerregistry.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 77,
+        "bytecode_bytes": 10784,
+        "exception_table_bytes": 82,
+        "location_table_bytes": 5081,
+        "locals": 141,
+        "stacksize": 276,
+        "marshal_bytes": 32859
+      },
+      "native": {
+        "code_objects": 77,
+        "bytecode_bytes": 10802,
+        "exception_table_bytes": 90,
+        "location_table_bytes": 5086,
+        "locals": 143,
+        "stacksize": 276,
+        "marshal_bytes": 33075
+      }
+    },
+    {
+      "file": "Lib/encodings/base64_codec.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 13,
+        "bytecode_bytes": 978,
+        "exception_table_bytes": 0,
+        "location_table_bytes": 418,
+        "locals": 16,
+        "stacksize": 47,
+        "marshal_bytes": 3205
+      },
+      "native": {
+        "code_objects": 13,
+        "bytecode_bytes": 1182,
+        "exception_table_bytes": 36,
+        "location_table_bytes": 434,
+        "locals": 34,
+        "stacksize": 47,
+        "marshal_bytes": 4906
+      }
+    },
+    {
+      "file": "Lib/encodings/bz2_codec.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 17,
+        "bytecode_bytes": 1426,
+        "exception_table_bytes": 16,
+        "location_table_bytes": 596,
+        "locals": 23,
+        "stacksize": 56,
+        "marshal_bytes": 4632
+      },
+      "native": {
+        "code_objects": 17,
+        "bytecode_bytes": 1618,
+        "exception_table_bytes": 52,
+        "location_table_bytes": 612,
+        "locals": 39,
+        "stacksize": 56,
+        "marshal_bytes": 6114
+      }
+    },
+    {
+      "file": "Lib/encodings/hex_codec.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 13,
+        "bytecode_bytes": 978,
+        "exception_table_bytes": 0,
+        "location_table_bytes": 418,
+        "locals": 16,
+        "stacksize": 47,
+        "marshal_bytes": 3192
+      },
+      "native": {
+        "code_objects": 13,
+        "bytecode_bytes": 1182,
+        "exception_table_bytes": 36,
+        "location_table_bytes": 434,
+        "locals": 34,
+        "stacksize": 47,
+        "marshal_bytes": 4893
+      }
+    },
+    {
+      "file": "Lib/encodings/idna.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 18,
+        "bytecode_bytes": 7680,
+        "exception_table_bytes": 353,
+        "location_table_bytes": 3410,
+        "locals": 66,
+        "stacksize": 114,
+        "marshal_bytes": 15281
+      },
+      "native": {
+        "code_objects": 18,
+        "bytecode_bytes": 7778,
+        "exception_table_bytes": 376,
+        "location_table_bytes": 3414,
+        "locals": 71,
+        "stacksize": 114,
+        "marshal_bytes": 16152
+      }
+    },
+    {
+      "file": "Lib/encodings/quopri_codec.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 13,
+        "bytecode_bytes": 1090,
+        "exception_table_bytes": 0,
+        "location_table_bytes": 439,
+        "locals": 20,
+        "stacksize": 51,
+        "marshal_bytes": 3364
+      },
+      "native": {
+        "code_objects": 13,
+        "bytecode_bytes": 1186,
+        "exception_table_bytes": 20,
+        "location_table_bytes": 447,
+        "locals": 28,
+        "stacksize": 51,
+        "marshal_bytes": 4166
+      }
+    },
+    {
+      "file": "Lib/encodings/uu_codec.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 13,
+        "bytecode_bytes": 1800,
+        "exception_table_bytes": 25,
+        "location_table_bytes": 757,
+        "locals": 30,
+        "stacksize": 52,
+        "marshal_bytes": 4911
+      },
+      "native": {
+        "code_objects": 13,
+        "bytecode_bytes": 1896,
+        "exception_table_bytes": 45,
+        "location_table_bytes": 764,
+        "locals": 38,
+        "stacksize": 52,
+        "marshal_bytes": 5752
+      }
+    },
+    {
+      "file": "Lib/encodings/zlib_codec.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 17,
+        "bytecode_bytes": 1522,
+        "exception_table_bytes": 0,
+        "location_table_bytes": 622,
+        "locals": 24,
+        "stacksize": 55,
+        "marshal_bytes": 4555
+      },
+      "native": {
+        "code_objects": 17,
+        "bytecode_bytes": 1714,
+        "exception_table_bytes": 36,
+        "location_table_bytes": 638,
+        "locals": 40,
+        "stacksize": 55,
+        "marshal_bytes": 6037
+      }
+    },
+    {
+      "file": "Lib/fnmatch.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 10,
+        "bytecode_bytes": 3420,
+        "exception_table_bytes": 4,
+        "location_table_bytes": 1484,
+        "locals": 47,
+        "stacksize": 54,
+        "marshal_bytes": 7854
+      },
+      "native": {
+        "code_objects": 10,
+        "bytecode_bytes": 3472,
+        "exception_table_bytes": 16,
+        "location_table_bytes": 1498,
+        "locals": 51,
+        "stacksize": 54,
+        "marshal_bytes": 8310
+      }
+    },
+    {
+      "file": "Lib/getopt.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 10,
+        "bytecode_bytes": 3352,
+        "exception_table_bytes": 33,
+        "location_table_bytes": 1543,
+        "locals": 38,
+        "stacksize": 54,
+        "marshal_bytes": 9531
+      },
+      "native": {
+        "code_objects": 10,
+        "bytecode_bytes": 3416,
+        "exception_table_bytes": 45,
+        "location_table_bytes": 1552,
+        "locals": 44,
+        "stacksize": 54,
+        "marshal_bytes": 10202
+      }
+    },
+    {
+      "file": "Lib/getpass.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 28,
+        "bytecode_bytes": 7976,
+        "exception_table_bytes": 342,
+        "location_table_bytes": 3200,
+        "locals": 80,
+        "stacksize": 144,
+        "marshal_bytes": 19494
+      },
+      "native": {
+        "code_objects": 28,
+        "bytecode_bytes": 8194,
+        "exception_table_bytes": 378,
+        "location_table_bytes": 3221,
+        "locals": 100,
+        "stacksize": 144,
+        "marshal_bytes": 21480
+      }
+    },
+    {
+      "file": "Lib/glob.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 42,
+        "bytecode_bytes": 9428,
+        "exception_table_bytes": 810,
+        "location_table_bytes": 4085,
+        "locals": 164,
+        "stacksize": 210,
+        "marshal_bytes": 24914
+      },
+      "native": {
+        "code_objects": 42,
+        "bytecode_bytes": 9500,
+        "exception_table_bytes": 828,
+        "location_table_bytes": 4096,
+        "locals": 170,
+        "stacksize": 210,
+        "marshal_bytes": 25511
+      }
+    },
+    {
+      "file": "Lib/graphlib.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 15,
+        "bytecode_bytes": 3052,
+        "exception_table_bytes": 58,
+        "location_table_bytes": 1399,
+        "locals": 41,
+        "stacksize": 62,
+        "marshal_bytes": 10441
+      },
+      "native": {
+        "code_objects": 15,
+        "bytecode_bytes": 3088,
+        "exception_table_bytes": 70,
+        "location_table_bytes": 1412,
+        "locals": 43,
+        "stacksize": 62,
+        "marshal_bytes": 10649
+      }
+    },
+    {
+      "file": "Lib/hashlib.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 6,
+        "bytecode_bytes": 2528,
+        "exception_table_bytes": 245,
+        "location_table_bytes": 1424,
+        "locals": 24,
+        "stacksize": 34,
+        "marshal_bytes": 9960
+      },
+      "native": {
+        "code_objects": 6,
+        "bytecode_bytes": 2606,
+        "exception_table_bytes": 266,
+        "location_table_bytes": 1424,
+        "locals": 34,
+        "stacksize": 34,
+        "marshal_bytes": 10825
+      }
+    },
+    {
+      "file": "Lib/html/parser.py",
+      "assertions": 10,
+      "plain": {
+        "code_objects": 30,
+        "bytecode_bytes": 10378,
+        "exception_table_bytes": 0,
+        "location_table_bytes": 4295,
+        "locals": 97,
+        "stacksize": 98,
+        "marshal_bytes": 24241
+      },
+      "native": {
+        "code_objects": 30,
+        "bytecode_bytes": 10934,
+        "exception_table_bytes": 108,
+        "location_table_bytes": 4372,
+        "locals": 151,
+        "stacksize": 98,
+        "marshal_bytes": 29467
+      }
+    },
+    {
+      "file": "Lib/http/client.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 92,
+        "bytecode_bytes": 24304,
+        "exception_table_bytes": 696,
+        "location_table_bytes": 10337,
+        "locals": 256,
+        "stacksize": 371,
+        "marshal_bytes": 62028
+      },
+      "native": {
+        "code_objects": 92,
+        "bytecode_bytes": 24506,
+        "exception_table_bytes": 741,
+        "location_table_bytes": 10350,
+        "locals": 276,
+        "stacksize": 371,
+        "marshal_bytes": 63942
+      }
+    },
+    {
+      "file": "Lib/http/cookiejar.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 104,
+        "bytecode_bytes": 32434,
+        "exception_table_bytes": 810,
+        "location_table_bytes": 13692,
+        "locals": 489,
+        "stacksize": 549,
+        "marshal_bytes": 85119
+      },
+      "native": {
+        "code_objects": 104,
+        "bytecode_bytes": 32628,
+        "exception_table_bytes": 860,
+        "location_table_bytes": 13711,
+        "locals": 503,
+        "stacksize": 549,
+        "marshal_bytes": 87019
+      }
+    },
+    {
+      "file": "Lib/http/cookies.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 42,
+        "bytecode_bytes": 7780,
+        "exception_table_bytes": 10,
+        "location_table_bytes": 3514,
+        "locals": 135,
+        "stacksize": 217,
+        "marshal_bytes": 24300
+      },
+      "native": {
+        "code_objects": 42,
+        "bytecode_bytes": 7890,
+        "exception_table_bytes": 34,
+        "location_table_bytes": 3536,
+        "locals": 139,
+        "stacksize": 217,
+        "marshal_bytes": 25159
+      }
+    },
+    {
+      "file": "Lib/idlelib/autocomplete_w.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 19,
+        "bytecode_bytes": 13110,
+        "exception_table_bytes": 100,
+        "location_table_bytes": 5141,
+        "locals": 81,
+        "stacksize": 100,
+        "marshal_bytes": 25035
+      },
+      "native": {
+        "code_objects": 19,
+        "bytecode_bytes": 13212,
+        "exception_table_bytes": 124,
+        "location_table_bytes": 5163,
+        "locals": 85,
+        "stacksize": 100,
+        "marshal_bytes": 25868
+      }
+    },
+    {
+      "file": "Lib/idlelib/codecontext.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 15,
+        "bytecode_bytes": 5040,
+        "exception_table_bytes": 56,
+        "location_table_bytes": 2121,
+        "locals": 53,
+        "stacksize": 78,
+        "marshal_bytes": 13604
+      },
+      "native": {
+        "code_objects": 15,
+        "bytecode_bytes": 5088,
+        "exception_table_bytes": 66,
+        "location_table_bytes": 2124,
+        "locals": 57,
+        "stacksize": 78,
+        "marshal_bytes": 14052
+      }
+    },
+    {
+      "file": "Lib/idlelib/debugger_r.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 63,
+        "bytecode_bytes": 5824,
+        "exception_table_bytes": 11,
+        "location_table_bytes": 2567,
+        "locals": 169,
+        "stacksize": 238,
+        "marshal_bytes": 19328
+      },
+      "native": {
+        "code_objects": 63,
+        "bytecode_bytes": 5916,
+        "exception_table_bytes": 29,
+        "location_table_bytes": 2572,
+        "locals": 179,
+        "stacksize": 238,
+        "marshal_bytes": 20348
+      }
+    },
+    {
+      "file": "Lib/idlelib/editor.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 121,
+        "bytecode_bytes": 40354,
+        "exception_table_bytes": 656,
+        "location_table_bytes": 15870,
+        "locals": 444,
+        "stacksize": 579,
+        "marshal_bytes": 89462
+      },
+      "native": {
+        "code_objects": 121,
+        "bytecode_bytes": 40438,
+        "exception_table_bytes": 691,
+        "location_table_bytes": 15885,
+        "locals": 450,
+        "stacksize": 579,
+        "marshal_bytes": 90094
+      }
+    },
+    {
+      "file": "Lib/idlelib/filelist.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 11,
+        "bytecode_bytes": 2570,
+        "exception_table_bytes": 93,
+        "location_table_bytes": 1066,
+        "locals": 35,
+        "stacksize": 43,
+        "marshal_bytes": 5998
+      },
+      "native": {
+        "code_objects": 11,
+        "bytecode_bytes": 2598,
+        "exception_table_bytes": 103,
+        "location_table_bytes": 1069,
+        "locals": 37,
+        "stacksize": 43,
+        "marshal_bytes": 6180
+      }
+    },
+    {
+      "file": "Lib/idlelib/help.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 21,
+        "bytecode_bytes": 7674,
+        "exception_table_bytes": 176,
+        "location_table_bytes": 3121,
+        "locals": 67,
+        "stacksize": 112,
+        "marshal_bytes": 19285
+      },
+      "native": {
+        "code_objects": 21,
+        "bytecode_bytes": 7730,
+        "exception_table_bytes": 186,
+        "location_table_bytes": 3124,
+        "locals": 72,
+        "stacksize": 112,
+        "marshal_bytes": 19841
+      }
+    },
+    {
+      "file": "Lib/idlelib/multicall.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 34,
+        "bytecode_bytes": 10278,
+        "exception_table_bytes": 261,
+        "location_table_bytes": 4503,
+        "locals": 143,
+        "stacksize": 200,
+        "marshal_bytes": 24737
+      },
+      "native": {
+        "code_objects": 34,
+        "bytecode_bytes": 10330,
+        "exception_table_bytes": 271,
+        "location_table_bytes": 4504,
+        "locals": 149,
+        "stacksize": 200,
+        "marshal_bytes": 25327
+      }
+    },
+    {
+      "file": "Lib/idlelib/outwin.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 17,
+        "bytecode_bytes": 2322,
+        "exception_table_bytes": 52,
+        "location_table_bytes": 1003,
+        "locals": 41,
+        "stacksize": 71,
+        "marshal_bytes": 8103
+      },
+      "native": {
+        "code_objects": 17,
+        "bytecode_bytes": 2370,
+        "exception_table_bytes": 62,
+        "location_table_bytes": 1004,
+        "locals": 46,
+        "stacksize": 71,
+        "marshal_bytes": 8594
+      }
+    },
+    {
+      "file": "Lib/idlelib/percolator.py",
+      "assertions": 9,
+      "plain": {
+        "code_objects": 16,
+        "bytecode_bytes": 3130,
+        "exception_table_bytes": 0,
+        "location_table_bytes": 1187,
+        "locals": 37,
+        "stacksize": 64,
+        "marshal_bytes": 7067
+      },
+      "native": {
+        "code_objects": 16,
+        "bytecode_bytes": 3620,
+        "exception_table_bytes": 99,
+        "location_table_bytes": 1220,
+        "locals": 52,
+        "stacksize": 64,
+        "marshal_bytes": 11040
+      }
+    },
+    {
+      "file": "Lib/idlelib/pyparse.py",
+      "assertions": 14,
+      "plain": {
+        "code_objects": 21,
+        "bytecode_bytes": 7422,
+        "exception_table_bytes": 12,
+        "location_table_bytes": 3332,
+        "locals": 78,
+        "stacksize": 80,
+        "marshal_bytes": 18679
+      },
+      "native": {
+        "code_objects": 21,
+        "bytecode_bytes": 8278,
+        "exception_table_bytes": 182,
+        "location_table_bytes": 3414,
+        "locals": 129,
+        "stacksize": 80,
+        "marshal_bytes": 26590
+      }
+    },
+    {
+      "file": "Lib/idlelib/pyshell.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 109,
+        "bytecode_bytes": 39482,
+        "exception_table_bytes": 1053,
+        "location_table_bytes": 15152,
+        "locals": 342,
+        "stacksize": 510,
+        "marshal_bytes": 87234
+      },
+      "native": {
+        "code_objects": 109,
+        "bytecode_bytes": 39574,
+        "exception_table_bytes": 1074,
+        "location_table_bytes": 15155,
+        "locals": 352,
+        "stacksize": 510,
+        "marshal_bytes": 88215
+      }
+    },
+    {
+      "file": "Lib/idlelib/rpc.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 62,
+        "bytecode_bytes": 11846,
+        "exception_table_bytes": 392,
+        "location_table_bytes": 4982,
+        "locals": 185,
+        "stacksize": 252,
+        "marshal_bytes": 31454
+      },
+      "native": {
+        "code_objects": 62,
+        "bytecode_bytes": 11954,
+        "exception_table_bytes": 412,
+        "location_table_bytes": 4984,
+        "locals": 197,
+        "stacksize": 252,
+        "marshal_bytes": 32519
+      }
+    },
+    {
+      "file": "Lib/idlelib/run.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 52,
+        "bytecode_bytes": 13842,
+        "exception_table_bytes": 430,
+        "location_table_bytes": 5752,
+        "locals": 148,
+        "stacksize": 232,
+        "marshal_bytes": 34298
+      },
+      "native": {
+        "code_objects": 52,
+        "bytecode_bytes": 13914,
+        "exception_table_bytes": 442,
+        "location_table_bytes": 5760,
+        "locals": 155,
+        "stacksize": 232,
+        "marshal_bytes": 35056
+      }
+    },
+    {
+      "file": "Lib/idlelib/squeezer.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 17,
+        "bytecode_bytes": 5346,
+        "exception_table_bytes": 4,
+        "location_table_bytes": 2234,
+        "locals": 57,
+        "stacksize": 105,
+        "marshal_bytes": 14775
+      },
+      "native": {
+        "code_objects": 17,
+        "bytecode_bytes": 5410,
+        "exception_table_bytes": 16,
+        "location_table_bytes": 2246,
+        "locals": 63,
+        "stacksize": 105,
+        "marshal_bytes": 15432
+      }
+    },
+    {
+      "file": "Lib/imaplib.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 140,
+        "bytecode_bytes": 38054,
+        "exception_table_bytes": 763,
+        "location_table_bytes": 16990,
+        "locals": 513,
+        "stacksize": 717,
+        "marshal_bytes": 96487
+      },
+      "native": {
+        "code_objects": 140,
+        "bytecode_bytes": 38272,
+        "exception_table_bytes": 811,
+        "location_table_bytes": 17013,
+        "locals": 530,
+        "stacksize": 717,
+        "marshal_bytes": 98624
+      }
+    },
+    {
+      "file": "Lib/importlib/_bootstrap.py",
+      "assertions": 20,
+      "plain": {
+        "code_objects": 101,
+        "bytecode_bytes": 22720,
+        "exception_table_bytes": 1228,
+        "location_table_bytes": 10180,
+        "locals": 287,
+        "stacksize": 440,
+        "marshal_bytes": 58451
+      },
+      "native": {
+        "code_objects": 101,
+        "bytecode_bytes": 23700,
+        "exception_table_bytes": 1485,
+        "location_table_bytes": 10315,
+        "locals": 304,
+        "stacksize": 440,
+        "marshal_bytes": 68262
+      }
+    },
+    {
+      "file": "Lib/importlib/_bootstrap_external.py",
+      "assertions": 6,
+      "plain": {
+        "code_objects": 125,
+        "bytecode_bytes": 25006,
+        "exception_table_bytes": 1189,
+        "location_table_bytes": 11330,
+        "locals": 396,
+        "stacksize": 536,
+        "marshal_bytes": 69069
+      },
+      "native": {
+        "code_objects": 125,
+        "bytecode_bytes": 25280,
+        "exception_table_bytes": 1254,
+        "location_table_bytes": 11336,
+        "locals": 428,
+        "stacksize": 536,
+        "marshal_bytes": 71993
+      }
+    },
+    {
+      "file": "Lib/importlib/resources/_common.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 28,
+        "bytecode_bytes": 3528,
+        "exception_table_bytes": 211,
+        "location_table_bytes": 1498,
+        "locals": 44,
+        "stacksize": 118,
+        "marshal_bytes": 9944
+      },
+      "native": {
+        "code_objects": 28,
+        "bytecode_bytes": 3570,
+        "exception_table_bytes": 221,
+        "location_table_bytes": 1502,
+        "locals": 48,
+        "stacksize": 118,
+        "marshal_bytes": 10333
+      }
+    },
+    {
+      "file": "Lib/inspect.py",
+      "assertions": 6,
+      "plain": {
+        "code_objects": 179,
+        "bytecode_bytes": 56252,
+        "exception_table_bytes": 1272,
+        "location_table_bytes": 26045,
+        "locals": 709,
+        "stacksize": 888,
+        "marshal_bytes": 144121
+      },
+      "native": {
+        "code_objects": 179,
+        "bytecode_bytes": 56590,
+        "exception_table_bytes": 1348,
+        "location_table_bytes": 26081,
+        "locals": 736,
+        "stacksize": 888,
+        "marshal_bytes": 147278
+      }
+    },
+    {
+      "file": "Lib/linecache.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 16,
+        "bytecode_bytes": 4714,
+        "exception_table_bytes": 477,
+        "location_table_bytes": 2273,
+        "locals": 76,
+        "stacksize": 75,
+        "marshal_bytes": 12154
+      },
+      "native": {
+        "code_objects": 16,
+        "bytecode_bytes": 4768,
+        "exception_table_bytes": 489,
+        "location_table_bytes": 2286,
+        "locals": 80,
+        "stacksize": 75,
+        "marshal_bytes": 12638
+      }
+    },
+    {
+      "file": "Lib/logging/__init__.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 180,
+        "bytecode_bytes": 30592,
+        "exception_table_bytes": 1094,
+        "location_table_bytes": 12998,
+        "locals": 453,
+        "stacksize": 755,
+        "marshal_bytes": 99475
+      },
+      "native": {
+        "code_objects": 180,
+        "bytecode_bytes": 30642,
+        "exception_table_bytes": 1106,
+        "location_table_bytes": 13006,
+        "locals": 458,
+        "stacksize": 755,
+        "marshal_bytes": 99967
+      }
+    },
+    {
+      "file": "Lib/logging/config.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 56,
+        "bytecode_bytes": 20814,
+        "exception_table_bytes": 1176,
+        "location_table_bytes": 8991,
+        "locals": 278,
+        "stacksize": 288,
+        "marshal_bytes": 47406
+      },
+      "native": {
+        "code_objects": 56,
+        "bytecode_bytes": 20862,
+        "exception_table_bytes": 1194,
+        "location_table_bytes": 8991,
+        "locals": 283,
+        "stacksize": 288,
+        "marshal_bytes": 47885
+      }
+    },
+    {
+      "file": "Lib/mailbox.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 223,
+        "bytecode_bytes": 58610,
+        "exception_table_bytes": 1803,
+        "location_table_bytes": 21850,
+        "locals": 595,
+        "stacksize": 1005,
+        "marshal_bytes": 122975
+      },
+      "native": {
+        "code_objects": 223,
+        "bytecode_bytes": 58766,
+        "exception_table_bytes": 1839,
+        "location_table_bytes": 21866,
+        "locals": 608,
+        "stacksize": 1005,
+        "marshal_bytes": 124301
+      }
+    },
+    {
+      "file": "Lib/modulefinder.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 34,
+        "bytecode_bytes": 14492,
+        "exception_table_bytes": 330,
+        "location_table_bytes": 6135,
+        "locals": 201,
+        "stacksize": 192,
+        "marshal_bytes": 29771
+      },
+      "native": {
+        "code_objects": 34,
+        "bytecode_bytes": 14646,
+        "exception_table_bytes": 366,
+        "location_table_bytes": 6150,
+        "locals": 206,
+        "stacksize": 192,
+        "marshal_bytes": 31072
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/connection.py",
+      "assertions": 10,
+      "plain": {
+        "code_objects": 91,
+        "bytecode_bytes": 22996,
+        "exception_table_bytes": 1004,
+        "location_table_bytes": 9652,
+        "locals": 283,
+        "stacksize": 393,
+        "marshal_bytes": 53081
+      },
+      "native": {
+        "code_objects": 91,
+        "bytecode_bytes": 23546,
+        "exception_table_bytes": 1159,
+        "location_table_bytes": 9714,
+        "locals": 309,
+        "stacksize": 393,
+        "marshal_bytes": 57197
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/forkserver.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 17,
+        "bytecode_bytes": 10054,
+        "exception_table_bytes": 888,
+        "location_table_bytes": 3929,
+        "locals": 98,
+        "stacksize": 92,
+        "marshal_bytes": 21555
+      },
+      "native": {
+        "code_objects": 17,
+        "bytecode_bytes": 10212,
+        "exception_table_bytes": 922,
+        "location_table_bytes": 3947,
+        "locals": 109,
+        "stacksize": 92,
+        "marshal_bytes": 23224
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/heap.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 25,
+        "bytecode_bytes": 6392,
+        "exception_table_bytes": 131,
+        "location_table_bytes": 2622,
+        "locals": 82,
+        "stacksize": 111,
+        "marshal_bytes": 14171
+      },
+      "native": {
+        "code_objects": 25,
+        "bytecode_bytes": 6420,
+        "exception_table_bytes": 142,
+        "location_table_bytes": 2627,
+        "locals": 84,
+        "stacksize": 111,
+        "marshal_bytes": 14399
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/managers.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 150,
+        "bytecode_bytes": 29988,
+        "exception_table_bytes": 1167,
+        "location_table_bytes": 12551,
+        "locals": 407,
+        "stacksize": 645,
+        "marshal_bytes": 73348
+      },
+      "native": {
+        "code_objects": 150,
+        "bytecode_bytes": 30196,
+        "exception_table_bytes": 1219,
+        "location_table_bytes": 12571,
+        "locals": 425,
+        "stacksize": 645,
+        "marshal_bytes": 75666
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/pool.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 85,
+        "bytecode_bytes": 21304,
+        "exception_table_bytes": 901,
+        "location_table_bytes": 8723,
+        "locals": 300,
+        "stacksize": 426,
+        "marshal_bytes": 48498
+      },
+      "native": {
+        "code_objects": 85,
+        "bytecode_bytes": 21350,
+        "exception_table_bytes": 912,
+        "location_table_bytes": 8727,
+        "locals": 305,
+        "stacksize": 426,
+        "marshal_bytes": 49055
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/popen_spawn_win32.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 11,
+        "bytecode_bytes": 2888,
+        "exception_table_bytes": 101,
+        "location_table_bytes": 1124,
+        "locals": 31,
+        "stacksize": 59,
+        "marshal_bytes": 6591
+      },
+      "native": {
+        "code_objects": 11,
+        "bytecode_bytes": 2944,
+        "exception_table_bytes": 111,
+        "location_table_bytes": 1128,
+        "locals": 36,
+        "stacksize": 59,
+        "marshal_bytes": 7161
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/process.py",
+      "assertions": 9,
+      "plain": {
+        "code_objects": 40,
+        "bytecode_bytes": 7200,
+        "exception_table_bytes": 159,
+        "location_table_bytes": 3054,
+        "locals": 64,
+        "stacksize": 120,
+        "marshal_bytes": 18522
+      },
+      "native": {
+        "code_objects": 40,
+        "bytecode_bytes": 7644,
+        "exception_table_bytes": 252,
+        "location_table_bytes": 3105,
+        "locals": 99,
+        "stacksize": 120,
+        "marshal_bytes": 23269
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/queues.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 38,
+        "bytecode_bytes": 8986,
+        "exception_table_bytes": 424,
+        "location_table_bytes": 3268,
+        "locals": 78,
+        "stacksize": 181,
+        "marshal_bytes": 19614
+      },
+      "native": {
+        "code_objects": 38,
+        "bytecode_bytes": 9010,
+        "exception_table_bytes": 434,
+        "location_table_bytes": 3269,
+        "locals": 81,
+        "stacksize": 181,
+        "marshal_bytes": 19890
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/resource_sharer.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 18,
+        "bytecode_bytes": 4068,
+        "exception_table_bytes": 183,
+        "location_table_bytes": 1458,
+        "locals": 47,
+        "stacksize": 81,
+        "marshal_bytes": 9444
+      },
+      "native": {
+        "code_objects": 18,
+        "bytecode_bytes": 4116,
+        "exception_table_bytes": 193,
+        "location_table_bytes": 1464,
+        "locals": 52,
+        "stacksize": 81,
+        "marshal_bytes": 10010
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/resource_tracker.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 24,
+        "bytecode_bytes": 8436,
+        "exception_table_bytes": 842,
+        "location_table_bytes": 3703,
+        "locals": 78,
+        "stacksize": 120,
+        "marshal_bytes": 19173
+      },
+      "native": {
+        "code_objects": 24,
+        "bytecode_bytes": 8590,
+        "exception_table_bytes": 876,
+        "location_table_bytes": 3714,
+        "locals": 90,
+        "stacksize": 120,
+        "marshal_bytes": 20784
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/shared_memory.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 41,
+        "bytecode_bytes": 10164,
+        "exception_table_bytes": 202,
+        "location_table_bytes": 4333,
+        "locals": 89,
+        "stacksize": 182,
+        "marshal_bytes": 24975
+      },
+      "native": {
+        "code_objects": 41,
+        "bytecode_bytes": 10332,
+        "exception_table_bytes": 236,
+        "location_table_bytes": 4344,
+        "locals": 102,
+        "stacksize": 182,
+        "marshal_bytes": 26772
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/sharedctypes.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 27,
+        "bytecode_bytes": 4588,
+        "exception_table_bytes": 143,
+        "location_table_bytes": 1895,
+        "locals": 67,
+        "stacksize": 147,
+        "marshal_bytes": 11618
+      },
+      "native": {
+        "code_objects": 27,
+        "bytecode_bytes": 4626,
+        "exception_table_bytes": 153,
+        "location_table_bytes": 1898,
+        "locals": 72,
+        "stacksize": 147,
+        "marshal_bytes": 12171
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/spawn.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 15,
+        "bytecode_bytes": 5404,
+        "exception_table_bytes": 74,
+        "location_table_bytes": 2111,
+        "locals": 47,
+        "stacksize": 76,
+        "marshal_bytes": 12224
+      },
+      "native": {
+        "code_objects": 15,
+        "bytecode_bytes": 5442,
+        "exception_table_bytes": 84,
+        "location_table_bytes": 2112,
+        "locals": 52,
+        "stacksize": 76,
+        "marshal_bytes": 12695
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/synchronize.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 52,
+        "bytecode_bytes": 9456,
+        "exception_table_bytes": 347,
+        "location_table_bytes": 3767,
+        "locals": 98,
+        "stacksize": 227,
+        "marshal_bytes": 21925
+      },
+      "native": {
+        "code_objects": 52,
+        "bytecode_bytes": 9608,
+        "exception_table_bytes": 391,
+        "location_table_bytes": 3775,
+        "locals": 110,
+        "stacksize": 227,
+        "marshal_bytes": 23736
+      }
+    },
+    {
+      "file": "Lib/multiprocessing/util.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 42,
+        "bytecode_bytes": 8642,
+        "exception_table_bytes": 408,
+        "location_table_bytes": 3686,
+        "locals": 92,
+        "stacksize": 206,
+        "marshal_bytes": 21413
+      },
+      "native": {
+        "code_objects": 42,
+        "bytecode_bytes": 8786,
+        "exception_table_bytes": 431,
+        "location_table_bytes": 3699,
+        "locals": 109,
+        "stacksize": 206,
+        "marshal_bytes": 23189
+      }
+    },
+    {
+      "file": "Lib/optparse.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 137,
+        "bytecode_bytes": 23888,
+        "exception_table_bytes": 113,
+        "location_table_bytes": 10549,
+        "locals": 348,
+        "stacksize": 602,
+        "marshal_bytes": 69816
+      },
+      "native": {
+        "code_objects": 137,
+        "bytecode_bytes": 23932,
+        "exception_table_bytes": 123,
+        "location_table_bytes": 10553,
+        "locals": 353,
+        "stacksize": 602,
+        "marshal_bytes": 70381
+      }
+    },
+    {
+      "file": "Lib/os.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 79,
+        "bytecode_bytes": 15866,
+        "exception_table_bytes": 1219,
+        "location_table_bytes": 7242,
+        "locals": 245,
+        "stacksize": 366,
+        "marshal_bytes": 49721
+      },
+      "native": {
+        "code_objects": 79,
+        "bytecode_bytes": 15920,
+        "exception_table_bytes": 1231,
+        "location_table_bytes": 7256,
+        "locals": 249,
+        "stacksize": 366,
+        "marshal_bytes": 50192
+      }
+    },
+    {
+      "file": "Lib/pdb.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 228,
+        "bytecode_bytes": 72152,
+        "exception_table_bytes": 3884,
+        "location_table_bytes": 30332,
+        "locals": 848,
+        "stacksize": 1152,
+        "marshal_bytes": 171662
+      },
+      "native": {
+        "code_objects": 228,
+        "bytecode_bytes": 72322,
+        "exception_table_bytes": 3921,
+        "location_table_bytes": 30341,
+        "locals": 865,
+        "stacksize": 1152,
+        "marshal_bytes": 173315
+      }
+    },
+    {
+      "file": "Lib/pickle.py",
+      "assertions": 5,
+      "plain": {
+        "code_objects": 139,
+        "bytecode_bytes": 37906,
+        "exception_table_bytes": 1127,
+        "location_table_bytes": 16391,
+        "locals": 420,
+        "stacksize": 703,
+        "marshal_bytes": 86483
+      },
+      "native": {
+        "code_objects": 139,
+        "bytecode_bytes": 38182,
+        "exception_table_bytes": 1181,
+        "location_table_bytes": 16412,
+        "locals": 447,
+        "stacksize": 703,
+        "marshal_bytes": 89015
+      }
+    },
+    {
+      "file": "Lib/pickletools.py",
+      "assertions": 33,
+      "plain": {
+        "code_objects": 41,
+        "bytecode_bytes": 17210,
+        "exception_table_bytes": 162,
+        "location_table_bytes": 10227,
+        "locals": 158,
+        "stacksize": 219,
+        "marshal_bytes": 83747
+      },
+      "native": {
+        "code_objects": 41,
+        "bytecode_bytes": 19116,
+        "exception_table_bytes": 563,
+        "location_table_bytes": 10335,
+        "locals": 251,
+        "stacksize": 219,
+        "marshal_bytes": 100915
+      }
+    },
+    {
+      "file": "Lib/plistlib.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 73,
+        "bytecode_bytes": 20758,
+        "exception_table_bytes": 106,
+        "location_table_bytes": 8114,
+        "locals": 233,
+        "stacksize": 344,
+        "marshal_bytes": 45211
+      },
+      "native": {
+        "code_objects": 73,
+        "bytecode_bytes": 20882,
+        "exception_table_bytes": 127,
+        "location_table_bytes": 8122,
+        "locals": 240,
+        "stacksize": 344,
+        "marshal_bytes": 46464
+      }
+    },
+    {
+      "file": "Lib/pprint.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 54,
+        "bytecode_bytes": 21028,
+        "exception_table_bytes": 126,
+        "location_table_bytes": 8914,
+        "locals": 398,
+        "stacksize": 409,
+        "marshal_bytes": 43924
+      },
+      "native": {
+        "code_objects": 54,
+        "bytecode_bytes": 21106,
+        "exception_table_bytes": 150,
+        "location_table_bytes": 8922,
+        "locals": 403,
+        "stacksize": 409,
+        "marshal_bytes": 44598
+      }
+    },
+    {
+      "file": "Lib/profile.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 39,
+        "bytecode_bytes": 9136,
+        "exception_table_bytes": 200,
+        "location_table_bytes": 3863,
+        "locals": 207,
+        "stacksize": 189,
+        "marshal_bytes": 23752
+      },
+      "native": {
+        "code_objects": 39,
+        "bytecode_bytes": 9412,
+        "exception_table_bytes": 241,
+        "location_table_bytes": 3927,
+        "locals": 230,
+        "stacksize": 189,
+        "marshal_bytes": 26752
+      }
+    },
+    {
+      "file": "Lib/pydoc.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 196,
+        "bytecode_bytes": 60546,
+        "exception_table_bytes": 1784,
+        "location_table_bytes": 26638,
+        "locals": 827,
+        "stacksize": 1042,
+        "marshal_bytes": 145949
+      },
+      "native": {
+        "code_objects": 196,
+        "bytecode_bytes": 60692,
+        "exception_table_bytes": 1818,
+        "location_table_bytes": 26644,
+        "locals": 840,
+        "stacksize": 1042,
+        "marshal_bytes": 147230
+      }
+    },
+    {
+      "file": "Lib/quopri.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 11,
+        "bytecode_bytes": 4598,
+        "exception_table_bytes": 108,
+        "location_table_bytes": 1930,
+        "locals": 59,
+        "stacksize": 71,
+        "marshal_bytes": 9818
+      },
+      "native": {
+        "code_objects": 11,
+        "bytecode_bytes": 4822,
+        "exception_table_bytes": 155,
+        "location_table_bytes": 1946,
+        "locals": 82,
+        "stacksize": 71,
+        "marshal_bytes": 11955
+      }
+    },
+    {
+      "file": "Lib/random.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 44,
+        "bytecode_bytes": 13758,
+        "exception_table_bytes": 246,
+        "location_table_bytes": 5961,
+        "locals": 214,
+        "stacksize": 228,
+        "marshal_bytes": 38097
+      },
+      "native": {
+        "code_objects": 44,
+        "bytecode_bytes": 13862,
+        "exception_table_bytes": 264,
+        "location_table_bytes": 5985,
+        "locals": 224,
+        "stacksize": 228,
+        "marshal_bytes": 39234
+      }
+    },
+    {
+      "file": "Lib/re/__init__.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 21,
+        "bytecode_bytes": 4976,
+        "exception_table_bytes": 75,
+        "location_table_bytes": 2553,
+        "locals": 68,
+        "stacksize": 104,
+        "marshal_bytes": 20633
+      },
+      "native": {
+        "code_objects": 21,
+        "bytecode_bytes": 5024,
+        "exception_table_bytes": 87,
+        "location_table_bytes": 2557,
+        "locals": 72,
+        "stacksize": 104,
+        "marshal_bytes": 21088
+      }
+    },
+    {
+      "file": "Lib/re/_compiler.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 13,
+        "bytecode_bytes": 9910,
+        "exception_table_bytes": 13,
+        "location_table_bytes": 3939,
+        "locals": 69,
+        "stacksize": 90,
+        "marshal_bytes": 17872
+      },
+      "native": {
+        "code_objects": 13,
+        "bytecode_bytes": 10084,
+        "exception_table_bytes": 48,
+        "location_table_bytes": 3961,
+        "locals": 80,
+        "stacksize": 90,
+        "marshal_bytes": 19548
+      }
+    },
+    {
+      "file": "Lib/re/_optimizer.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 19,
+        "bytecode_bytes": 8506,
+        "exception_table_bytes": 281,
+        "location_table_bytes": 3679,
+        "locals": 124,
+        "stacksize": 113,
+        "marshal_bytes": 17129
+      },
+      "native": {
+        "code_objects": 19,
+        "bytecode_bytes": 8742,
+        "exception_table_bytes": 328,
+        "location_table_bytes": 3706,
+        "locals": 141,
+        "stacksize": 113,
+        "marshal_bytes": 19451
+      }
+    },
+    {
+      "file": "Lib/re/_parser.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 53,
+        "bytecode_bytes": 26644,
+        "exception_table_bytes": 564,
+        "location_table_bytes": 11558,
+        "locals": 248,
+        "stacksize": 284,
+        "marshal_bytes": 50937
+      },
+      "native": {
+        "code_objects": 53,
+        "bytecode_bytes": 26852,
+        "exception_table_bytes": 612,
+        "location_table_bytes": 11579,
+        "locals": 265,
+        "stacksize": 284,
+        "marshal_bytes": 52695
+      }
+    },
+    {
+      "file": "Lib/reprlib.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 21,
+        "bytecode_bytes": 4986,
+        "exception_table_bytes": 128,
+        "location_table_bytes": 2310,
+        "locals": 104,
+        "stacksize": 146,
+        "marshal_bytes": 11706
+      },
+      "native": {
+        "code_objects": 21,
+        "bytecode_bytes": 5050,
+        "exception_table_bytes": 134,
+        "location_table_bytes": 2314,
+        "locals": 110,
+        "stacksize": 146,
+        "marshal_bytes": 12404
+      }
+    },
+    {
+      "file": "Lib/shutil.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 72,
+        "bytecode_bytes": 30132,
+        "exception_table_bytes": 2177,
+        "location_table_bytes": 12097,
+        "locals": 352,
+        "stacksize": 384,
+        "marshal_bytes": 72748
+      },
+      "native": {
+        "code_objects": 72,
+        "bytecode_bytes": 30202,
+        "exception_table_bytes": 2189,
+        "location_table_bytes": 12117,
+        "locals": 357,
+        "stacksize": 384,
+        "marshal_bytes": 73331
+      }
+    },
+    {
+      "file": "Lib/site.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 52,
+        "bytecode_bytes": 17478,
+        "exception_table_bytes": 934,
+        "location_table_bytes": 7286,
+        "locals": 185,
+        "stacksize": 283,
+        "marshal_bytes": 46577
+      },
+      "native": {
+        "code_objects": 52,
+        "bytecode_bytes": 17548,
+        "exception_table_bytes": 952,
+        "location_table_bytes": 7293,
+        "locals": 193,
+        "stacksize": 283,
+        "marshal_bytes": 47488
+      }
+    },
+    {
+      "file": "Lib/smtplib.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 62,
+        "bytecode_bytes": 15270,
+        "exception_table_bytes": 410,
+        "location_table_bytes": 6690,
+        "locals": 200,
+        "stacksize": 264,
+        "marshal_bytes": 48562
+      },
+      "native": {
+        "code_objects": 62,
+        "bytecode_bytes": 15314,
+        "exception_table_bytes": 422,
+        "location_table_bytes": 6691,
+        "locals": 206,
+        "stacksize": 264,
+        "marshal_bytes": 49149
+      }
+    },
+    {
+      "file": "Lib/socket.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 54,
+        "bytecode_bytes": 13940,
+        "exception_table_bytes": 898,
+        "location_table_bytes": 7278,
+        "locals": 193,
+        "stacksize": 266,
+        "marshal_bytes": 44121
+      },
+      "native": {
+        "code_objects": 54,
+        "bytecode_bytes": 14012,
+        "exception_table_bytes": 927,
+        "location_table_bytes": 7295,
+        "locals": 197,
+        "stacksize": 266,
+        "marshal_bytes": 44668
+      }
+    },
+    {
+      "file": "Lib/statistics.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 128,
+        "bytecode_bytes": 23418,
+        "exception_table_bytes": 440,
+        "location_table_bytes": 10605,
+        "locals": 407,
+        "stacksize": 630,
+        "marshal_bytes": 77906
+      },
+      "native": {
+        "code_objects": 128,
+        "bytecode_bytes": 23586,
+        "exception_table_bytes": 485,
+        "location_table_bytes": 10615,
+        "locals": 423,
+        "stacksize": 630,
+        "marshal_bytes": 79514
+      }
+    },
+    {
+      "file": "Lib/stringprep.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 20,
+        "bytecode_bytes": 15954,
+        "exception_table_bytes": 5,
+        "location_table_bytes": 22027,
+        "locals": 28,
+        "stacksize": 93,
+        "marshal_bytes": 55097
+      },
+      "native": {
+        "code_objects": 20,
+        "bytecode_bytes": 16066,
+        "exception_table_bytes": 30,
+        "location_table_bytes": 22035,
+        "locals": 33,
+        "stacksize": 93,
+        "marshal_bytes": 56185
+      }
+    },
+    {
+      "file": "Lib/subprocess.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 89,
+        "bytecode_bytes": 41336,
+        "exception_table_bytes": 2319,
+        "location_table_bytes": 17306,
+        "locals": 438,
+        "stacksize": 507,
+        "marshal_bytes": 95556
+      },
+      "native": {
+        "code_objects": 89,
+        "bytecode_bytes": 41530,
+        "exception_table_bytes": 2365,
+        "location_table_bytes": 17329,
+        "locals": 449,
+        "stacksize": 507,
+        "marshal_bytes": 97535
+      }
+    },
+    {
+      "file": "Lib/symtable.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 66,
+        "bytecode_bytes": 8458,
+        "exception_table_bytes": 68,
+        "location_table_bytes": 3538,
+        "locals": 111,
+        "stacksize": 248,
+        "marshal_bytes": 24897
+      },
+      "native": {
+        "code_objects": 66,
+        "bytecode_bytes": 8498,
+        "exception_table_bytes": 80,
+        "location_table_bytes": 3550,
+        "locals": 113,
+        "stacksize": 248,
+        "marshal_bytes": 25110
+      }
+    },
+    {
+      "file": "Lib/sysconfig/__main__.py",
+      "assertions": 3,
+      "plain": {
+        "code_objects": 10,
+        "bytecode_bytes": 4344,
+        "exception_table_bytes": 247,
+        "location_table_bytes": 1925,
+        "locals": 38,
+        "stacksize": 62,
+        "marshal_bytes": 9734
+      },
+      "native": {
+        "code_objects": 10,
+        "bytecode_bytes": 4490,
+        "exception_table_bytes": 279,
+        "location_table_bytes": 1939,
+        "locals": 51,
+        "stacksize": 62,
+        "marshal_bytes": 11044
+      }
+    },
+    {
+      "file": "Lib/tarfile.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 168,
+        "bytecode_bytes": 59238,
+        "exception_table_bytes": 2136,
+        "location_table_bytes": 24862,
+        "locals": 657,
+        "stacksize": 835,
+        "marshal_bytes": 136375
+      },
+      "native": {
+        "code_objects": 168,
+        "bytecode_bytes": 59290,
+        "exception_table_bytes": 2146,
+        "location_table_bytes": 24868,
+        "locals": 661,
+        "stacksize": 835,
+        "marshal_bytes": 136839
+      }
+    },
+    {
+      "file": "Lib/threading.py",
+      "assertions": 12,
+      "plain": {
+        "code_objects": 137,
+        "bytecode_bytes": 22768,
+        "exception_table_bytes": 1094,
+        "location_table_bytes": 9316,
+        "locals": 220,
+        "stacksize": 564,
+        "marshal_bytes": 72853
+      },
+      "native": {
+        "code_objects": 137,
+        "bytecode_bytes": 23214,
+        "exception_table_bytes": 1220,
+        "location_table_bytes": 9353,
+        "locals": 267,
+        "stacksize": 564,
+        "marshal_bytes": 77026
+      }
+    },
+    {
+      "file": "Lib/tkinter/__init__.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 602,
+        "bytecode_bytes": 88446,
+        "exception_table_bytes": 1434,
+        "location_table_bytes": 37540,
+        "locals": 1575,
+        "stacksize": 3385,
+        "marshal_bytes": 286026
+      },
+      "native": {
+        "code_objects": 602,
+        "bytecode_bytes": 88636,
+        "exception_table_bytes": 1478,
+        "location_table_bytes": 37556,
+        "locals": 1588,
+        "stacksize": 3385,
+        "marshal_bytes": 287490
+      }
+    },
+    {
+      "file": "Lib/traceback.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 114,
+        "bytecode_bytes": 39508,
+        "exception_table_bytes": 1570,
+        "location_table_bytes": 17639,
+        "locals": 501,
+        "stacksize": 635,
+        "marshal_bytes": 95243
+      },
+      "native": {
+        "code_objects": 114,
+        "bytecode_bytes": 39768,
+        "exception_table_bytes": 1621,
+        "location_table_bytes": 17662,
+        "locals": 528,
+        "stacksize": 635,
+        "marshal_bytes": 98026
+      }
+    },
+    {
+      "file": "Lib/turtle.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 252,
+        "bytecode_bytes": 63244,
+        "exception_table_bytes": 688,
+        "location_table_bytes": 26145,
+        "locals": 813,
+        "stacksize": 1163,
+        "marshal_bytes": 186660
+      },
+      "native": {
+        "code_objects": 252,
+        "bytecode_bytes": 63300,
+        "exception_table_bytes": 699,
+        "location_table_bytes": 26146,
+        "locals": 819,
+        "stacksize": 1163,
+        "marshal_bytes": 187235
+      }
+    },
+    {
+      "file": "Lib/typing.py",
+      "assertions": 10,
+      "plain": {
+        "code_objects": 336,
+        "bytecode_bytes": 53212,
+        "exception_table_bytes": 631,
+        "location_table_bytes": 26418,
+        "locals": 757,
+        "stacksize": 1404,
+        "marshal_bytes": 175621
+      },
+      "native": {
+        "code_objects": 336,
+        "bytecode_bytes": 53770,
+        "exception_table_bytes": 735,
+        "location_table_bytes": 26462,
+        "locals": 799,
+        "stacksize": 1404,
+        "marshal_bytes": 180573
+      }
+    },
+    {
+      "file": "Lib/unittest/async_case.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 18,
+        "bytecode_bytes": 2358,
+        "exception_table_bytes": 102,
+        "location_table_bytes": 1098,
+        "locals": 41,
+        "stacksize": 74,
+        "marshal_bytes": 7087
+      },
+      "native": {
+        "code_objects": 18,
+        "bytecode_bytes": 2540,
+        "exception_table_bytes": 143,
+        "location_table_bytes": 1117,
+        "locals": 56,
+        "stacksize": 74,
+        "marshal_bytes": 8993
+      }
+    },
+    {
+      "file": "Lib/unittest/case.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 139,
+        "bytecode_bytes": 28986,
+        "exception_table_bytes": 1286,
+        "location_table_bytes": 12815,
+        "locals": 485,
+        "stacksize": 670,
+        "marshal_bytes": 81576
+      },
+      "native": {
+        "code_objects": 139,
+        "bytecode_bytes": 29006,
+        "exception_table_bytes": 1296,
+        "location_table_bytes": 12818,
+        "locals": 487,
+        "stacksize": 670,
+        "marshal_bytes": 81749
+      }
+    },
+    {
+      "file": "Lib/unittest/loader.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 27,
+        "bytecode_bytes": 10846,
+        "exception_table_bytes": 360,
+        "location_table_bytes": 4391,
+        "locals": 126,
+        "stacksize": 136,
+        "marshal_bytes": 24584
+      },
+      "native": {
+        "code_objects": 27,
+        "bytecode_bytes": 10930,
+        "exception_table_bytes": 384,
+        "location_table_bytes": 4399,
+        "locals": 132,
+        "stacksize": 136,
+        "marshal_bytes": 25708
+      }
+    },
+    {
+      "file": "Lib/unittest/mock.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 233,
+        "bytecode_bytes": 47820,
+        "exception_table_bytes": 1149,
+        "location_table_bytes": 22079,
+        "locals": 805,
+        "stacksize": 1105,
+        "marshal_bytes": 132260
+      },
+      "native": {
+        "code_objects": 233,
+        "bytecode_bytes": 47896,
+        "exception_table_bytes": 1160,
+        "location_table_bytes": 22086,
+        "locals": 813,
+        "stacksize": 1105,
+        "marshal_bytes": 133099
+      }
+    },
+    {
+      "file": "Lib/unittest/util.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 14,
+        "bytecode_bytes": 3596,
+        "exception_table_bytes": 149,
+        "location_table_bytes": 1668,
+        "locals": 61,
+        "stacksize": 77,
+        "marshal_bytes": 8320
+      },
+      "native": {
+        "code_objects": 14,
+        "bytecode_bytes": 3742,
+        "exception_table_bytes": 173,
+        "location_table_bytes": 1684,
+        "locals": 77,
+        "stacksize": 77,
+        "marshal_bytes": 10158
+      }
+    },
+    {
+      "file": "Lib/urllib/request.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 156,
+        "bytecode_bytes": 35964,
+        "exception_table_bytes": 889,
+        "location_table_bytes": 15999,
+        "locals": 601,
+        "stacksize": 674,
+        "marshal_bytes": 92417
+      },
+      "native": {
+        "code_objects": 156,
+        "bytecode_bytes": 36002,
+        "exception_table_bytes": 899,
+        "location_table_bytes": 16000,
+        "locals": 606,
+        "stacksize": 674,
+        "marshal_bytes": 92892
+      }
+    },
+    {
+      "file": "Lib/uuid.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 64,
+        "bytecode_bytes": 13906,
+        "exception_table_bytes": 265,
+        "location_table_bytes": 6509,
+        "locals": 183,
+        "stacksize": 277,
+        "marshal_bytes": 41355
+      },
+      "native": {
+        "code_objects": 64,
+        "bytecode_bytes": 14090,
+        "exception_table_bytes": 316,
+        "location_table_bytes": 6534,
+        "locals": 197,
+        "stacksize": 277,
+        "marshal_bytes": 43032
+      }
+    },
+    {
+      "file": "Lib/venv/__init__.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 27,
+        "bytecode_bytes": 16114,
+        "exception_table_bytes": 425,
+        "location_table_bytes": 6419,
+        "locals": 151,
+        "stacksize": 178,
+        "marshal_bytes": 37027
+      },
+      "native": {
+        "code_objects": 27,
+        "bytecode_bytes": 16270,
+        "exception_table_bytes": 448,
+        "location_table_bytes": 6432,
+        "locals": 163,
+        "stacksize": 178,
+        "marshal_bytes": 38763
+      }
+    },
+    {
+      "file": "Lib/wave.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 62,
+        "bytecode_bytes": 14016,
+        "exception_table_bytes": 310,
+        "location_table_bytes": 5529,
+        "locals": 123,
+        "stacksize": 203,
+        "marshal_bytes": 36332
+      },
+      "native": {
+        "code_objects": 62,
+        "bytecode_bytes": 14086,
+        "exception_table_bytes": 330,
+        "location_table_bytes": 5533,
+        "locals": 129,
+        "stacksize": 203,
+        "marshal_bytes": 36922
+      }
+    },
+    {
+      "file": "Lib/weakref.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 70,
+        "bytecode_bytes": 10206,
+        "exception_table_bytes": 306,
+        "location_table_bytes": 4302,
+        "locals": 205,
+        "stacksize": 292,
+        "marshal_bytes": 27868
+      },
+      "native": {
+        "code_objects": 70,
+        "bytecode_bytes": 10262,
+        "exception_table_bytes": 312,
+        "location_table_bytes": 4308,
+        "locals": 210,
+        "stacksize": 292,
+        "marshal_bytes": 28431
+      }
+    },
+    {
+      "file": "Lib/wsgiref/handlers.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 42,
+        "bytecode_bytes": 7912,
+        "exception_table_bytes": 159,
+        "location_table_bytes": 3457,
+        "locals": 82,
+        "stacksize": 162,
+        "marshal_bytes": 24339
+      },
+      "native": {
+        "code_objects": 42,
+        "bytecode_bytes": 7996,
+        "exception_table_bytes": 181,
+        "location_table_bytes": 3464,
+        "locals": 92,
+        "stacksize": 162,
+        "marshal_bytes": 25368
+      }
+    },
+    {
+      "file": "Lib/xml/dom/expatbuilder.py",
+      "assertions": 5,
+      "plain": {
+        "code_objects": 89,
+        "bytecode_bytes": 19990,
+        "exception_table_bytes": 155,
+        "location_table_bytes": 8024,
+        "locals": 276,
+        "stacksize": 354,
+        "marshal_bytes": 47792
+      },
+      "native": {
+        "code_objects": 89,
+        "bytecode_bytes": 20310,
+        "exception_table_bytes": 222,
+        "location_table_bytes": 8067,
+        "locals": 300,
+        "stacksize": 354,
+        "marshal_bytes": 51340
+      }
+    },
+    {
+      "file": "Lib/xml/dom/minicompat.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 14,
+        "bytecode_bytes": 948,
+        "exception_table_bytes": 0,
+        "location_table_bytes": 479,
+        "locals": 27,
+        "stacksize": 53,
+        "marshal_bytes": 3565
+      },
+      "native": {
+        "code_objects": 14,
+        "bytecode_bytes": 998,
+        "exception_table_bytes": 10,
+        "location_table_bytes": 483,
+        "locals": 34,
+        "stacksize": 53,
+        "marshal_bytes": 4319
+      }
+    },
+    {
+      "file": "Lib/xml/dom/minidom.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 257,
+        "bytecode_bytes": 45922,
+        "exception_table_bytes": 323,
+        "location_table_bytes": 19321,
+        "locals": 675,
+        "stacksize": 905,
+        "marshal_bytes": 108475
+      },
+      "native": {
+        "code_objects": 257,
+        "bytecode_bytes": 46156,
+        "exception_table_bytes": 371,
+        "location_table_bytes": 19342,
+        "locals": 686,
+        "stacksize": 905,
+        "marshal_bytes": 110589
+      }
+    },
+    {
+      "file": "Lib/xml/dom/xmlbuilder.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 55,
+        "bytecode_bytes": 5158,
+        "exception_table_bytes": 106,
+        "location_table_bytes": 2826,
+        "locals": 105,
+        "stacksize": 144,
+        "marshal_bytes": 17592
+      },
+      "native": {
+        "code_objects": 55,
+        "bytecode_bytes": 5214,
+        "exception_table_bytes": 116,
+        "location_table_bytes": 2836,
+        "locals": 109,
+        "stacksize": 144,
+        "marshal_bytes": 18068
+      }
+    },
+    {
+      "file": "Lib/xml/etree/ElementTree.py",
+      "assertions": 5,
+      "plain": {
+        "code_objects": 145,
+        "bytecode_bytes": 31832,
+        "exception_table_bytes": 1230,
+        "location_table_bytes": 13807,
+        "locals": 457,
+        "stacksize": 709,
+        "marshal_bytes": 88754
+      },
+      "native": {
+        "code_objects": 145,
+        "bytecode_bytes": 32102,
+        "exception_table_bytes": 1286,
+        "location_table_bytes": 13843,
+        "locals": 476,
+        "stacksize": 709,
+        "marshal_bytes": 91648
+      }
+    },
+    {
+      "file": "Lib/xmlrpc/client.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 123,
+        "bytecode_bytes": 19254,
+        "exception_table_bytes": 410,
+        "location_table_bytes": 8522,
+        "locals": 325,
+        "stacksize": 511,
+        "marshal_bytes": 53385
+      },
+      "native": {
+        "code_objects": 123,
+        "bytecode_bytes": 19358,
+        "exception_table_bytes": 432,
+        "location_table_bytes": 8527,
+        "locals": 332,
+        "stacksize": 511,
+        "marshal_bytes": 54611
+      }
+    },
+    {
+      "file": "Lib/xmlrpc/server.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 58,
+        "bytecode_bytes": 14058,
+        "exception_table_bytes": 474,
+        "location_table_bytes": 6039,
+        "locals": 201,
+        "stacksize": 297,
+        "marshal_bytes": 43733
+      },
+      "native": {
+        "code_objects": 58,
+        "bytecode_bytes": 14094,
+        "exception_table_bytes": 486,
+        "location_table_bytes": 6051,
+        "locals": 203,
+        "stacksize": 297,
+        "marshal_bytes": 43936
+      }
+    },
+    {
+      "file": "Lib/zipfile/__init__.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 139,
+        "bytecode_bytes": 60388,
+        "exception_table_bytes": 1783,
+        "location_table_bytes": 24824,
+        "locals": 583,
+        "stacksize": 710,
+        "marshal_bytes": 130917
+      },
+      "native": {
+        "code_objects": 139,
+        "bytecode_bytes": 60442,
+        "exception_table_bytes": 1793,
+        "location_table_bytes": 24828,
+        "locals": 588,
+        "stacksize": 710,
+        "marshal_bytes": 131491
+      }
+    },
+    {
+      "file": "Lib/zipfile/_path/glob.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 15,
+        "bytecode_bytes": 1624,
+        "exception_table_bytes": 8,
+        "location_table_bytes": 701,
+        "locals": 27,
+        "stacksize": 67,
+        "marshal_bytes": 5872
+      },
+      "native": {
+        "code_objects": 15,
+        "bytecode_bytes": 1702,
+        "exception_table_bytes": 23,
+        "location_table_bytes": 714,
+        "locals": 37,
+        "stacksize": 67,
+        "marshal_bytes": 6954
+      }
+    },
+    {
+      "file": "Lib/zipimport.py",
+      "assertions": 2,
+      "plain": {
+        "code_objects": 30,
+        "bytecode_bytes": 11522,
+        "exception_table_bytes": 834,
+        "location_table_bytes": 5647,
+        "locals": 159,
+        "stacksize": 160,
+        "marshal_bytes": 28411
+      },
+      "native": {
+        "code_objects": 30,
+        "bytecode_bytes": 11726,
+        "exception_table_bytes": 855,
+        "location_table_bytes": 5673,
+        "locals": 179,
+        "stacksize": 160,
+        "marshal_bytes": 30334
+      }
+    },
+    {
+      "file": "Lib/zoneinfo/_common.py",
+      "assertions": 1,
+      "plain": {
+        "code_objects": 10,
+        "bytecode_bytes": 2638,
+        "exception_table_bytes": 31,
+        "location_table_bytes": 1164,
+        "locals": 38,
+        "stacksize": 52,
+        "marshal_bytes": 6026
+      },
+      "native": {
+        "code_objects": 10,
+        "bytecode_bytes": 2676,
+        "exception_table_bytes": 43,
+        "location_table_bytes": 1167,
+        "locals": 42,
+        "stacksize": 52,
+        "marshal_bytes": 6469
+      }
+    },
+    {
+      "file": "Lib/zoneinfo/_zoneinfo.py",
+      "assertions": 4,
+      "plain": {
+        "code_objects": 49,
+        "bytecode_bytes": 13000,
+        "exception_table_bytes": 164,
+        "location_table_bytes": 5690,
+        "locals": 196,
+        "stacksize": 210,
+        "marshal_bytes": 28931
+      },
+      "native": {
+        "code_objects": 49,
+        "bytecode_bytes": 13176,
+        "exception_table_bytes": 210,
+        "location_table_bytes": 5710,
+        "locals": 208,
+        "stacksize": 210,
+        "marshal_bytes": 30507
+      }
+    }
+  ]
+}

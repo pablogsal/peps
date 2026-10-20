@@ -1,0 +1,16 @@
+Using random seed: 4228342312
+0:00:00 load avg: 18.95 mem: 23.2 MiB Run 1 test sequentially in a single process
+0:00:00 load avg: 18.95 mem: 23.2 MiB [1/1] test_assert_details
+beginning 6 repetitions. Showing number of leaks (. for 0 or less, X for 10 or more)
+123:456
+X41 ...
+0:00:01 load avg: 18.95 mem: 32.9 MiB [1/1] test_assert_details passed
+
+== Tests result: SUCCESS ==
+
+1 test OK.
+
+Total duration: 1.6 sec
+Total tests: run=57
+Total test files: run=1/1
+Result: SUCCESS

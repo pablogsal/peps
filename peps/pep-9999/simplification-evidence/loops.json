@@ -1,0 +1,1494 @@
+{
+  "python": "3.16.0a1+dev (heads/snazzy-asserts-dirty:96d1d0a09d0, Oct 20 2026, 18:20:06) [GCC 15.2.0]",
+  "executable": "/home/pablogsal/github/cpython/native-assert-prototype-20261018/python",
+  "config_args": "'--without-ensurepip'",
+  "cflags": "-fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall",
+  "cpu": 17,
+  "loadavg": [
+    19.3076171875,
+    18.84619140625,
+    18.7724609375
+  ],
+  "rounds": 9,
+  "iterations_per_call": 1000,
+  "sample_seconds": 0.15,
+  "cases": {
+    "constant": {
+      "expression": "True",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 46,
+            "instructions": 12,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 19,
+            "marshal_bytes": 176,
+            "frame_slots": 7,
+            "locals": 4,
+            "stacksize": 3
+          },
+          "samples_ns": [
+            4.070066759938666,
+            4.0755024301966145,
+            4.0423837851106645,
+            4.031775263881616,
+            4.023588143819719,
+            4.117887711445706,
+            4.0454959429870305,
+            4.0948057159371665,
+            4.047617392050268
+          ],
+          "loops": 49635,
+          "median_ns": 4.047617392050268,
+          "mad_ns": 0.022449367888398797,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 46,
+            "instructions": 12,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 19,
+            "marshal_bytes": 176,
+            "frame_slots": 7,
+            "locals": 4,
+            "stacksize": 3
+          },
+          "samples_ns": [
+            3.55536993882047,
+            2.8637699987420606,
+            2.889586553285903,
+            2.8867772426433977,
+            2.8375627371451793,
+            2.8367105380762063,
+            2.830177493663219,
+            2.8678820121231374,
+            2.863808467219277
+          ],
+          "loops": 50260,
+          "median_ns": 2.863808467219277,
+          "mad_ns": 0.025778086066625683,
+          "relative_time": 0.7075294401204884
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 192,
+            "instructions": 37,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 43,
+            "marshal_bytes": 455,
+            "frame_slots": 13,
+            "locals": 6,
+            "stacksize": 7
+          },
+          "samples_ns": [
+            7.615800111318653,
+            6.680853621293303,
+            6.565667683162015,
+            8.007260948980448,
+            6.588951221241835,
+            6.618560031283787,
+            6.5812857164068115,
+            6.862942627721133,
+            6.628831676070106
+          ],
+          "loops": 19660,
+          "median_ns": 6.628831676070106,
+          "mad_ns": 0.05202194522319736,
+          "relative_time": 1.6377120251260602
+        }
+      }
+    },
+    "equal_int": {
+      "expression": "a == b",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 62,
+            "instructions": 18,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 25,
+            "marshal_bytes": 198,
+            "frame_slots": 8,
+            "locals": 4,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            6.719542510993357,
+            6.678895708046802,
+            6.684130036574102,
+            6.623180570448337,
+            6.63564394728667,
+            6.628493966361562,
+            6.646712029737139,
+            6.652141323570762,
+            6.852350208291661
+          ],
+          "loops": 22050,
+          "median_ns": 6.652141323570762,
+          "mad_ns": 0.026754384476040727,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 128,
+            "instructions": 45,
+            "cache_units": 0,
+            "exception_table_bytes": 8,
+            "location_table_bytes": 33,
+            "marshal_bytes": 573,
+            "frame_slots": 12,
+            "locals": 8,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            16.056860572908025,
+            13.792107483972579,
+            13.883085506223054,
+            14.565972386671868,
+            14.012575443223964,
+            14.450845532801049,
+            14.019814760877404,
+            13.65555496646003,
+            14.264472021233134
+          ],
+          "loops": 10655,
+          "median_ns": 14.019814760877404,
+          "mad_ns": 0.24465726035573,
+          "relative_time": 2.1075641780490306
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 536,
+            "instructions": 95,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 97,
+            "marshal_bytes": 982,
+            "frame_slots": 16,
+            "locals": 7,
+            "stacksize": 9
+          },
+          "samples_ns": [
+            8.573569811007385,
+            8.49609074708715,
+            9.277542511531388,
+            9.256029782229907,
+            8.503136592187113,
+            9.216961126258566,
+            8.525361832872012,
+            8.45637558030937,
+            8.395447692007416
+          ],
+          "loops": 16425,
+          "median_ns": 8.525361832872012,
+          "mad_ns": 0.06898625256264168,
+          "relative_time": 1.2815966195221684
+        }
+      }
+    },
+    "equal_large_int": {
+      "expression": "a == b",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 62,
+            "instructions": 18,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 25,
+            "marshal_bytes": 198,
+            "frame_slots": 8,
+            "locals": 4,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            10.814788332378807,
+            10.492819250197009,
+            10.48009740154755,
+            10.902599632546284,
+            10.471180877576677,
+            10.561780091206774,
+            10.579960077849814,
+            10.489545223857325,
+            10.663061310447526
+          ],
+          "loops": 12614,
+          "median_ns": 10.561780091206774,
+          "mad_ns": 0.08168268965922465,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 128,
+            "instructions": 45,
+            "cache_units": 0,
+            "exception_table_bytes": 8,
+            "location_table_bytes": 33,
+            "marshal_bytes": 573,
+            "frame_slots": 12,
+            "locals": 8,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            20.14556706979357,
+            17.433701637123782,
+            17.361511858490196,
+            17.669995653964982,
+            17.53896664636486,
+            17.5347310788605,
+            17.453339086442586,
+            17.629071133131916,
+            17.918878582849267
+          ],
+          "loops": 8381,
+          "median_ns": 17.53896664636486,
+          "mad_ns": 0.10526500924107651,
+          "relative_time": 1.660607065750872
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 536,
+            "instructions": 95,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 97,
+            "marshal_bytes": 982,
+            "frame_slots": 16,
+            "locals": 7,
+            "stacksize": 9
+          },
+          "samples_ns": [
+            11.769656583352496,
+            11.688630472750171,
+            13.01079583360735,
+            11.676618601369412,
+            11.793422054777626,
+            12.242433777334037,
+            14.24281604466947,
+            12.337152696733735,
+            11.752056776524043
+          ],
+          "loops": 11568,
+          "median_ns": 11.793422054777626,
+          "mad_ns": 0.11680345340821319,
+          "relative_time": 1.1166131043190586
+        }
+      }
+    },
+    "arithmetic_large_int": {
+      "expression": "a * 2 + b == expected",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 92,
+            "instructions": 23,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 38,
+            "marshal_bytes": 241,
+            "frame_slots": 8,
+            "locals": 4,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            49.864381054872375,
+            49.318107526054746,
+            50.251043692735465,
+            49.26844553771048,
+            49.41909793361418,
+            49.64830278460364,
+            49.50622974214525,
+            49.44615294710642,
+            49.91735427503801
+          ],
+          "loops": 3014,
+          "median_ns": 49.50622974214525,
+          "mad_ns": 0.1881222160905054,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 196,
+            "instructions": 69,
+            "cache_units": 0,
+            "exception_table_bytes": 10,
+            "location_table_bytes": 50,
+            "marshal_bytes": 991,
+            "frame_slots": 16,
+            "locals": 12,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            65.15064379967406,
+            64.66461148766825,
+            64.80156731160872,
+            64.76975214370832,
+            64.73000888656881,
+            64.90680234488252,
+            64.52996328749396,
+            64.40370944025395,
+            64.55122386782064
+          ],
+          "loops": 2319,
+          "median_ns": 64.73000888656881,
+          "mad_ns": 0.17679345831371052,
+          "relative_time": 1.3075123923537924
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 788,
+            "instructions": 141,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 200,
+            "marshal_bytes": 1419,
+            "frame_slots": 23,
+            "locals": 10,
+            "stacksize": 13
+          },
+          "samples_ns": [
+            61.258759197531916,
+            60.71995562000304,
+            60.53466829136609,
+            61.614164122328255,
+            58.86851815703493,
+            59.998028985197394,
+            58.87544357747554,
+            58.6894715986584,
+            60.56675594878493
+          ],
+          "loops": 2254,
+          "median_ns": 60.53466829136609,
+          "mad_ns": 0.7240909061658272,
+          "relative_time": 1.2227687021747122
+        }
+      }
+    },
+    "arithmetic_float": {
+      "expression": "a * 2 + b == expected",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 92,
+            "instructions": 23,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 38,
+            "marshal_bytes": 241,
+            "frame_slots": 8,
+            "locals": 4,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            16.828933004821597,
+            16.321268601397403,
+            16.536136957097156,
+            17.102614386087048,
+            16.249136159436073,
+            16.704877512086387,
+            18.052564806241243,
+            16.72313603490199,
+            16.9476945067515
+          ],
+          "loops": 9353,
+          "median_ns": 16.72313603490199,
+          "mad_ns": 0.22455847184950883,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 196,
+            "instructions": 69,
+            "cache_units": 0,
+            "exception_table_bytes": 10,
+            "location_table_bytes": 50,
+            "marshal_bytes": 991,
+            "frame_slots": 16,
+            "locals": 12,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            38.63041002779675,
+            35.769450542167846,
+            33.666585165493295,
+            33.44615974750342,
+            32.61682562854759,
+            34.264190844131214,
+            33.622328842329225,
+            34.03672051916288,
+            32.454597892214124
+          ],
+          "loops": 4153,
+          "median_ns": 33.666585165493295,
+          "mad_ns": 0.5976056786379189,
+          "relative_time": 2.0131741495871056
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 788,
+            "instructions": 141,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 200,
+            "marshal_bytes": 1419,
+            "frame_slots": 23,
+            "locals": 10,
+            "stacksize": 13
+          },
+          "samples_ns": [
+            30.549305427450935,
+            28.05923014922861,
+            31.193986354301074,
+            28.282268172688276,
+            30.67941709346189,
+            27.80848503567838,
+            27.635141379649706,
+            30.027451942316585,
+            30.136505316002452
+          ],
+          "loops": 4781,
+          "median_ns": 30.027451942316585,
+          "mad_ns": 1.1665344119844896,
+          "relative_time": 1.7955634564981022
+        }
+      }
+    },
+    "arithmetic": {
+      "expression": "a * 2 + b == expected",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 92,
+            "instructions": 23,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 38,
+            "marshal_bytes": 241,
+            "frame_slots": 8,
+            "locals": 4,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            12.915707405890812,
+            12.904347436346955,
+            12.960457816578826,
+            14.189731499740114,
+            12.883854007972507,
+            12.88804110912903,
+            12.940183461585196,
+            12.880818987334216,
+            12.860149401821625
+          ],
+          "loops": 11610,
+          "median_ns": 12.904347436346955,
+          "mad_ns": 0.02352844901273876,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 196,
+            "instructions": 69,
+            "cache_units": 0,
+            "exception_table_bytes": 10,
+            "location_table_bytes": 50,
+            "marshal_bytes": 991,
+            "frame_slots": 16,
+            "locals": 12,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            27.375307122139024,
+            27.66250692794186,
+            28.797967697241145,
+            30.066172839764814,
+            27.93737622258579,
+            27.367290585301987,
+            27.397239949560404,
+            28.102368565424683,
+            27.30529332479414
+          ],
+          "loops": 5409,
+          "median_ns": 27.66250692794186,
+          "mad_ns": 0.29521634263987195,
+          "relative_time": 2.1436579466255243
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 788,
+            "instructions": 141,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 200,
+            "marshal_bytes": 1419,
+            "frame_slots": 23,
+            "locals": 10,
+            "stacksize": 13
+          },
+          "samples_ns": [
+            24.38969444332477,
+            24.205798713990013,
+            24.470979903054012,
+            24.389099792501504,
+            24.660640588604778,
+            24.25690228376263,
+            24.75773119357086,
+            24.147349235457025,
+            24.368148508529714
+          ],
+          "loops": 6166,
+          "median_ns": 24.389099792501504,
+          "mad_ns": 0.13219750873887293,
+          "relative_time": 1.889990943967154
+        }
+      }
+    },
+    "attribute": {
+      "expression": "a.value == b",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 84,
+            "instructions": 20,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 32,
+            "marshal_bytes": 234,
+            "frame_slots": 8,
+            "locals": 4,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            23.84132883564486,
+            23.780323691562284,
+            23.709770868576708,
+            23.739948397141024,
+            23.83173626721009,
+            24.10314567754874,
+            24.074524679977305,
+            24.137057149815227,
+            24.183505105501546
+          ],
+          "loops": 6888,
+          "median_ns": 23.84132883564486,
+          "mad_ns": 0.13155796706815082,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 158,
+            "instructions": 51,
+            "cache_units": 0,
+            "exception_table_bytes": 10,
+            "location_table_bytes": 38,
+            "marshal_bytes": 705,
+            "frame_slots": 13,
+            "locals": 9,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            35.2620953271369,
+            33.311519197326014,
+            33.82140085652772,
+            32.41606491575343,
+            32.886949689543144,
+            33.75262216616836,
+            33.16798235763346,
+            33.279612250905295,
+            33.730247580217224
+          ],
+          "loops": 4403,
+          "median_ns": 33.311519197326014,
+          "mad_ns": 0.42456950778286995,
+          "relative_time": 1.3972173877960359
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 610,
+            "instructions": 107,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 149,
+            "marshal_bytes": 1161,
+            "frame_slots": 19,
+            "locals": 8,
+            "stacksize": 11
+          },
+          "samples_ns": [
+            29.081572001819527,
+            29.2007288926643,
+            29.12830838339506,
+            29.04551241493955,
+            29.101149704574638,
+            29.008321703205993,
+            28.950585029349952,
+            29.26730565772112,
+            28.798127644144728
+          ],
+          "loops": 5421,
+          "median_ns": 29.081572001819527,
+          "mad_ns": 0.07325029861353372,
+          "relative_time": 1.2197966062336278
+        }
+      }
+    },
+    "subscript": {
+      "expression": "a[\"value\"] == b",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 78,
+            "instructions": 21,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 32,
+            "marshal_bytes": 228,
+            "frame_slots": 8,
+            "locals": 4,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            13.923363519560391,
+            13.86867929118552,
+            13.801411281280014,
+            13.846845626331545,
+            13.913919090378133,
+            13.747436882390383,
+            13.944361245176829,
+            13.984101098201691,
+            13.069803340146258
+          ],
+          "loops": 11336,
+          "median_ns": 13.86867929118552,
+          "mad_ns": 0.06726800990550608,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 162,
+            "instructions": 57,
+            "cache_units": 0,
+            "exception_table_bytes": 10,
+            "location_table_bytes": 38,
+            "marshal_bytes": 801,
+            "frame_slots": 14,
+            "locals": 10,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            28.62498963992585,
+            24.894947346455794,
+            25.35957955242258,
+            24.83488480405525,
+            24.8346514188643,
+            25.92732697628963,
+            25.124037647813143,
+            24.734625980060255,
+            25.300861549553883
+          ],
+          "loops": 5878,
+          "median_ns": 25.124037647813143,
+          "mad_ns": 0.2891528437578934,
+          "relative_time": 1.8115667051138142
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 444,
+            "instructions": 82,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 113,
+            "marshal_bytes": 922,
+            "frame_slots": 17,
+            "locals": 8,
+            "stacksize": 9
+          },
+          "samples_ns": [
+            17.591340647312208,
+            17.693082828408837,
+            17.79221914671328,
+            17.797551933476665,
+            17.378392838344148,
+            17.80060403757433,
+            17.096586434614455,
+            17.278193261096252,
+            17.03094976422234
+          ],
+          "loops": 7793,
+          "median_ns": 17.591340647312208,
+          "mad_ns": 0.20926339026212304,
+          "relative_time": 1.2684221963725624
+        }
+      }
+    },
+    "call": {
+      "expression": "normalize(a) == b",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 82,
+            "instructions": 21,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 34,
+            "marshal_bytes": 238,
+            "frame_slots": 9,
+            "locals": 4,
+            "stacksize": 5
+          },
+          "samples_ns": [
+            50.824407652831404,
+            51.12494734831814,
+            51.077091622920264,
+            50.60042995883494,
+            50.953334374796775,
+            51.17909045142381,
+            50.95471773727411,
+            50.63300850946887,
+            51.93023663647726
+          ],
+          "loops": 2940,
+          "median_ns": 50.95471773727411,
+          "mad_ns": 0.17022961104402867,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 168,
+            "instructions": 58,
+            "cache_units": 0,
+            "exception_table_bytes": 10,
+            "location_table_bytes": 42,
+            "marshal_bytes": 807,
+            "frame_slots": 15,
+            "locals": 10,
+            "stacksize": 5
+          },
+          "samples_ns": [
+            72.80560410451506,
+            71.14743825332056,
+            72.05489243636805,
+            70.60133855149918,
+            70.59691509983858,
+            70.98469877914405,
+            71.85562334379989,
+            72.11991268004279,
+            72.55207324092895
+          ],
+          "loops": 2113,
+          "median_ns": 71.85562334379989,
+          "mad_ns": 0.7081850904793328,
+          "relative_time": 1.410185877474432
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 782,
+            "instructions": 133,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 187,
+            "marshal_bytes": 1388,
+            "frame_slots": 21,
+            "locals": 8,
+            "stacksize": 13
+          },
+          "samples_ns": [
+            61.12906435493859,
+            60.983173705032364,
+            61.86001390903284,
+            62.07499318466605,
+            60.885992600988224,
+            61.02373818939489,
+            61.338166901085394,
+            61.837185427876555,
+            61.75694843544835
+          ],
+          "loops": 2438,
+          "median_ns": 61.338166901085394,
+          "mad_ns": 0.4187815343629566,
+          "relative_time": 1.203777974344771
+        }
+      }
+    },
+    "method": {
+      "expression": "a.strip().lower() == b",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 120,
+            "instructions": 23,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 43,
+            "marshal_bytes": 288,
+            "frame_slots": 8,
+            "locals": 4,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            37.93337236119863,
+            38.23482812681398,
+            38.6644638848341,
+            38.40334018977338,
+            38.137521666475585,
+            37.56443628326074,
+            38.33736466638283,
+            37.85504053678013,
+            38.793522358816325
+          ],
+          "loops": 3948,
+          "median_ns": 38.23482812681398,
+          "mad_ns": 0.30145576561535137,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 228,
+            "instructions": 71,
+            "cache_units": 0,
+            "exception_table_bytes": 11,
+            "location_table_bytes": 55,
+            "marshal_bytes": 1067,
+            "frame_slots": 16,
+            "locals": 12,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            112.79641126142745,
+            109.20731547284446,
+            110.04950092859112,
+            109.00812868421889,
+            108.60711197752124,
+            108.78818917792584,
+            108.6105210609723,
+            109.26288830733583,
+            110.57952795327152
+          ],
+          "loops": 1346,
+          "median_ns": 109.20731547284446,
+          "mad_ns": 0.5967944118721533,
+          "relative_time": 2.8562261378718654
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 802,
+            "instructions": 140,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 210,
+            "marshal_bytes": 1557,
+            "frame_slots": 28,
+            "locals": 11,
+            "stacksize": 17
+          },
+          "samples_ns": [
+            102.28672434940843,
+            102.07268251547195,
+            103.09580204702847,
+            107.37608645211039,
+            102.72994888057917,
+            103.49948084468946,
+            102.24827101828714,
+            102.4169356459285,
+            104.90034788069696
+          ],
+          "loops": 1457,
+          "median_ns": 102.72994888057917,
+          "mad_ns": 0.481677862292031,
+          "relative_time": 2.686816023857969
+        }
+      }
+    },
+    "boolean_and": {
+      "expression": "a > 0 and b > 0 and expected > 0",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 92,
+            "instructions": 29,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 41,
+            "marshal_bytes": 244,
+            "frame_slots": 8,
+            "locals": 4,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            15.469360956932151,
+            15.264092233149325,
+            15.232205360597836,
+            15.14463699222224,
+            15.3452944020873,
+            15.518260680303499,
+            15.376333365999505,
+            15.362481364530543,
+            15.290032669930584
+          ],
+          "loops": 9334,
+          "median_ns": 15.3452944020873,
+          "mad_ns": 0.08120216893797405,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 252,
+            "instructions": 97,
+            "cache_units": 0,
+            "exception_table_bytes": 20,
+            "location_table_bytes": 59,
+            "marshal_bytes": 1373,
+            "frame_slots": 20,
+            "locals": 16,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            37.33585629924177,
+            37.74125918085352,
+            37.9463116376858,
+            37.407390131004924,
+            37.68101018013919,
+            39.037926755662035,
+            39.62149921566101,
+            38.687227835208915,
+            40.46985012447012
+          ],
+          "loops": 4060,
+          "median_ns": 37.9463116376858,
+          "mad_ns": 0.6104553384440337,
+          "relative_time": 2.4728304745019596
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 1322,
+            "instructions": 254,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 322,
+            "marshal_bytes": 2328,
+            "frame_slots": 29,
+            "locals": 20,
+            "stacksize": 9
+          },
+          "samples_ns": [
+            46.594332940027066,
+            46.90728189745244,
+            45.56440120314154,
+            46.15232269567853,
+            48.057489849457134,
+            48.42388822851817,
+            46.62929788377463,
+            46.4958900203534,
+            44.529809516396504
+          ],
+          "loops": 3070,
+          "median_ns": 46.594332940027066,
+          "mad_ns": 0.44201024434853764,
+          "relative_time": 3.036392246322052
+        }
+      }
+    },
+    "boolean_or_short": {
+      "expression": "a > 0 or b > 0",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 82,
+            "instructions": 25,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 34,
+            "marshal_bytes": 227,
+            "frame_slots": 8,
+            "locals": 4,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            8.521752697449706,
+            8.40712284010598,
+            8.451751444174334,
+            8.424674239017719,
+            8.47677846022582,
+            8.490371508080159,
+            8.447896046694689,
+            8.480953165672588,
+            8.466473851816106
+          ],
+          "loops": 20236,
+          "median_ns": 8.466473851816106,
+          "mad_ns": 0.018577805121417157,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 226,
+            "instructions": 88,
+            "cache_units": 0,
+            "exception_table_bytes": 15,
+            "location_table_bytes": 53,
+            "marshal_bytes": 1029,
+            "frame_slots": 16,
+            "locals": 12,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            21.90064936176712,
+            18.709009014240415,
+            18.49973449878723,
+            19.373228471919695,
+            21.140979424933672,
+            20.8921012033229,
+            21.7072779938125,
+            22.535121786843533,
+            18.87981749548617
+          ],
+          "loops": 6603,
+          "median_ns": 20.8921012033229,
+          "mad_ns": 1.518872731403203,
+          "relative_time": 2.467627204546486
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 942,
+            "instructions": 181,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 228,
+            "marshal_bytes": 1738,
+            "frame_slots": 25,
+            "locals": 16,
+            "stacksize": 9
+          },
+          "samples_ns": [
+            28.44636487683949,
+            29.28565343634587,
+            31.060904858668156,
+            29.547554444877544,
+            29.417225400493606,
+            30.146165294646174,
+            29.917093406869697,
+            28.577614224644,
+            28.376761370066696
+          ],
+          "loops": 4564,
+          "median_ns": 29.417225400493606,
+          "mad_ns": 0.7289398941525675,
+          "relative_time": 3.4745545684504116
+        }
+      }
+    },
+    "comparison_chain": {
+      "expression": "0 < a < b < expected",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 102,
+            "instructions": 34,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 46,
+            "marshal_bytes": 259,
+            "frame_slots": 9,
+            "locals": 4,
+            "stacksize": 5
+          },
+          "samples_ns": [
+            16.598723914738343,
+            16.468284933881325,
+            16.4243941802249,
+            16.513880000548074,
+            16.454787692707,
+            16.451809734276285,
+            16.55408916691407,
+            16.454325316968028,
+            16.69940792682497
+          ],
+          "loops": 8929,
+          "median_ns": 16.468284933881325,
+          "mad_ns": 0.0438907536564237,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 240,
+            "instructions": 91,
+            "cache_units": 0,
+            "exception_table_bytes": 20,
+            "location_table_bytes": 58,
+            "marshal_bytes": 1068,
+            "frame_slots": 19,
+            "locals": 14,
+            "stacksize": 5
+          },
+          "samples_ns": [
+            35.85284667599684,
+            34.855377012129516,
+            34.67376621177273,
+            35.09210008177211,
+            34.97868040151492,
+            34.96853946766109,
+            35.123092400613416,
+            34.997060496932,
+            35.13723734526651
+          ],
+          "loops": 3856,
+          "median_ns": 34.997060496932,
+          "mad_ns": 0.12603190368141526,
+          "relative_time": 2.1251187137848317
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 808,
+            "instructions": 151,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 213,
+            "marshal_bytes": 1474,
+            "frame_slots": 23,
+            "locals": 10,
+            "stacksize": 13
+          },
+          "samples_ns": [
+            29.033024568777126,
+            27.69326887333545,
+            27.94754016306269,
+            27.186945925317143,
+            27.08694771440353,
+            27.826171745218804,
+            28.287492597368836,
+            28.301882231989506,
+            28.603035650734313
+          ],
+          "loops": 5249,
+          "median_ns": 27.94754016306269,
+          "mad_ns": 0.3543420689268153,
+          "relative_time": 1.6970522598600606
+        }
+      }
+    },
+    "list_equal": {
+      "expression": "a == b",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 62,
+            "instructions": 18,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 25,
+            "marshal_bytes": 198,
+            "frame_slots": 8,
+            "locals": 4,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            21.53767122836623,
+            21.377592967989504,
+            21.404690909612583,
+            21.447719512493684,
+            21.54207489784605,
+            21.570987486734573,
+            22.08285860030054,
+            21.794464951858338,
+            21.28538207899599
+          ],
+          "loops": 6830,
+          "median_ns": 21.53767122836623,
+          "mad_ns": 0.13298031875364558,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 128,
+            "instructions": 45,
+            "cache_units": 0,
+            "exception_table_bytes": 8,
+            "location_table_bytes": 33,
+            "marshal_bytes": 573,
+            "frame_slots": 12,
+            "locals": 8,
+            "stacksize": 4
+          },
+          "samples_ns": [
+            31.475718613752857,
+            28.747581571893523,
+            29.7258743763569,
+            28.799476975356928,
+            29.18179317225947,
+            29.24552972845742,
+            29.261218391828294,
+            29.227749639304854,
+            29.686191466654595
+          ],
+          "loops": 5174,
+          "median_ns": 29.24552972845742,
+          "mad_ns": 0.4406617381971749,
+          "relative_time": 1.3578779905387144
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 536,
+            "instructions": 95,
+            "cache_units": 0,
+            "exception_table_bytes": 0,
+            "location_table_bytes": 97,
+            "marshal_bytes": 982,
+            "frame_slots": 16,
+            "locals": 7,
+            "stacksize": 9
+          },
+          "samples_ns": [
+            23.395464916305887,
+            22.678893553370955,
+            23.629681514624778,
+            22.56565764821408,
+            23.084109541921386,
+            22.993927093303522,
+            23.02605328180173,
+            23.29773033253782,
+            23.316716020729167
+          ],
+          "loops": 6502,
+          "median_ns": 23.084109541921386,
+          "mad_ns": 0.2326064788077815,
+          "relative_time": 1.0718015563130343
+        }
+      }
+    },
+    "generator_all": {
+      "expression": "all(x >= 0 for x in a)",
+      "modes": {
+        "plain": {
+          "sizes": {
+            "bytecode_bytes": 218,
+            "instructions": 67,
+            "cache_units": 0,
+            "exception_table_bytes": 4,
+            "location_table_bytes": 73,
+            "marshal_bytes": 518,
+            "frame_slots": 10,
+            "locals": 4,
+            "stacksize": 6
+          },
+          "samples_ns": [
+            247.23126459866762,
+            251.3942150399089,
+            247.35784344375134,
+            243.62449441105127,
+            247.25549016147852,
+            246.30935303866863,
+            243.8856763765216,
+            245.05810160189867,
+            245.1505558565259
+          ],
+          "loops": 1000,
+          "median_ns": 246.30935303866863,
+          "mad_ns": 1.1587971821427345,
+          "relative_time": 1.0
+        },
+        "native": {
+          "sizes": {
+            "bytecode_bytes": 208,
+            "instructions": 69,
+            "cache_units": 0,
+            "exception_table_bytes": 14,
+            "location_table_bytes": 62,
+            "marshal_bytes": 817,
+            "frame_slots": 14,
+            "locals": 8,
+            "stacksize": 6
+          },
+          "samples_ns": [
+            281.1890318989754,
+            279.19955644756556,
+            278.5582346841693,
+            272.5227791815996,
+            267.5942135974765,
+            273.1325002387166,
+            266.9293284416199,
+            284.05157662928104,
+            268.87691486626863
+          ],
+          "loops": 1000,
+          "median_ns": 273.1325002387166,
+          "mad_ns": 5.53828664124012,
+          "relative_time": 1.1089002381319923
+        },
+        "pytest": {
+          "sizes": {
+            "bytecode_bytes": 498,
+            "instructions": 95,
+            "cache_units": 0,
+            "exception_table_bytes": 4,
+            "location_table_bytes": 135,
+            "marshal_bytes": 1076,
+            "frame_slots": 18,
+            "locals": 7,
+            "stacksize": 11
+          },
+          "samples_ns": [
+            267.51678716391325,
+            268.4794347733259,
+            270.48060297966003,
+            265.020833350718,
+            263.42308707535267,
+            269.3048333749175,
+            264.55780025571585,
+            269.1254438832402,
+            264.3337370827794
+          ],
+          "loops": 1000,
+          "median_ns": 267.51678716391325,
+          "mad_ns": 2.4959538131952286,
+          "relative_time": 1.0861008072312837
+        }
+      }
+    }
+  },
+  "failure": {
+    "plain": {
+      "raise_catch": {
+        "assertionlib_loaded_before": false,
+        "samples_ns": [
+          176.5712434797337,
+          176.47750912665228,
+          174.52526729051905,
+          173.86729813319636,
+          174.30486441084207,
+          174.1976795781533,
+          173.97443727660064,
+          173.6243604069063,
+          174.40315543427266
+        ],
+        "median_ns": 174.30486441084207
+      },
+      "raise_format": {
+        "assertionlib_loaded_before": false,
+        "samples_ns": [
+          48643.080210544395,
+          49020.94079470714,
+          47604.230768418216,
+          47301.52505201161,
+          47405.593362217616,
+          47379.846554546275,
+          47616.937334734495,
+          47266.75073000271,
+          47361.512370642224
+        ],
+        "median_ns": 47405.593362217616
+      }
+    },
+    "native": {
+      "raise_catch": {
+        "assertionlib_loaded_before": false,
+        "samples_ns": [
+          510.95538647153893,
+          514.0816550343604,
+          508.2620002276888,
+          509.87538752514837,
+          511.4407868153523,
+          511.66071115282944,
+          514.976932375357,
+          519.1587170414308,
+          507.84978434564493
+        ],
+        "median_ns": 511.4407868153523
+      },
+      "raise_format": {
+        "assertionlib_loaded_before": false,
+        "samples_ns": [
+          71023.81933498853,
+          70617.42686579381,
+          70348.54394535125,
+          69842.86973702497,
+          70524.37351842232,
+          71459.71591983523,
+          69880.90256531838,
+          69811.25936425965,
+          69821.07036586465
+        ],
+        "median_ns": 70348.54394535125
+      }
+    },
+    "pytest": {
+      "raise_catch": {
+        "assertionlib_loaded_before": true,
+        "samples_ns": [
+          4169.970385116982,
+          4175.32836469315,
+          4223.364563834945,
+          4223.703087677348,
+          4193.881211659402,
+          4220.382596373359,
+          4245.588960990028,
+          5034.059679780044,
+          6757.468089784545
+        ],
+        "median_ns": 4223.364563834945
+      },
+      "raise_format": {
+        "assertionlib_loaded_before": true,
+        "samples_ns": [
+          65524.76817356476,
+          65507.58334448914,
+          65509.821359303525,
+          66102.08266051507,
+          66414.13253571732,
+          65681.83400110222,
+          66825.36623609092,
+          65487.16932178063,
+          65556.24291998758
+        ],
+        "median_ns": 65556.24291998758
+      }
+    }
+  },
+  "callbacks": {
+    "failure_no_handler": {
+      "samples_ns": [
+        667.3386282051083,
+        677.904546079736,
+        688.2320852128289,
+        662.5386626975536,
+        666.456917240718,
+        663.7072436851042,
+        678.3982032254663,
+        666.9002255011521,
+        670.586736778421
+      ],
+      "median_ns": 667.3386282051083
+    },
+    "failure_handler": {
+      "samples_ns": [
+        8052.9663050660365,
+        7973.848835577263,
+        8083.481860570238,
+        8022.2681490699415,
+        8115.133563542922,
+        8083.514095964091,
+        8003.197509867907,
+        7988.376937158695,
+        7955.841563932744
+      ],
+      "median_ns": 8022.2681490699415
+    },
+    "failure_format_handler": {
+      "samples_ns": [
+        10855.529894800971,
+        11012.58430252277,
+        10969.416719992434,
+        10876.769891496473,
+        10805.122586908696,
+        10829.203015561525,
+        10831.065728640922,
+        10874.807728654185,
+        11068.12903300243
+      ],
+      "median_ns": 10874.807728654185
+    }
+  }
+}

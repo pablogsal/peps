@@ -1,0 +1,97 @@
+{
+  "base_commit": "b00a14018172652226bd6efb517af021bd03aa88",
+  "before_commit": "96d1d0a09d052dddcb9d026f93094ccca3a0db9d",
+  "after_commit": "d944fbc4015388d800d872614bc9c4ab565897a0",
+  "rounds": [
+    "Replace three opcodes with existing capture and cleanup instructions.",
+    "Remove extra flags, success callbacks, duplicate captures and metadata.",
+    "Use one public graph and formatter path; simplify graph reconstruction.",
+    "Use STORE_FAST/LOAD_FAST so the existing compiler can combine the pair."
+  ],
+  "unchanged_plain_code_files": 162,
+  "plain_hash_seed": 0,
+  "before_proposal_files": 53,
+  "after_proposal_files": 39,
+  "loops": {
+    "before": {
+      "geometric_mean_vs_plain": 1.7696144724020197,
+      "bytecode_bytes": 2218,
+      "marshal_bytes": 13543,
+      "frame_slots": 211
+    },
+    "after": {
+      "geometric_mean_vs_plain": 1.8061424243717195,
+      "bytecode_bytes": 2614,
+      "marshal_bytes": 12359,
+      "frame_slots": 211
+    },
+    "selected_cases": [
+      "equal_int",
+      "equal_large_int",
+      "arithmetic_large_int",
+      "arithmetic_float",
+      "arithmetic",
+      "attribute",
+      "subscript",
+      "call",
+      "method",
+      "boolean_and",
+      "boolean_or_short",
+      "comparison_chain",
+      "list_equal",
+      "generator_all"
+    ]
+  },
+  "pep_loops": {
+    "selected_cases": [
+      "equal_int",
+      "arithmetic",
+      "attribute",
+      "subscript",
+      "call",
+      "method",
+      "boolean_and",
+      "boolean_or_short",
+      "comparison_chain",
+      "list_equal",
+      "generator_all"
+    ],
+    "geometric_mean_vs_plain": {
+      "native": 1.855835350630835,
+      "pytest": 1.6535128784121567
+    }
+  },
+  "limits": "Shared host. Separate before/after processes. Runtime differences between implementation rounds do not establish a stable speed improvement. Bytecode sums below cover the 14 named loop cases, excluding the constant-true case.",
+  "callback_median_ns": {
+    "failure_no_handler": 667.3386282051083,
+    "failure_handler": 8022.2681490699415,
+    "failure_format_handler": 10874.807728654185
+  },
+  "sympy": {
+    "files": 612,
+    "assertions": 71205,
+    "before_capture_sizes": {
+      "bytecode_bytes": 21719464,
+      "marshal_bytes": 121870093
+    },
+    "after_sizes": {
+      "plain": {
+        "bytecode_bytes": 12664866,
+        "marshal_bytes": 21566850
+      },
+      "pytest": {
+        "bytecode_bytes": 93672468,
+        "marshal_bytes": 138302774
+      },
+      "capture": {
+        "bytecode_bytes": 27157708,
+        "marshal_bytes": 100113595
+      }
+    },
+    "median_compile_seconds": {
+      "plain": 1.2575556375086308,
+      "pytest": 48.20451588695869,
+      "capture": 9.643169154413044
+    }
+  }
+}

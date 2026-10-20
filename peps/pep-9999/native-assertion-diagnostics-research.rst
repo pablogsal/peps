@@ -59,7 +59,7 @@ Public evidence
   confirms that ``CALL_INTRINSIC_2`` already exists. The `import C API
   <https://docs.python.org/3/c-api/import.html#c.PyImport_GetModule>`_
   confirms that ``PyImport_GetModule`` obtains an already imported module.
-  The new instruction names and dispatcher behavior come from the local
+  The private capture layout and dispatcher behavior come from the local
   prototype, not from these references.
 
 * `Context variables <https://docs.python.org/3/library/contextvars.html>`_
@@ -70,10 +70,49 @@ Public evidence
 * `AssertionLib on PyPI <https://pypi.org/project/AssertionLib/>`_ confirms
   the module-name conflict. The draft leaves the final name open.
 
-Measurement evidence
---------------------
+Simplification measurements, 20 October 2026
+--------------------------------------------
 
-The current PEP uses new measurements from 19 October 2026 UTC. The earlier
+The current PEP uses the simplified prototype at commit
+``d944fbc4015388d800d872614bc9c4ab565897a0``. It uses existing store, load,
+and cleanup instructions. It removes success callbacks, assertion retention
+under optimization, and duplicate capture metadata.
+
+The compilation experiment uses the same 612 SymPy 1.14.0 test files and
+pinned pytest revision as the earlier experiment. Six runs cover all mode
+orders. Median compile times are 1.26 seconds for ordinary assertions,
+48.20 seconds for pytest, and 9.64 seconds for capture.
+
+Capture produces 25.90 MiB of bytecode and 95.48 MiB of serialized code.
+The earlier prototype produced 20.71 MiB and 116.22 MiB, respectively.
+Thus the simpler implementation adds 25% more bytecode and removes 18% of
+the serialized size. The capture plan still includes expression values,
+truth results, source locations, and comparison links.
+
+Across the same eleven assertion-loop cases, the geometric mean time is
+1.86x ordinary assertions for capture and 1.65x for pytest. These runs use
+one executable, CPU 17, nine samples per case, and shuffled mode order.
+The earlier and current prototypes have similar loop cost in these samples.
+The shared host prevents a stable claim about their small runtime difference.
+
+Current records:
+
+* :download:`Compilation samples and sizes <simplification-evidence/compile.json>`
+* :download:`Loop and failure latency samples <simplification-evidence/loops.json>`
+* :download:`Comparison of simplification rounds <simplification-evidence/summary.json>`
+* :download:`Benchmark script <simplification-evidence/benchmark.py>` and
+  :download:`compilation reproduction script <simplification-evidence/reproduce_compile.py>`
+* :download:`Method and reproduction instructions <simplification-evidence/README.txt>`
+* :download:`Artifact hashes <simplification-evidence/manifest.json>`
+
+The records below describe the earlier prototype, before these changes.
+They retain the earlier real-library execution runs and source manifests.
+The current implementation has no new end-to-end library runtime result.
+
+Earlier measurement evidence
+-----------------------------
+
+These records contain measurements from 19 October 2026 UTC. The earlier
 assertion-loop and formatter measurements remain in the technical notes.
 The two performance plots are no longer part of the PEP.
 
@@ -494,7 +533,7 @@ It includes a :download:`prototype patch <workload-evidence/prototype.patch>` ag
 CPython commit ``b00a14018172652226bd6efb517af021bd03aa88``. The runtime
 record also identifies the measured executable by its SHA-256 hash.
 The `published prototype
-<https://github.com/pablogsal/cpython/tree/96d1d0a09d052dddcb9d026f93094ccca3a0db9d>`_
+<https://github.com/pablogsal/cpython/tree/d944fbc4015388d800d872614bc9c4ab565897a0>`_
 contains the implementation and a note on its remaining work.
 
 Capture code is in ``Python/codegen_assert.h``, dispatch is in

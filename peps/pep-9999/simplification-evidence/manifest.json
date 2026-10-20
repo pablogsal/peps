@@ -1,0 +1,70 @@
+{
+  "source_commit": "d944fbc4015388d800d872614bc9c4ab565897a0",
+  "executable_sha256": "9f5bbfe19d297174904471bdf6ee795871d99ab6652ab4ce78d072cab560bde6",
+  "files": {
+    "README.txt": {
+      "bytes": 1998,
+      "sha256": "284da3366101d80713827ae0e20f11e859f932478f0a2daa2bc2572e93249d02"
+    },
+    "after-corpus.json": {
+      "bytes": 17192,
+      "sha256": "686f4c4b1406ac256ae1f552979aa971ec79946e5d9553edfe4468234cd95831"
+    },
+    "before-corpus.json": {
+      "bytes": 91887,
+      "sha256": "4bb3ff54407771b657bf4194e324197552bed3c6c6a2421b708c2057623eadca"
+    },
+    "before-loops.json": {
+      "bytes": 26149,
+      "sha256": "0cc2ebbab108d39932579e387cba0aeecbf9df4aff228d0872637876a384b8c6"
+    },
+    "benchmark.py": {
+      "bytes": 9607,
+      "sha256": "2a5fc16b49ecbbf620fe1ab27248537dda84d7080c60473d36848ef84fe27540"
+    },
+    "checks.json": {
+      "bytes": 16523,
+      "sha256": "d3baa3ba04442980ccb3e925b4ce0ac513cbe27450ea710321d3bb1811c18953"
+    },
+    "compile.json": {
+      "bytes": 290769,
+      "sha256": "152b364a4ee3862cefed3ca0f5a27fff411e762231f8b47aea1d646be1b67baa"
+    },
+    "copy-store-loops.json": {
+      "bytes": 42882,
+      "sha256": "9713c8027de6843397d6a6905ca21fa2ddac0788c7964ce292744055728eb4b4"
+    },
+    "debug-checks.txt": {
+      "bytes": 476,
+      "sha256": "8fd6fafcf9309a97c23332d3a2526514e795f3ce2a65c7bf66b81257069e7c2a"
+    },
+    "loops.json": {
+      "bytes": 42896,
+      "sha256": "8b726d289a869e136b11fae052632b8f3d5148517e039c0cfd230debfdc0e370"
+    },
+    "measured_compile.py": {
+      "bytes": 4457,
+      "sha256": "58fb5e60d9ed2e9190939bda8832682c05c6aef7ab90ad6fe8a60643c9ba7b9a"
+    },
+    "prototype.patch": {
+      "bytes": 127201,
+      "sha256": "82896494ed9aac2508a275efb8ade9b3426fa529200b5f7a15adcede8575f716"
+    },
+    "pytest-checks.txt": {
+      "bytes": 157,
+      "sha256": "e7d2378c8e43ffadd548abf27481f0e4ee92601318fa05f75c298c8f1b8c5f65"
+    },
+    "regression-checks.txt": {
+      "bytes": 1021,
+      "sha256": "9a77e63d5b36d8761c42e81c60498b24f66a03142ddb75d594b728a1997ffe34"
+    },
+    "reproduce_compile.py": {
+      "bytes": 4663,
+      "sha256": "104d19c940a34280a8b65a9ad3bcbc88340e3ecf527e163f5b69ca3ab8fed29f"
+    },
+    "summary.json": {
+      "bytes": 2736,
+      "sha256": "e6791058fd66908351432ca969ea17a7d754e3448a62c676e0c34f616a7c3b84"
+    }
+  }
+}

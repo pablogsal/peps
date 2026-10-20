@@ -331,6 +331,10 @@ to its expression node, text, and location. Slot 5 maps to
 unparser. Internal slot names appear in ``co_varnames``, but remain hidden
 from ``locals()``.
 
+Values must remain available after later expressions execute.
+In ``assert x == (x := 2)``, the local ``x`` no longer holds the left operand
+when the assertion fails. A saved reference preserves that operand.
+
 For short circuit expressions, the compiler places captures inside each
 branch. In ``assert left() and right()``, a false result
 from ``left()`` skips both ``right()`` and its captures. Comparison chains
@@ -354,8 +358,8 @@ and its ``right.value`` comes from slot 6 (``60``).
 
 ``handlers()`` stores the callback in a ``ContextVar``. The prototype finds
 an already imported ``assertionlib`` module with `PyImport_GetModule()`_,
-then calls its dispatcher if a handler is active. The dispatcher prevents
-recursive callbacks. The plan contains no functions or imports.
+then calls its dispatcher. The dispatcher checks the current handler and
+prevents recursive callbacks. The plan contains no functions or imports.
 
 Without a handler, failures still retain capture data. Successful assertions
 create no diagnostic containers and perform no callback lookup.
@@ -364,25 +368,23 @@ Module lookup is a prototype detail. Removal of ``assertionlib`` from
 ``sys.modules`` disables dispatch. The traceback formatter can import support
 when it first needs an explanation.
 
-New bytecode instructions
--------------------------
+Bytecode and runtime support
+----------------------------
 
-The prototype implements capture assignments and cleanup with three new
-instructions:
+Capture and cleanup use instructions that CPython already has:
 
-* ``STORE_FAST_BORROW slot`` retains an owned local reference and leaves a
-  borrowed reference on the operand stack for the next operation.
-* ``COPY_TO_FAST slot`` combines ``COPY`` and ``STORE_FAST`` without a change
-  to stack ownership. Assignment-expression subtrees require this form.
-* ``CLEAR_FAST slot`` releases a captured reference. Unlike ``DELETE_FAST``,
-  it accepts an empty slot, as cleanup after a skipped branch requires.
+* ``STORE_FAST slot; LOAD_FAST slot`` retains the value in a hidden local
+  and returns a reference to the operand stack. The optimizer can
+  combine these operations into ``STORE_FAST_LOAD_FAST``.
+* ``LOAD_FAST_AND_CLEAR slot; POP_TOP`` clears the slot and releases its
+  reference. It also accepts an empty slot after a skipped branch.
 
 The pseudocode's ``attach_and_dispatch()`` is the C helper
 ``INTRINSIC_ASSERT_DETAILS``. CPython's `CALL_INTRINSIC_2`_ instruction calls
 it with the exception and plan. It returns the exception for
 ``RAISE_VARARGS``. No new call instruction is necessary.
 
-The instructions pass through the control-flow optimizer and assembler.
+These sequences use CPython's ownership rules and optimizer.
 Other Python implementations can use a different internal representation.
 The :doc:`technical notes <pep-9999/native-assertion-diagnostics-notes>` retain the bytecode sequence and internal layout.
 
@@ -392,7 +394,7 @@ Performance
 
 Capture adds work even when assertions pass. Across eleven assertion-loop
 benchmarks, its geometric mean execution time is 1.86x that of ordinary
-assertions, compared with 1.67x for pytest's rewrite.
+assertions, compared with 1.65x for pytest's rewrite.
 
 The table compares compilation of 612 SymPy 1.14.0 test files in the same
 interpreter. Times are medians. Serialized size includes diagnostic metadata.
@@ -409,23 +411,23 @@ interpreter. Times are medians. Serialized size includes diagnostic metadata.
           - Bytecode, MiB
           - Serialized, MiB
         * - Ordinary asserts
-          - 1.24
+          - 1.26
           - 12.08
           - 20.57
         * - pytest rewrite
-          - 48.57
+          - 48.20
           - 89.33
           - 131.90
         * - Compiler capture
-          - 14.10
-          - 20.71
-          - 116.22
+          - 9.64
+          - 25.90
+          - 95.48
 
-For this corpus, capture uses 71% less compile time than pytest.
-It still takes 11.4x the compile time of ordinary assertions and produces
-5.65x the serialized size.
+For this corpus, capture uses 80% less compile time than pytest.
+It still takes 7.7x the compile time of ordinary assertions and produces
+4.64x the serialized size.
 
-Runs of 205 selected SymPy tests on a shared host did not establish a
+Earlier runs of 205 selected SymPy tests on a shared host did not establish a
 stable runtime advantage over pytest. The :doc:`research notes <pep-9999/native-assertion-diagnostics-research>` contain the
 full results, measurement method, and reproduction scripts.
 
@@ -433,7 +435,7 @@ full results, measurement method, and reproduction scripts.
 Backwards Compatibility
 =======================
 
-Without the new controls, assertions retain their ordinary compile mode.
+With capture disabled, assertions retain their ordinary compile mode.
 The prototype's cost in that mode, relative to unmodified CPython, remains
 unmeasured.
 
@@ -444,8 +446,9 @@ also adds ``EXCEPTION_HANDLED`` and ``RERAISE`` monitoring events after a
 failed assertion. It consumes one compiler block and can reach the static
 block limit sooner.
 
-New bytecode requires a magic-number change. Opcode numbers and private
-capture layouts remain implementation details.
+The new intrinsic and capture layout require a bytecode magic-number change.
+Opcode numbers stay unchanged. Private capture layouts remain
+implementation details.
 
 
 Security Implications
@@ -518,7 +521,7 @@ Open Issues
    https://docs.python.org/3/c-api/import.html#c.PyImport_GetModule
 .. _AssertionLib package: https://pypi.org/project/AssertionLib/
 .. _prototype implementation:
-   https://github.com/pablogsal/cpython/tree/96d1d0a09d052dddcb9d026f93094ccca3a0db9d
+   https://github.com/pablogsal/cpython/tree/d944fbc4015388d800d872614bc9c4ab565897a0
 
 
 Copyright

@@ -1,0 +1,22 @@
+Using random seed: 1573199340
+0:00:00 load avg: 18.55 mem: 14.6 MiB Run 11 tests in parallel using 8 worker processes
+0:00:00 load avg: 18.55 mem: 204.7 MiB [ 1/11] test_generators passed
+0:00:00 load avg: 18.55 mem: 224.5 MiB [ 2/11] test_coroutines passed
+0:00:00 load avg: 18.55 mem: 253.9 MiB [ 3/11] test_dis passed
+0:00:00 load avg: 18.55 mem: 273.8 MiB [ 4/11] test_capi.test_import passed
+0:00:00 load avg: 18.55 mem: 328.1 MiB [ 5/11] test_assert_details passed
+0:00:00 load avg: 19.07 mem: 297.3 MiB [ 6/11] test_marshal passed
+0:00:02 load avg: 19.07 mem: 289.6 MiB [ 7/11] test_frame passed
+0:00:02 load avg: 19.07 mem: 100.1 MiB [ 8/11] test_compile passed
+0:00:03 load avg: 19.07 mem: 82.8 MiB [ 9/11] test_import passed
+0:00:03 load avg: 19.07 mem: 61.3 MiB [10/11] test_traceback passed
+0:00:04 load avg: 19.07 mem: 20.8 MiB [11/11] test_importlib passed
+
+== Tests result: SUCCESS ==
+
+All 11 tests OK.
+
+Total duration: 4.4 sec
+Total tests: run=2,525 skipped=43
+Total test files: run=11/11
+Result: SUCCESS
