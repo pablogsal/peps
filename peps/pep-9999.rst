@@ -213,21 +213,33 @@ explanation. A caller that catches the exception can read ``error.details``:
 
 ``AssertionError.details`` returns ``None`` when capture data is absent.
 The first access builds and caches an ``AssertionDetails`` object.
-Later accesses return the same object. Its attributes are ``expression``,
-``location``, ``root``, ``nodes``, and ``comparisons``.
+Later accesses return the same object. It has two attributes:
+``expression``, the top-level expression node, and ``comparisons``, a tuple
+of comparison records.
 
-An expression node has an ID, text, kind, location, children, and capture
-data. Check ``evaluated`` before access to ``value``, which otherwise raises
-``ValueError``. ``truth`` is ``None`` when unavailable. It never calls
-``bool()`` to reconstruct a result. Node IDs identify source occurrences
-within one graph, independently of frame slots.
+An expression node exposes ``text``, ``kind``, ``location``, ``children``,
+``evaluated``, ``value``, and ``truth``. Children preserve expression
+structure, and repeated source expressions have distinct nodes.
+Check ``evaluated`` before access to ``value``, which otherwise raises
+``ValueError``. ``truth`` is a recorded truth result, or ``None``
+when unavailable. Neither attribute calls ``bool(value)``. For example,
+``price`` in ``price * quantity == expected`` has a value but no truth result.
 
-A comparison record exposes ``operator``, ``left``, ``right``, ``expression``,
-``text``, and the same capture attributes. Locations give the filename,
-start and end lines, and zero-based UTF-8 column offsets. End offsets are
-exclusive. Graph attributes are immutable.
+Comparison records retain the result of each link in a chain. For example:
 
-``root``, ``nodes``, and comparison operands refer to shared expression nodes.
+.. code-block:: python
+
+    assert 0 < 5 < 3
+
+The expression result is ``False``. Its two comparison records contain
+``True`` for ``0 < 5`` and ``False`` for ``5 < 3``. A reporter can select
+the failed link without another comparison. A record exposes ``operator``,
+``left``, ``right``, ``expression``, ``text``, and the same capture attributes.
+``expression`` identifies the comparison expression that contains the link.
+Records share operand nodes and include skipped links.
+
+Graph attributes are immutable. Locations give the filename, start and end
+lines, and zero-based UTF-8 column offsets. End offsets are exclusive.
 Object representations omit graph links and captured values.
 
 ``details.format(*, compare=None)`` returns a string without a terminal
@@ -534,7 +546,7 @@ Open Issues
    https://docs.python.org/3/c-api/import.html#c.PyImport_GetModule
 .. _AssertionLib package: https://pypi.org/project/AssertionLib/
 .. _prototype implementation:
-   https://github.com/pablogsal/cpython/tree/b7134b24cdb280c855a04d8490d2907642694cb8
+   https://github.com/pablogsal/cpython/tree/b7fc3c1b69bb698539b4a82e6bfc9add1713ccd3
 
 
 Copyright

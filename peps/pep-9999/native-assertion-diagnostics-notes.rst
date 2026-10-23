@@ -216,8 +216,9 @@ require a particular implementation of these classes.
 The classes are return types for this API. Public construction, dataclass
 helpers, and positional pattern-match fields are outside this contract.
 
-``root``, ``nodes``, and comparison operands refer to shared expression nodes.
-Object representations omit graph links and captured values.
+``details.expression`` is the top-level expression node. Comparison records
+refer to nodes in that tree. Object representations omit graph links and
+captured values.
 
 .. list-table:: ``AssertionDetails``
     :header-rows: 1
@@ -226,13 +227,8 @@ Object representations omit graph links and captured values.
     * - Attribute
       - Description
     * - ``expression``
-      - Normalized text for the assertion test.
-    * - ``location``
-      - A ``SourceLocation`` for that test.
-    * - ``root``
-      - The top-level ``Expression`` node.
-    * - ``nodes``
-      - A tuple of all expression nodes in this graph.
+      - The top-level ``Expression`` node. Its ``text`` and ``location``
+        describe the assertion test.
     * - ``comparisons``
       - A tuple of comparison records. Links within a chain follow
         source order.
@@ -243,8 +239,6 @@ Object representations omit graph links and captured values.
 
     * - Attribute
       - Description
-    * - ``id``
-      - An integer unique within this graph.
     * - ``text``, ``kind``
       - Normalized expression text and a structural kind.
     * - ``location``
@@ -267,10 +261,11 @@ The graph also retains alternatives that do not execute.
 For a conditional expression, children are the condition, body, and
 alternative, in that order. Comparison records from distinct expressions
 have no specified global order.
-Node IDs do not identify variables or persist across separate failures.
 Two occurrences of the same source expression have distinct nodes.
 
 An available ``value`` of ``None`` differs from an unavailable value.
+``evaluated`` reports whether a captured value exists. It does not require
+separate stored state or a truth conversion on that value.
 The ``truth`` property never calls ``bool(value)`` to fill a gap.
 It can derive a result from captured truth results without user calls.
 For example, ``not`` inverts its operand's captured truth result.
@@ -291,12 +286,19 @@ The compiler need not create an extra runtime object for that purpose.
     * - ``expression``
       - The parent comparison expression node.
     * - ``text``
-      - Normalized text for this comparison link.
+      - Text derived from the operands and operator for this link.
     * - ``evaluated``, ``value``, ``truth``
       - Availability, raw result, and recorded truth for this link.
 
 ``Comparison.value`` raises ``ValueError`` when no result is available.
 A chain has one record per link. This includes skipped links.
+For ``assert 0 < 5 < 3``, one expression has two comparison results:
+``True`` for ``0 < 5`` and ``False`` for ``5 < 3``. These records let a
+reporter select the failed link without another comparison.
+
+The link's ``truth`` remains separate from its expression's ``truth``.
+A later truth conversion on the same result can return a different value.
+The API retains both recorded results without another call to user code.
 
 ``SourceLocation`` has ``filename``, ``lineno``, ``col_offset``,
 ``end_lineno``, and ``end_col_offset`` attributes. Line numbers start at 1.
