@@ -227,6 +227,9 @@ A comparison record exposes ``operator``, ``left``, ``right``, ``expression``,
 start and end lines, and zero-based UTF-8 column offsets. End offsets are
 exclusive. Graph attributes are immutable.
 
+``root``, ``nodes``, and comparison operands refer to shared expression nodes.
+Object representations omit graph links and captured values.
+
 ``details.format(*, compare=None)`` returns a string without a terminal
 newline. It performs no output and does not invoke a scoped formatter.
 It can call user ``__repr__`` methods.
@@ -531,7 +534,7 @@ Open Issues
    https://docs.python.org/3/c-api/import.html#c.PyImport_GetModule
 .. _AssertionLib package: https://pypi.org/project/AssertionLib/
 .. _prototype implementation:
-   https://github.com/pablogsal/cpython/tree/02af93a355bb38564d5df3b44450cb1a5502db65
+   https://github.com/pablogsal/cpython/tree/b7134b24cdb280c855a04d8490d2907642694cb8
 
 
 Copyright

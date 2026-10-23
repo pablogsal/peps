@@ -216,6 +216,9 @@ require a particular implementation of these classes.
 The classes are return types for this API. Public construction, dataclass
 helpers, and positional pattern-match fields are outside this contract.
 
+``root``, ``nodes``, and comparison operands refer to shared expression nodes.
+Object representations omit graph links and captured values.
+
 .. list-table:: ``AssertionDetails``
     :header-rows: 1
     :widths: 28 72
