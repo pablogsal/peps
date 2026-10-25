@@ -440,7 +440,11 @@ instructions for that node. After the instructions produce a result, the
 visitor emits ``STORE_FAST slot; LOAD_FAST slot`` to retain the result in a hidden local.
 The result remains available on the operand stack for its normal consumer.
 
-For straight-line expressions, the rule is conceptually:
+Constant values need no hidden slots. Each constant node stores its value
+in the plan. The library exposes that value only when captured results
+show that execution reached the constant. Truth captures remain in place.
+
+For an ordinary value capture, the rule is conceptually:
 
 .. code-block:: text
 
@@ -512,7 +516,9 @@ Its fields are the frame slot, record kind, node ID, and optional comparison
 metadata. Node 1 describes the multiplication and stores its text and span.
 
 The plan itself is ``(records, nodes)``.
-Each node entry is ``(text, kind, span, child_ids)``. Its ID is its index.
+Each node entry is ``(text, kind, span, child_ids, constant)``.
+Its ID is its index. The last field is ``(value,)`` for a constant
+and ``()`` for other nodes.
 Record kinds are ``value``, ``comparison``, and ``truth``.
 A comparison record's extra data contains ``(operator, left_id, right_id)``.
 Operand node IDs identify the captured operands. There is no separate map

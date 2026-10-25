@@ -12,6 +12,9 @@ The API revision on 20 October 2026 introduces ``error.details``,
 retain their original source revisions and APIs. This API revision does
 not change compiler capture or the bytecode in the measured workloads.
 
+The 25 October change removes constant value captures. The compilation
+and loop measurements below predate that change.
+
 Public evidence
 ---------------
 
@@ -78,7 +81,7 @@ Public evidence
 Simplification measurements, 20 October 2026
 --------------------------------------------
 
-The current PEP uses the simplified prototype at commit
+The PEP performance table uses the simplified prototype at commit
 ``d944fbc4015388d800d872614bc9c4ab565897a0``. It uses existing store, load,
 and cleanup instructions. It removes success callbacks, assertion retention
 under optimization, and duplicate capture metadata.
